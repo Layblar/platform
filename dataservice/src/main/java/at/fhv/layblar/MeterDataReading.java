@@ -1,22 +1,19 @@
 package at.fhv.layblar;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class MeterDataReading {
 
-    public String id;
-    public String message;
+    public String topic;
+    public String time;
+    public JsonNode message;
 
     public MeterDataReading() {}
 
-    public MeterDataReading(String id, String message) {
-        this.id = id;
+    public MeterDataReading(String topic, String time, JsonNode message) {
+        this.topic = topic;
+        this.time = time;
         this.message = message;
     }
-
-    @Override
-    public String toString() {
-        return "MeterDataReading [id=" + id + ", message=" + message + "]";
-    }
-
-    
     
 }

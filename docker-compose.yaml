@@ -9,7 +9,7 @@ services:
     networks:
       - rabbitmq-quickstart-network
 
-  producer:
+  dataservice:
     image: layblar/dataservice:1.0-${QUARKUS_MODE:-jvm}
     build:
       context: dataservice
@@ -22,7 +22,7 @@ services:
     networks:
       - rabbitmq-quickstart-network
 
-  processor:
+  simulator:
     image: layblar/smart-meter-simulator:1.0-${QUARKUS_MODE:-jvm}
     build:
       context: smart-meter-simulator
