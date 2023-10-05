@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
 
@@ -7,7 +7,7 @@ services:
     ports:
       - "5672:5672"
     networks:
-      - rabbitmq-quickstart-network
+      - layblar-platform
 
   dataservice:
     image: layblar/dataservice:1.0-${QUARKUS_MODE:-jvm}
@@ -20,7 +20,19 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - rabbitmq-quickstart-network
+      - layblar-platform
+
+  timescaledb:
+    image: timescale/timescaledb-ha:pg14-latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: timescaledb
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: meterdata
+    networks:
+      - layblar-platform
 
   simulator:
     image: layblar/smart-meter-simulator:1.0-${QUARKUS_MODE:-jvm}
@@ -31,8 +43,8 @@ services:
       RABBITMQ_HOST: rabbit
       RABBITMQ_PORT: 5672
     networks:
-      - rabbitmq-quickstart-network
+      - layblar-platform
 
 networks:
-  rabbitmq-quickstart-network:
-    name: rabbitmq-quickstart
+  layblar-platform:
+    name: layblar-platform
