@@ -2,6 +2,9 @@ package at.fhv.layblar;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -19,6 +22,7 @@ public class Generator {
 
     @Channel("meter-data")
     Emitter<MeterDataReading> emitter;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public void sendMeterData() throws InterruptedException {
 
@@ -30,7 +34,10 @@ public class Generator {
     
                 while (parser.nextToken() != null) {
                     if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
-                        emitter.send(getMeterDataFromJson(parser));
+                        MeterDataReading mdr = getMeterDataFromJson(parser);
+                        // Set timestamp of reading to current LocalDateTime
+                        mdr.timestamp = LocalDateTime.now().format(formatter);
+                        emitter.send(mdr);
                         Thread.sleep(5000);
                     }
                 }
@@ -46,7 +53,7 @@ public class Generator {
     }
 
     private static ObjectNode processJsonObject(JsonParser parser) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         ObjectNode jsonObject = objectMapper.createObjectNode();
 
         while (parser.nextToken() != JsonToken.END_OBJECT) {

@@ -12,7 +12,7 @@ services:
   dataservice:
     image: layblar/dataservice:1.0-${QUARKUS_MODE:-jvm}
     build:
-      context: dataservice
+      context: ../dataservice
       dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
     environment:
       RABBITMQ_HOST: rabbit
@@ -24,20 +24,21 @@ services:
 
   timescaledb:
     image: timescale/timescaledb-ha:pg14-latest
-    restart: always
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: timescaledb
+      POSTGRES_USER: layblar
       POSTGRES_PASSWORD: password
       POSTGRES_DB: meterdata
+    volumes:
+      - ./TimeScaleDBSetup.sql:/docker-entrypoint-initdb.d/TimeScaleDBSetup.sql
     networks:
       - layblar-platform
 
   simulator:
     image: layblar/smart-meter-simulator:1.0-${QUARKUS_MODE:-jvm}
     build:
-      context: smart-meter-simulator
+      context: ../smart-meter-simulator
       dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
     environment:
       RABBITMQ_HOST: rabbit

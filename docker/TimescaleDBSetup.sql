@@ -14,8 +14,8 @@ CREATE TABLE smart_meter_data (
   v52_7_0 NUMERIC NULL,
   v71_7_0 NUMERIC NULL,
   v72_7_0 NUMERIC NULL,
-  uptime TIME NOT NULL
+  uptime VARCHAR(13) NULL
 );
 
 SELECT create_hypertable('smart_meter_data','time');
-SELECT add_dimension('smart_meter_data', 'sensorId');
+--SELECT add_dimension('smart_meter_data', 'sensorId');
