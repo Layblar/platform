@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -41,7 +42,7 @@ public class Generator {
 
     private MeterDataReading getMeterDataFromJson(JsonParser parser) throws JsonProcessingException, IllegalArgumentException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.treeToValue(processJsonObject(parser), MeterDataReading.class);
+        return mapper.treeToValue(processJsonObject(parser).get("message"), MeterDataReading.class);
     }
 
     private static ObjectNode processJsonObject(JsonParser parser) throws IOException {
