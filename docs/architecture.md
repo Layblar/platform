@@ -11,32 +11,32 @@ Detailed overview of the architecture of the Layblar Platform
 
 ## Services and System Operations
 
-| Service              | System Operation                                             | Collaborators                                                                                               |
-| -------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| UserService          | [createUser()](#create-user)                                 | <ul><li>UserService::createHousehold()</li><ul>                                                             |
-| UserService          | [loginUser()](#login-user)                                   | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| UserService          | [joinHousehold()](#join-household)                           | <ul><li>UserService::verifyUser()</li><li>UserService::mergeHouseholds()</li><ul>                           |
-| UserService          | [leaveHousehold()](#leave-household)                         | <ul><li>UserService::verifyUser()</li><li>UserService::splitHouseholds()</li><ul>                           |
-| UserService          | [getHouseholdInformation()](#get-household-information)             | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| UserService          | [addDeviceToHousehold()](#add-device-to-household)           | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::addDeviceInformation()</li><ul>             |
-| UserService          | [updateDeviceInformation()](#update-device-information)      | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::updateDeviceInformation()</li><ul>          |
-| UserService          | [removeDeviceFromHousehold()](#remove-device-from-household) | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| UserService          | [listHouseholdDevices()](#list-household-devices)            | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li><ul>            |
-| UserService          | [registerSmartMeterReader()](#register-smart-meter-reader)   | <ul><li>UserService::verifyUser()</li><li>SmartMeterService::addNewSmartMeter()</li><ul>                    |
-| UserService          | [removeSmartMeterReader()](#remove-smart-meter-reader)       | <ul><li>UserService::verifyUser()</li><li>SmartMeterService::removeSmartMeter()</li><ul>                    |
-| SmartMeterService    | [getSmartMeterData()](#get-smart-meter-data)                 | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| ProjectService       | [createResearcher()](#create-researcher)                     |                                                                                                             |
-| ProjectService       | [createProject()](#create-project)                           | <ul><li>ProjectService:verifyResearcher()</li><ul>                                                          |
-| ProjectService       | [updateProjectInformation()](#update-project-information)    | <ul><li>ProjectService:verifyResearcher()</li><li>ProjectService:verifyProjectInformationDetails()</li><ul> |
-| ProjectService       | [updateProjectSettings()](#update-project-settings)          | <ul><li>ProjectService:verifyResearcher()</li><li>ProjectService:verifyProjectSettingsDetails()</li><ul>    |
-| ProjectService       | [listProjects()](#list-projects)                             | <ul><li>UserService::verifyUser()</li><li>UserService::verifyResearcher()</li><ul>                          |
-| ProjectService       | [joinProject()](#join-project)                               | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| ProjectService       | [getProjectInformation()](#get-project-information)          | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| LabelService         | [getProjectLabels()](#get-project-labels)                    | <ul><li>UserService::verifyUser()</li><ul>                                                                  |
-| LabelService         | [createLabel()](#create-label)                                     | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li><ul>            |
-| DeviceLibraryService | [listDevices()](#list-devices)                               |                                                                                                             |
+| Service              | System Operation                                          | Collaborators                                                                                                |
+| -------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| UserService          | [createUser()](#createuser)                               | <ul><li>UserService::createHousehold()</li></ul>                                                             |
+| UserService          | [loginUser()](#loginuser)                                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| UserService          | [joinHousehold()](#joinhousehold)                         | <ul><li>UserService::verifyUser()</li><li>UserService::mergeHouseholds()</li></ul>                           |
+| UserService          | [leaveHousehold()](#leavehousehold)                       | <ul><li>UserService::verifyUser()</li><li>UserService::splitHouseholds()</li></ul>                           |
+| UserService          | [getHouseholdInformation()](#gethouseholdinformation)     | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| UserService          | [addDeviceToHousehold()](#adddevicetohousehold)           | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::addDeviceInformation()</li></ul>             |
+| UserService          | [updateDeviceInformation()](#updatedeviceinformation)     | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::updateDeviceInformation()</li></ul>          |
+| UserService          | [removeDeviceFromHousehold()](#removedevicefromhousehold) | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| UserService          | [listHouseholdDevices()](#listhouseholddevices)           | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li></ul>            |
+| UserService          | [registerSmartMeterReader()](#registersmartmeterreader)   | <ul><li>UserService::verifyUser()</li><li>SmartMeterService::addNewSmartMeter()</li></ul>                    |
+| UserService          | [removeSmartMeterReader()](#removesmartmeterreader)       | <ul><li>UserService::verifyUser()</li><li>SmartMeterService::removeSmartMeter()</li></ul>                    |
+| SmartMeterService    | [getSmartMeterData()](#getsmartmeterdata)                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| ProjectService       | [createResearcher()](#createresearcher)                   |                                                                                                              |
+| ProjectService       | [createProject()](#createproject)                         | <ul><li>ProjectService:verifyResearcher()</li></ul>                                                          |
+| ProjectService       | [updateProjectInformation()](#updateprojectinformation)   | <ul><li>ProjectService:verifyResearcher()</li><li>ProjectService:verifyProjectInformationDetails()</li></ul> |
+| ProjectService       | [updateProjectSettings()](#updateprojectsettings)         | <ul><li>ProjectService:verifyResearcher()</li><li>ProjectService:verifyProjectSettingsDetails()</li></ul>    |
+| ProjectService       | [listProjects()](#listprojects)                           | <ul><li>UserService::verifyUser()</li><li>UserService::verifyResearcher()</li></ul>                          |
+| ProjectService       | [joinProject()](#joinproject)                             | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| ProjectService       | [getProjectInformation()](#getprojectinformation)         | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| LabelService         | [getProjectLabels()](#getprojectlabels)                   | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| LabelService         | [createLabel()](#createlabel)                             | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li></ul>            |
+| DeviceLibraryService | [listDevices()](#listdevices)                             |                                                                                                              |
 
-## Create User
+## Create User {createuser}
 
 **Description** : Create a new user.
 
@@ -46,17 +46,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   None
+- None
 
 **Postconditions** :
 
--   A new user was successfully created.
--   A new household was successfully created.
--   The new user is part of the new household
+- A new user was successfully created.
+- A new household was successfully created.
+- The new user is part of the new household
 
 **Collaborators** :
 
-## Login User
+## Login User {loginuser}
 
 **Description** : Allow a user to log in.
 
@@ -66,15 +66,15 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User exists and is part of a household.
+- User exists and is part of a household.
 
 **Postconditions** :
 
--   The user is authenticated and logged in.
+- The user is authenticated and logged in.
 
 **Collaborators** :
 
-## Join Household
+## Join Household {joinhousehold}
 
 **Description** : Allow a user to join a household.
 
@@ -84,20 +84,20 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
--   The household to be joined exists.
--   Merging households, if necessary, is successful.
+- User verification is successful.
+- The household to be joined exists.
+- Merging households, if necessary, is successful.
 
 **Postconditions** :
 
--   The user has joined the household.
+- The user has joined the household.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   UserService::mergeHouseholds()
+- UserService::verifyUser()
+- UserService::mergeHouseholds()
 
-## Leave Household
+## Leave Household {leavehousehold}
 
 **Description** : Allow a user to leave a household.
 
@@ -107,20 +107,20 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
--   The user is a member of a household.
--   Splitting households, if necessary, is successful.
+- User verification is successful.
+- The user is a member of a household.
+- Splitting households, if necessary, is successful.
 
 **Postconditions** :
 
--   The user has left the household.
+- The user has left the household.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   UserService::splitHouseholds()
+- UserService::verifyUser()
+- UserService::splitHouseholds()
 
-## Get Household Information
+## Get Household Information {gethouseholdinformation}
 
 **Description** : Retrieve information about a user's household.
 
@@ -130,17 +130,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   Household information is retrieved.
+- Household information is retrieved.
 
 **Collaborators** :
 
--   UserService::verifyUser()
+- UserService::verifyUser()
 
-## Add Device to Household
+## Add Device to Household {adddevicetohousehold}
 
 **Description** : Add a device to a household.
 
@@ -150,20 +150,20 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
--   Device information is provided and valid.
+- User verification is successful.
+- Device information is provided and valid.
 
 **Postconditions** :
 
--   The device is added to the household.
--   The device information is added to the device library.
+- The device is added to the household.
+- The device information is added to the device library.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   DeviceLibraryService::addDeviceInformation()
+- UserService::verifyUser()
+- DeviceLibraryService::addDeviceInformation()
 
-## Update Device Information
+## Update Device Information {updatedeviceinformation}
 
 **Description** : Update information about a device in a household.
 
@@ -173,20 +173,20 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
--   Device information is provided and valid.
+- User verification is successful.
+- Device information is provided and valid.
 
 **Postconditions** :
 
--   The device information is updated.
--   The device information is updated in the device library.
+- The device information is updated.
+- The device information is updated in the device library.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   DeviceLibraryService::updateDeviceInformation()
+- UserService::verifyUser()
+- DeviceLibraryService::updateDeviceInformation()
 
-## Remove Device from Household
+## Remove Device from Household {removedevicefromhousehold}
 
 **Description** : Remove a device from a household.
 
@@ -196,17 +196,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   The device is removed from the household.
+- The device is removed from the household.
 
 **Collaborators** :
 
--   UserService::verifyUser()
+- UserService::verifyUser()
 
-## List Household Devices
+## List Household Devices {listhouseholddevices}
 
 **Description** : Retrieve a list of devices in a household.
 
@@ -216,18 +216,18 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   A list of devices in the household is retrieved.
+- A list of devices in the household is retrieved.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   DeviceLibraryService::findDeviceInformation()
+- UserService::verifyUser()
+- DeviceLibraryService::findDeviceInformation()
 
-## Register Smart Meter Reader
+## Register Smart Meter Reader {registersmartmeterreader}
 
 **Description** : Register a smart meter reader for a user.
 
@@ -237,18 +237,18 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   The smart meter reader is registered.
+- The smart meter reader is registered.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   SmartMeterService::addNewSmartMeter()
+- UserService::verifyUser()
+- SmartMeterService::addNewSmartMeter()
 
-## Remove Smart Meter Reader
+## Remove Smart Meter Reader {removesmartmeterreader}
 
 **Description** : Remove a registered smart meter reader.
 
@@ -258,18 +258,18 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   The smart meter reader is removed.
+- The smart meter reader is removed.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   SmartMeterService::removeSmartMeter()
+- UserService::verifyUser()
+- SmartMeterService::removeSmartMeter()
 
-## Get Smart Meter Data
+## Get Smart Meter Data {getsmartmeterdata}
 
 **Description** : Retrieve smart meter data.
 
@@ -279,17 +279,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   Smart meter data is retrieved.
+- Smart meter data is retrieved.
 
 **Collaborators** :
 
--   UserService::verifyUser()
+- UserService::verifyUser()
 
-## Create Researcher
+## Create Researcher {createresearcher}
 
 **Description** : Create a new researcher.
 
@@ -299,15 +299,15 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   None
+- None
 
 **Postconditions** :
 
--   A new researcher was successfully created.
+- A new researcher was successfully created.
 
 **Collaborators** :
 
-## Create Project
+## Create Project {createproject}
 
 **Description** : Create a new project.
 
@@ -317,17 +317,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   Researcher verification is successful.
+- Researcher verification is successful.
 
 **Postconditions** :
 
--   A new project was successfully created.
+- A new project was successfully created.
 
 **Collaborators** :
 
--   ProjectService:verifyResearcher()
+- ProjectService:verifyResearcher()
 
-## Update Project Information
+## Update Project Information {updateprojectinformation}
 
 **Description** : Update project information.
 
@@ -337,19 +337,19 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   Researcher verification is successful.
--   Project information details are provided and valid.
+- Researcher verification is successful.
+- Project information details are provided and valid.
 
 **Postconditions** :
 
--   Project information is updated.
+- Project information is updated.
 
 **Collaborators** :
 
--   ProjectService:verifyResearcher()
--   ProjectService:verifyProjectInformationDetails()
+- ProjectService:verifyResearcher()
+- ProjectService:verifyProjectInformationDetails()
 
-## Update Project Settings
+## Update Project Settings {updateprojectsettings}
 
 **Description** : Update project settings.
 
@@ -359,19 +359,19 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   Researcher verification is successful.
--   Project settings details are provided and valid.
+- Researcher verification is successful.
+- Project settings details are provided and valid.
 
 **Postconditions** :
 
--   Project settings are updated.
+- Project settings are updated.
 
 **Collaborators** :
 
--   ProjectService:verifyResearcher()
--   ProjectService:verifyProjectSettingsDetails()
+- ProjectService:verifyResearcher()
+- ProjectService:verifyProjectSettingsDetails()
 
-## List Projects
+## List Projects {listprojects}
 
 **Description** : Retrieve a list of projects.
 
@@ -381,19 +381,19 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
--   Researcher verification is successful.
+- User verification is successful.
+- Researcher verification is successful.
 
 **Postconditions** :
 
--   A list of projects is retrieved.
+- A list of projects is retrieved.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   UserService::verifyResearcher()
+- UserService::verifyUser()
+- UserService::verifyResearcher()
 
-## Join Project
+## Join Project {joinproject}
 
 **Description** : Allow a user to join a project.
 
@@ -403,17 +403,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   The user has joined the project.
+- The user has joined the project.
 
 **Collaborators** :
 
--   UserService::verifyUser()
+- UserService::verifyUser()
 
-## Get Project Information
+## Get Project Information {getprojectinformation}
 
 **Description** : Retrieve project information.
 
@@ -423,17 +423,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   Project information is retrieved.
+- Project information is retrieved.
 
 **Collaborators** :
 
--   UserService::verifyUser()
+- UserService::verifyUser()
 
-## Get Project Labels
+## Get Project Labels {getprojectlabels}
 
 **Description** : Retrieve project labels.
 
@@ -443,17 +443,17 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
+- User verification is successful.
 
 **Postconditions** :
 
--   Project labels are retrieved.
+- Project labels are retrieved.
 
 **Collaborators** :
 
--   UserService::verifyUser()
+- UserService::verifyUser()
 
-## Create Label
+## Create Label {createlabel}
 
 **Description** : Create a label.
 
@@ -463,19 +463,19 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   User verification is successful.
--   Device information is provided and valid.
+- User verification is successful.
+- Device information is provided and valid.
 
 **Postconditions** :
 
--   A labeled dataset is created.
+- A labeled dataset is created.
 
 **Collaborators** :
 
--   UserService::verifyUser()
--   DeviceLibraryService::findDeviceInformation()
+- UserService::verifyUser()
+- DeviceLibraryService::findDeviceInformation()
 
-## List Devices
+## List Devices {listdevices}
 
 **Description** : List available devices.
 
@@ -485,10 +485,10 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Preconditions** :
 
--   None
+- None
 
 **Postconditions** :
 
--   A list of available devices is retrieved.
+- A list of available devices is retrieved.
 
 **Collaborators** :
