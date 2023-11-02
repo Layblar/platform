@@ -4,6 +4,10 @@
 
 Detailed overview of the architecture of the Layblar Platform
 
+## System Architecture
+
+<img src="img/architecture.drawio.svg" alt="Layblar System Architecture" style="height: 550px">
+
 ## Domain Model
 
 <!-- <img src="https://layblar.github.io/platform/img/LayblarDomainModel.png" alt="Layblar Domain Model"> -->
