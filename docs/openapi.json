@@ -1,0 +1,656 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "Layblar Platform API",
+    "description" : "This is an **example** API to demonstrate features of the OpenAPI specification.\n# Introduction\nThis API definition is intended to to be a good starting point for describing your API in [OpenAPI/Swagger format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md).\nIt also demonstrates features of the [create-openapi-repo](https://github.com/Redocly/create-openapi-repo) tool and the [Redoc](https://github.com/Redocly/Redoc) documentation engine. Beyond the standard OpenAPI syntax, we use a few  [vendor extensions](https://github.com/Redocly/Redoc/blob/master/docs/redoc-vendor-extensions.md).\n# OpenAPI Specification\nThe goal of The OpenAPI Specification is to define a standard, language-agnostic interface to REST APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can  understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.\n",
+    "contact" : {
+      "name" : "Layblar Documentation",
+      "url" : "https://layblar.github.io/docs"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0",
+    "x-logo" : {
+      "url" : "https://layblar.github.io/layblar_app/img/layblar_logo.png"
+    }
+  },
+  "servers" : [ {
+    "url" : "http://{tenant}/api/v1",
+    "variables" : {
+      "tenant" : {
+        "default" : "localhost:8080"
+      }
+    }
+  } ],
+  "tags" : [ {
+    "name" : "Authorization",
+    "description" : "Authorizaton operations"
+  }, {
+    "name" : "Device-Library",
+    "description" : "Operations about Device Library"
+  }, {
+    "name" : "Household",
+    "description" : "Household Operations"
+  }, {
+    "name" : "Smart-Meter"
+  }, {
+    "name" : "User",
+    "description" : "User Operations"
+  } ],
+  "paths" : {
+    "/auth/login" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LayblarUser"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/auth/register" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "operationId" : "register",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LayblarUser"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/deviceLibrary" : {
+      "get" : {
+        "tags" : [ "Device-Library" ],
+        "summary" : "List all devices",
+        "description" : "Get the complete list of all devices from the device library",
+        "operationId" : "listDevices",
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          },
+          "404" : {
+            "description" : "No devices found"
+          },
+          "200" : {
+            "description" : "List of all devices",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DeviceDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "none" : [ ]
+        } ]
+      }
+    },
+    "/household/{householdId}" : {
+      "get" : {
+        "tags" : [ "Household" ],
+        "operationId" : "getHouseholdInformation",
+        "parameters" : [ {
+          "name" : "householdId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/household/{householdId}/device" : {
+      "get" : {
+        "tags" : [ "Household" ],
+        "operationId" : "listHouseholdDevices",
+        "parameters" : [ {
+          "name" : "householdId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Household" ],
+        "operationId" : "updateDeviceInformation",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeviceDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Household" ],
+        "operationId" : "addDeviceToHousehold",
+        "parameters" : [ {
+          "name" : "householdId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/household/{householdId}/device/{deviceId}" : {
+      "delete" : {
+        "tags" : [ "Household" ],
+        "operationId" : "removeDeviceFromHousehold",
+        "parameters" : [ {
+          "name" : "deviceId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "householdId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/household/{householdId}/merge" : {
+      "post" : {
+        "tags" : [ "Household" ],
+        "operationId" : "joinHousehold",
+        "parameters" : [ {
+          "name" : "householdId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/household/{householdId}/smartMeterReader" : {
+      "post" : {
+        "tags" : [ "Household" ],
+        "operationId" : "registerSmartMeterReader",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SmartMeterDataDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Household" ],
+        "operationId" : "removeSmartMeterReader",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SmartMeterDataDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/household/{householdId}/split" : {
+      "post" : {
+        "tags" : [ "Household" ],
+        "operationId" : "leaveHousehold",
+        "parameters" : [ {
+          "name" : "householdId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/smartmeter/household/{householdId}" : {
+      "get" : {
+        "tags" : [ "Smart-Meter" ],
+        "summary" : "Get Smart-Meter data",
+        "description" : "Get a List of Smart-Meter data from the specified time frame",
+        "operationId" : "getSmartMeterData",
+        "parameters" : [ {
+          "name" : "householdId",
+          "in" : "path",
+          "description" : "The id of the household for which the data should be fetched",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "description" : "The begin of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "description" : "The end of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          },
+          "400" : {
+            "description" : "Missing Query Parameters"
+          },
+          "422" : {
+            "description" : "Wrong Date Format"
+          },
+          "200" : {
+            "description" : "Smart-Meter data for the specified time period",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SmartMeterDataDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "jwt" : [ ]
+        } ]
+      }
+    },
+    "/user/login" : {
+      "post" : {
+        "tags" : [ "User" ],
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/user/logout" : {
+      "post" : {
+        "tags" : [ "User" ],
+        "operationId" : "logout",
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        }
+      }
+    },
+    "/user/register" : {
+      "post" : {
+        "tags" : [ "User" ],
+        "summary" : "Register a new UserAccount",
+        "description" : "Creates a new user and assigns them to a new Household",
+        "operationId" : "createUser",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          },
+          "200" : {
+            "description" : "Smart-Meter data for the specified time period",
+            "content" : { }
+          }
+        },
+        "security" : [ {
+          "jwt" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DeviceDTO" : {
+        "type" : "object",
+        "properties" : {
+          "deviceId" : {
+            "type" : "string"
+          },
+          "deviceName" : {
+            "type" : "string"
+          },
+          "serialNumber" : {
+            "type" : "string"
+          },
+          "powerUsage" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "manufacturer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JsonNode" : {
+        "type" : "object",
+        "properties" : {
+          "empty" : {
+            "type" : "boolean"
+          },
+          "valueNode" : {
+            "type" : "boolean"
+          },
+          "containerNode" : {
+            "type" : "boolean"
+          },
+          "missingNode" : {
+            "type" : "boolean"
+          },
+          "array" : {
+            "type" : "boolean"
+          },
+          "object" : {
+            "type" : "boolean"
+          },
+          "nodeType" : {
+            "$ref" : "#/components/schemas/JsonNodeType"
+          },
+          "pojo" : {
+            "type" : "boolean"
+          },
+          "number" : {
+            "type" : "boolean"
+          },
+          "integralNumber" : {
+            "type" : "boolean"
+          },
+          "floatingPointNumber" : {
+            "type" : "boolean"
+          },
+          "short" : {
+            "type" : "boolean"
+          },
+          "int" : {
+            "type" : "boolean"
+          },
+          "long" : {
+            "type" : "boolean"
+          },
+          "float" : {
+            "type" : "boolean"
+          },
+          "double" : {
+            "type" : "boolean"
+          },
+          "bigDecimal" : {
+            "type" : "boolean"
+          },
+          "bigInteger" : {
+            "type" : "boolean"
+          },
+          "textual" : {
+            "type" : "boolean"
+          },
+          "boolean" : {
+            "type" : "boolean"
+          },
+          "null" : {
+            "type" : "boolean"
+          },
+          "binary" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "JsonNodeType" : {
+        "enum" : [ "ARRAY", "BINARY", "BOOLEAN", "MISSING", "NULL", "NUMBER", "OBJECT", "POJO", "STRING" ],
+        "type" : "string"
+      },
+      "LayblarUser" : {
+        "type" : "object",
+        "properties" : {
+          "userId" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "SmartMeterDataDTO" : {
+        "type" : "object",
+        "properties" : {
+          "time" : {
+            "type" : "string"
+          },
+          "message" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        }
+      },
+      "UserDTO" : {
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "SecurityScheme" : {
+        "type" : "http",
+        "description" : "Authentication",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      },
+      "jwt" : {
+        "type" : "http",
+        "description" : "Authentication",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      },
+      "none" : {
+        "type" : "http",
+        "description" : "No Authentication",
+        "scheme" : "No-Auth"
+      }
+    }
+  }
+}
