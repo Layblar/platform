@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-11-05 - ([Jakob Feistenauer](https://github.com/yescob), [Marcel Nague](https://github.com/marcel-nague))
+
+### Added
+
+- OpenAPI Document Generation
+- Redoc Workflow
+- Gateway
+
 ## 2023-10-31 - ([Jakob Feistenauer](https://github.com/yescob), [Marcel Nague](https://github.com/marcel-nague))
 
 ### Added
