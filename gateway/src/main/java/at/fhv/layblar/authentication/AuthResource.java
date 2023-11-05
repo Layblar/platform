@@ -12,9 +12,12 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Authorization", description = "Authorizaton operations")
 public class AuthResource {
 
     @Inject
@@ -23,8 +26,8 @@ public class AuthResource {
     @POST
     @Path("/register")
     @Transactional
-    public Response register(User user){
-        List<User> matchPointUser = User.find("username", user.username).list();
+    public Response register(LayblarUser user){
+        List<LayblarUser> matchPointUser = LayblarUser.find("username", user.username).list();
         if(matchPointUser.size() != 0){
             return Response.status(403).entity("Username not valid").build();
         }
@@ -35,8 +38,8 @@ public class AuthResource {
 
     @POST
     @Path("/login")
-    public Response login(User user){
-        List<User> matchPointUser = User.find("username", user.username).list();
+    public Response login(LayblarUser user){
+        List<LayblarUser> matchPointUser = LayblarUser.find("username", user.username).list();
         if(matchPointUser.size() != 1 || !matchPointUser.get(0).password.equals(user.password)){
             return Response.status(401).entity("User Markomannen already uses this password").build();
         }

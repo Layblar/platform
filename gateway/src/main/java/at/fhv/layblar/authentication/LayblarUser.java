@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class User extends PanacheEntityBase   {
+public class LayblarUser extends PanacheEntityBase   {
 
     @Id
     public String userId;

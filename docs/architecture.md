@@ -19,6 +19,7 @@ Detailed overview of the architecture of the Layblar Platform
 | -------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | UserService          | [createUser()](#createuser)                               | <ul><li>UserService::createHousehold()</li></ul>                                                             |
 | UserService          | [loginUser()](#loginuser)                                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| UserService          | [logoutUser()](#logoutuser)                                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
 | UserService          | [joinHousehold()](#joinhousehold)                         | <ul><li>UserService::verifyUser()</li><li>UserService::mergeHouseholds()</li></ul>                           |
 | UserService          | [leaveHousehold()](#leavehousehold)                       | <ul><li>UserService::verifyUser()</li><li>UserService::splitHouseholds()</li></ul>                           |
 | UserService          | [getHouseholdInformation()](#gethouseholdinformation)     | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
@@ -75,6 +76,24 @@ Detailed overview of the architecture of the Layblar Platform
 **Postconditions** :
 
 - The user is authenticated and logged in.
+
+**Collaborators** :
+
+## Logout User {logoutuser}
+
+**Description** : Allow a user to log out.
+
+**Operation** : logoutUser()
+
+**Returns** : Success status
+
+**Preconditions** :
+
+- User is logged in with a valid token.
+
+**Postconditions** :
+
+- The user is logged out and the token deleted.
 
 **Collaborators** :
 

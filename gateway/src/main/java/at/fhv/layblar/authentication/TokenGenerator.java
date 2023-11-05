@@ -14,7 +14,7 @@ public class TokenGenerator {
     @ConfigProperty(name = "mp.jwt.verify.issuer")
     private String ISSUER;
 
-    public String generateToken(User user){
+    public String generateToken(LayblarUser user){
         return Jwt.issuer(ISSUER)
         .claim("user", user.username)
         .subject(user.userId)
