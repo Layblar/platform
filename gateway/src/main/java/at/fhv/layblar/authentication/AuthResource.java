@@ -1,4 +1,4 @@
-package at.fhv.matchpoint.apigateway.authentication;
+package at.fhv.layblar.authentication;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

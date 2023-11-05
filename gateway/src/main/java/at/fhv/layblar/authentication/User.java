@@ -1,4 +1,4 @@
-package at.fhv.matchpoint.apigateway.authentication;
+package at.fhv.layblar.authentication;
 
 import java.util.List;
 
