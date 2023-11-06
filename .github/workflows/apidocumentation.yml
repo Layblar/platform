@@ -18,10 +18,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Make gradlew executable
-        run: chmod +x ./${{env.Directory }}/gradlew
+        run: chmod +x ./gateway/gradlew
 
       - name: Run gradle build
-        run: ./${{env.Directory }}/gradlew -p ./${{env.Directory }} build 
+        run: ./gateway/gradlew -p ./gateway build 
       - name: Commit new Openapi YML and JSON
         run: |
           git config --global user.name 'Yescob'
