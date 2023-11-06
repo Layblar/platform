@@ -1,11 +1,11 @@
-name: Build & publish
+name: gateway
 on:
   push:
     branches: [ "main" ]
-    paths: ./gateway/**
+    paths: ./${{ GITHUB_WORKFLOW }}/**
 
 env:
-  Directory: gateway
+  Directory: ${{ GITHUB_WORKFLOW }}
 
 jobs:
   build_and_push_to_registry:
