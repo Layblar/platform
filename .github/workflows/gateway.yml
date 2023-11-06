@@ -24,7 +24,7 @@ jobs:
         run: chmod +x ./${{env.Directory }}/gradlew
 
       - name: Run gradle build
-        run: ./${{env.Directory }}/gradlew build
+        run: ./${{env.Directory }}/gradlew -p ./${{env.Directory }} build 
       
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
