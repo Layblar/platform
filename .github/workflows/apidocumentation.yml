@@ -1,0 +1,30 @@
+name: Generate API Documentation
+on: 
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  generate-api-documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./${{env.Directory }}/gradlew
+
+      - name: Run gradle build
+        run: ./${{env.Directory }}/gradlew -p ./${{env.Directory }} build 
+      - name: Commit new Openapi YML and JSON
+        run: |
+          git config --global user.name 'Yescob'
+          git config --global user.email 'yescob@users.noreply.github.com'
+          git commit -am "Automated API Documentation"
+          git push
