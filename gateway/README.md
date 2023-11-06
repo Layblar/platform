@@ -1,6 +1,5 @@
 # gateway
 
-Test for CICD
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
