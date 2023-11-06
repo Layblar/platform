@@ -2,7 +2,7 @@ name: Build & publish
 on:
   push:
     branches: [ "main" ]
-    paths: :/gateway/**
+    paths: :./gateway/**
 
 env:
   Directory: gateway
