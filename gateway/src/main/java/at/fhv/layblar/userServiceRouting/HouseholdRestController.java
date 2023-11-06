@@ -1,11 +1,18 @@
 package at.fhv.layblar.userServiceRouting;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
+import at.fhv.layblar.userServiceRouting.model.HouseholdDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;
@@ -14,6 +21,8 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 //@Authenticated
@@ -30,55 +39,105 @@ public class HouseholdRestController {
 
     @POST
     @Path("/{householdId}/merge")
-    Uni<Response> joinHousehold(@PathParam("householdId") String householdId){
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "Your household", responseCode = "200")
+    @Operation(summary = "Merge household", description = "Join given household")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> joinHousehold(
+            @Parameter(description = "The id of the household that should be merged", required = true) @PathParam("householdId") String householdId) {
         return restClient.joinHousehold(householdId);
     }
 
     @POST
     @Path("/{householdId}/split")
-    Uni<Response> leaveHousehold(@PathParam("householdId") String householdId){
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "Your household", responseCode = "200")
+    @Operation(summary = "Split household", description = "Leave given household")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> leaveHousehold(
+            @Parameter(description = "The id of the household that should be split", required = true) @PathParam("householdId") String householdId) {
         return restClient.leaveHousehold(householdId);
     }
 
     @GET
     @Path("/{householdId}")
-    Uni<Response> getHouseholdInformation(@PathParam("householdId") String householdId){
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get household information", description = "Get information about the given household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "Household with the given id", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> getHouseholdInformation(
+            @Parameter(description = "The id of the household for which the data should be fetched", required = true) @PathParam("householdId") String householdId) {
         return restClient.getHouseholdInformation(householdId);
     }
 
     @POST
-    @Path("/{householdId}/device")
-    Uni<Response> addDeviceToHousehold(@PathParam("householdId") String householdId, @PathParam("deviceId") String deviceId){
+    @Path("/{householdId}/device/{deviceId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add device to household", description = "Add device to household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "The household with the added device", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> addDeviceToHousehold(
+            @Parameter(description = "The id of the household to which the device should be added", required = true) @PathParam("householdId") String householdId,
+            @Parameter(description = "The id of the device that should be added to the household", required = true) @PathParam("deviceId") String deviceId) {
         return restClient.addDeviceToHousehold(householdId, deviceId);
     }
 
     @PUT
     @Path("/{householdId}/device")
-    Uni<Response> updateDeviceInformation(DeviceDTO device){
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update device information", description = "Update device information")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = DeviceDTO.class)), description = "The updated device", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> updateDeviceInformation(
+            @Parameter(description = "The device object based on the DeviceDTO that should be updated", required = true) DeviceDTO device) {
         return restClient.updateDeviceInformation(device);
     }
 
     @DELETE
     @Path("/{householdId}/device/{deviceId}")
-    Uni<Response> removeDeviceFromHousehold(@PathParam("householdId") String householdId, @PathParam("deviceId") String deviceId){
-        return restClient.removeDeviceFromHousehold(householdId, deviceId);}
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove device from household", description = "Remove device from household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "The household without the removed device", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> removeDeviceFromHousehold(
+            @Parameter(description = "The id of the household from which the device should be removed", required = true) @PathParam("householdId") String householdId,
+            @Parameter(description = "The id of the device that should be removed from the household", required = true) @PathParam("deviceId") String deviceId) {
+        return restClient.removeDeviceFromHousehold(householdId, deviceId);
+    }
 
     @GET
     @Path("/{householdId}/device")
-    Uni<Response> listHouseholdDevices(@PathParam("householdId") String householdId){
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "List household devices", description = "List household devices")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = DeviceDTO.class)), description = "List of all devices in the household", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> listHouseholdDevices(
+            @Parameter(description = "The id of the household for which the data should be fetched", required = true) @PathParam("householdId") String householdId) {
         return restClient.listHouseholdDevices(householdId);
     }
 
     @POST
     @Path("/{householdId}/smartMeterReader")
-    Uni<Response> registerSmartMeterReader(SmartMeterDataDTO smartMeter){
-        return restClient.registerSmartMeterReader(smartMeter);
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Register smart meter reader", description = "Register smart meter reader in given household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "The household with the added smart meter reader", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> registerSmartMeterReader(
+            @Parameter(description = "The id of the household to which the smart meter reader should be added", required = true) @PathParam("householdId") String householdId,
+            @Parameter(description = "The smart meter reader object based on the SmartMeterDataDTO that should be added", required = true) SmartMeterDataDTO smartMeter) {
+        return restClient.registerSmartMeterReader(householdId, smartMeter);
     }
 
     @DELETE
     @Path("/{householdId}/smartMeterReader")
-    Uni<Response> removeSmartMeterReader(SmartMeterDataDTO smartMeter){
-        return restClient.removeSmartMeterReader(smartMeter);
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove smart meter reader", description = "Remove smart meter reader from given household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "The household without the removed smart meter reader", responseCode = "200")
+    @SecurityRequirement(name = "jwt")
+    Uni<Response> removeSmartMeterReader(
+            @Parameter(description = "The id of the household from which the smart meter reader should be removed", required = true) @PathParam("householdId") String householdId,
+            @Parameter(description = "The smart meter reader object based on the SmartMeterDataDTO that should be removed", required = true) SmartMeterDataDTO smartMeter) {
+        return restClient.removeSmartMeterReader(householdId, smartMeter);
     }
-    
+
 }

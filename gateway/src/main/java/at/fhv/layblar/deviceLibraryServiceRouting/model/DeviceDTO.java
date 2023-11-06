@@ -7,5 +7,5 @@ public class DeviceDTO {
     public String serialNumber;
     public Float powerUsage;
     public String manufacturer;
-    
+
 }

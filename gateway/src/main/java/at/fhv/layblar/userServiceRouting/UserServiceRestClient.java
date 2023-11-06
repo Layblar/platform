@@ -44,8 +44,9 @@ public interface UserServiceRestClient {
     Uni<Response> getHouseholdInformation(@PathParam("householdId") String householdId);
 
     @POST
-    @Path("/household/{householdId}/device")
-    Uni<Response> addDeviceToHousehold(@PathParam("householdId") String householdId, @PathParam("deviceId") String deviceId);
+    @Path("/household/{householdId}/device/{deviceId}")
+    Uni<Response> addDeviceToHousehold(@PathParam("householdId") String householdId,
+            @PathParam("deviceId") String deviceId);
 
     @PUT
     @Path("/household/{householdId}/device")
@@ -53,7 +54,8 @@ public interface UserServiceRestClient {
 
     @DELETE
     @Path("/household/{householdId}/device/{deviceId}")
-    Uni<Response> removeDeviceFromHousehold(@PathParam("householdId") String householdId, @PathParam("deviceId") String deviceId);
+    Uni<Response> removeDeviceFromHousehold(@PathParam("householdId") String householdId,
+            @PathParam("deviceId") String deviceId);
 
     @GET
     @Path("/household/{householdId}/device")
@@ -61,11 +63,10 @@ public interface UserServiceRestClient {
 
     @POST
     @Path("household/{householdId}/smartMeterReader")
-    Uni<Response> registerSmartMeterReader(SmartMeterDataDTO smartMeter);
+    Uni<Response> registerSmartMeterReader(@PathParam("householdId") String householdId, SmartMeterDataDTO smartMeter);
 
     @DELETE
     @Path("household/{householdId}/smartMeterReader")
-    Uni<Response> removeSmartMeterReader(SmartMeterDataDTO smartMeter);
-
+    Uni<Response> removeSmartMeterReader(@PathParam("householdId") String householdId, SmartMeterDataDTO smartMeter);
 
 }

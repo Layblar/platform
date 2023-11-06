@@ -16,6 +16,7 @@ public interface SmartMeterServiceRestClient {
 
     @GET
     @Path("household/{householdId}")
-    Uni<Response> getSmartMeterData(@PathParam("householdId") String householdId, @QueryParam("from") String from, @QueryParam("to") String to);
-    
+    Uni<Response> getSmartMeterData(@PathParam("householdId") String householdId, @QueryParam("from") String from,
+            @QueryParam("to") String to);
+
 }

@@ -13,5 +13,5 @@ public interface DeviceLibraryServiceRestClient {
 
     @GET
     Uni<Response> listDevices();
-    
+
 }

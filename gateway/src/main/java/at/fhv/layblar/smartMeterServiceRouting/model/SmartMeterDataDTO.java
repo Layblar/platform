@@ -6,5 +6,5 @@ public class SmartMeterDataDTO {
 
     public String time;
     public JsonNode message;
-        
+
 }

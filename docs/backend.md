@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-11-06 - ([Marcel Nague](https://github.com/marcel-nague))
+
+### Added
+
+- Finalised responses in gateway
+
 ## 2023-11-05 - ([Jakob Feistenauer](https://github.com/yescob), [Marcel Nague](https://github.com/marcel-nague))
 
 ### Added

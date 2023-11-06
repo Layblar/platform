@@ -19,13 +19,10 @@ import io.smallrye.mutiny.Uni;
 
 //@Authenticated
 @Path("deviceLibrary")
-@Tag(name="Device-Library", description = "Operations about Device Library")
-@APIResponse(
-    responseCode = "401", description = "Unauthorized")
-@APIResponse(
-    responseCode = "403", description = "Invalid User")
-@APIResponse(
-    responseCode = "500", description = "Server Error")
+@Tag(name = "Device-Library", description = "Operations about Device Library")
+@APIResponse(responseCode = "401", description = "Unauthorized")
+@APIResponse(responseCode = "403", description = "Invalid User")
+@APIResponse(responseCode = "500", description = "Server Error")
 public class DeviceLibraryServiceController {
 
     @Inject

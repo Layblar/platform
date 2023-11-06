@@ -11,7 +11,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponseSchema;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -21,7 +20,7 @@ import io.smallrye.mutiny.Uni;
 
 //@Authenticated
 @Path("smartmeter")
-@Tag(name = "Smart-Meter")
+@Tag(name = "Smart-Meter", description = "Operations about Smart-Meter data")
 @APIResponse(responseCode = "401", description = "Unauthorized")
 @APIResponse(responseCode = "403", description = "Invalid User")
 @APIResponse(responseCode = "500", description = "Server Error")
