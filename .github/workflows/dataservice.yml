@@ -2,7 +2,7 @@ name: Build & Publish Dataservice
 on:
   push:
     branches: [ "main" ]
-    paths: ./dataservice/**
+    paths: dataservice/**
 
 env:
   Directory: dataservice

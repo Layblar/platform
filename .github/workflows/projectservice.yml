@@ -2,7 +2,7 @@ name: Build & Publish Projectservice
 on:
   push:
     branches: [ "main" ]
-    paths: ./projectservice/**
+    paths: projectservice/**
 
 env:
   Directory: projectservice

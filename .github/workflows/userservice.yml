@@ -2,7 +2,7 @@ name: Build & Publish Userservice
 on:
   push:
     branches: [ "main" ]
-    paths: ./userservice/**
+    paths: userservice/**
 
 env:
   Directory: userservice

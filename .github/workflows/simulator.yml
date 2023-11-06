@@ -2,7 +2,7 @@ name: Build & Publish Simulator
 on:
   push:
     branches: [ "main" ]
-    paths: ./smart-meter-simulator/**
+    paths: smart-meter-simulator/**
 
 env:
   Directory: smart-meter-simulator

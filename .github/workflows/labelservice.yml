@@ -2,7 +2,7 @@ name: Build & Publish Labelservice
 on:
   push:
     branches: [ "main" ]
-    paths: ./labelservice/**
+    paths: labelservice/**
 
 env:
   Directory: labelservice
