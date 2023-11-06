@@ -2,7 +2,6 @@ name: Build & publish
 on:
   push:
     branches: [ "main" ]
-    paths: gateway/**
 
 env:
   Directory: gateway
@@ -25,7 +24,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Run gradle build
-        run: ./gradlew :${{ env.Directory }}:build
+        run: ./${{env.Directory }}/gradlew build
       
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
