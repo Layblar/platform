@@ -4,7 +4,7 @@ on:
     branches: [ "main" ]
 
 env:
-  Directory: ${{ GITHUB_WORKFLOW }}
+  Directory: $GITHUB_WORKFLOW
 
 jobs:
   build_and_push_to_registry:
