@@ -1,11 +1,11 @@
-name: Build & Publish Gateway
+name: Build & Publish Simulator
 on:
   push:
     branches: [ "main" ]
-    paths: ./gateway/**
+    paths: ./smart-meter-simulator/**
 
 env:
-  Directory: gateway
+  Directory: smart-meter-simulator
 
 jobs:
   build_and_push_to_registry:

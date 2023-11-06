@@ -1,11 +1,11 @@
-name: Build & Publish Gateway
+name: Build & Publish Labelservice
 on:
   push:
     branches: [ "main" ]
-    paths: ./gateway/**
+    paths: ./labelservice/**
 
 env:
-  Directory: gateway
+  Directory: labelservice
 
 jobs:
   build_and_push_to_registry:

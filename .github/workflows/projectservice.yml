@@ -1,11 +1,11 @@
-name: Build & Publish Gateway
+name: Build & Publish Projectservice
 on:
   push:
     branches: [ "main" ]
-    paths: ./gateway/**
+    paths: ./projectservice/**
 
 env:
-  Directory: gateway
+  Directory: projectservice
 
 jobs:
   build_and_push_to_registry:

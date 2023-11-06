@@ -50,7 +50,7 @@ public interface UserServiceRestClient {
 
     @PUT
     @Path("/household/{householdId}/device")
-    Uni<Response> updateDeviceInformation(DeviceDTO device);
+    Uni<Response> updateDeviceInformation(String householdId, DeviceDTO device);
 
     @DELETE
     @Path("/household/{householdId}/device/{deviceId}")

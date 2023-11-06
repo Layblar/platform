@@ -37,7 +37,7 @@ public class UserRestController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The registered user", responseCode = "200")
     @Operation(summary = "Register a new UserAccount", description = "Creates a new user and assigns them to a new Household")
     @SecurityRequirement(name = "none")
-    Uni<Response> createUser(
+    public Uni<Response> createUser(
             @Parameter(description = "The user object based on the UserDTO that should be registered", required = true) UserDTO user) {
         return restClient.createUser(user);
     }
@@ -48,7 +48,7 @@ public class UserRestController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The logged in user", responseCode = "200")
     @Operation(summary = "Login", description = "Login with given credentials")
     @SecurityRequirement(name = "none")
-    Uni<Response> login(
+    public Uni<Response> loginUser(
             @Parameter(description = "The user object based on the UserDTO that should be logged in", required = true) UserDTO user) {
         return restClient.login(user);
     }
@@ -59,7 +59,7 @@ public class UserRestController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The logged out user", responseCode = "200")
     @Operation(summary = "Logout", description = "Logout with given credentials")
     @SecurityRequirement(name = "jwt")
-    Uni<Response> logout() {
+    public Uni<Response> logoutUser() {
         return restClient.logout();
     }
 

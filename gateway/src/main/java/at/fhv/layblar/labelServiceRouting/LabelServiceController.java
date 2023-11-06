@@ -40,7 +40,7 @@ public class LabelServiceController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = LabelDTO.class)), description = "Label by id", responseCode = "200")
     @Operation(summary = "Returns a Label", description = "Returns the Label with the specified id")
     @SecurityRequirement(name = "jwt")
-    Uni<Response> getLabel(
+    public Uni<Response> getLabel(
             @Parameter(description = "The id of the label for which the data should be fetched", required = true) @PathParam("labelId") String labelId) {
         return restClient.getLabel(labelId);
     }
@@ -53,7 +53,7 @@ public class LabelServiceController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = LabelDTO.class)), description = "Labels for the specified time period", responseCode = "200")
     @Operation(summary = "Get Labels", description = "Get a List of Labels from the specified time frame")
     @SecurityRequirement(name = "jwt")
-    Uni<Response> getProjectLabels(
+    public Uni<Response> getProjectLabels(
             @Parameter(description = "The id of the project for which the data should be fetched", required = true) @PathParam("projectId") String projectId,
             @Parameter(description = "The begin of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = false) @QueryParam("from") String from,
             @Parameter(description = "The end of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = false) @QueryParam("to") String to) {
@@ -66,7 +66,7 @@ public class LabelServiceController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = LabelDTO.class)), description = "The created label", responseCode = "200")
     @Operation(summary = "Create a Label", description = "Create a Label")
     @SecurityRequirement(name = "jwt")
-    Uni<Response> createLabel(
+    public Uni<Response> createLabel(
             @Parameter(description = "The label object based on the LabelDTO that should be created", required = true) LabelDTO label) {
         return restClient.createLabel(label);
     }
