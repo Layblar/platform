@@ -2,7 +2,6 @@ name: gateway
 on:
   push:
     branches: [ "main" ]
-    paths: ./${{ GITHUB_WORKFLOW }}/**
 
 env:
   Directory: ${{ GITHUB_WORKFLOW }}
