@@ -26,7 +26,7 @@
   } ],
   "tags" : [ {
     "name" : "Authorization",
-    "description" : "Authorizaton operations"
+    "description" : "Authorizaton operations. Use these Endpoints to get a valid JWT for the Layblar Platform."
   }, {
     "name" : "Device-Library",
     "description" : "Operations about Device Library"
