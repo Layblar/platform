@@ -23,19 +23,7 @@ jobs:
       - name: Run gradle build
         run: ./gateway/gradlew -p ./gateway build 
 
-      - name: Check for changes in API documentation
-        id: check-changes
-        run: |
-          if git diff-index --quiet HEAD --; then
-            echo "No changes to commit."
-            echo "::set-output name=changes::false"
-          else
-            echo "Changes detected."
-            echo "::set-output name=changes::true"
-          fi
-
       - name: Commit new OpenAPI YML and JSON
-        if: steps.check-changes.outputs.changes == 'true'
         run: |
           git config --global user.name 'Yescob'
           git config --global user.email 'yescob@users.noreply.github.com'
