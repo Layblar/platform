@@ -30,8 +30,8 @@ public class MeterDataResource {
         @QueryParam("from") String from,
         @QueryParam("to") String to) {
 
-        LocalDateTime fromDate = Instant.parse(from).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime toDate = Instant.parse(from).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime fromDate = Instant.ofEpochSecond(Long.parseLong(from)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime toDate = Instant.ofEpochSecond(Long.parseLong(to)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         return Response.ok().entity(meterDataRepository.find("time between ?1 and ?2", fromDate, toDate).list()).build();
 

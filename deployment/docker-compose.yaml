@@ -37,7 +37,7 @@ services:
 
   layblar-smart-meter-service:
     container_name: layblar-smart-meter-service
-    image: jfe7727/layblar-dataservice:main
+    image: jfe7727/layblar-smartmeterservice:main
     depends_on:
       - timescaledb
       - rabbit
