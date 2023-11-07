@@ -606,6 +606,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SmartMeterDataDTO'
+              examples:
+                smart-meter-data:
+                  value: "\"1.7.0\": \"160\",\r\n      \"1.8.0\": \"1137778\",\r\n\
+                    \      \"2.7.0\": \"0\",\r\n      \"2.8.0\": \"0\",\r\n      \"\
+                    3.8.0\": \"3837\",\r\n      \"4.8.0\": \"717727\",\r\n      \"\
+                    16.7.0\": \"160\",\r\n      \"31.7.0\": \"1.03\",\r\n      \"\
+                    32.7.0\": \"229.80\",\r\n      \"51.7.0\": \"0.42\",\r\n     \
+                    \ \"52.7.0\": \"229.00\",\r\n      \"71.7.0\": \"0.17\",\r\n \
+                    \     \"72.7.0\": \"229.60\",\r\n      \"uptime\": \"0000:01:49:41\"\
+                    ,\r\n      \"timestamp\": \"2023-05-06T11:15:40\",\r\n      \"\
+                    sensorId\": \"0951751081575145\""
       security:
       - jwt: []
   /user/login:
@@ -715,65 +726,6 @@ components:
           type: number
         manufacturer:
           type: string
-    JsonNode:
-      type: object
-      properties:
-        empty:
-          type: boolean
-        valueNode:
-          type: boolean
-        containerNode:
-          type: boolean
-        missingNode:
-          type: boolean
-        array:
-          type: boolean
-        object:
-          type: boolean
-        nodeType:
-          $ref: '#/components/schemas/JsonNodeType'
-        pojo:
-          type: boolean
-        number:
-          type: boolean
-        integralNumber:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        short:
-          type: boolean
-        int:
-          type: boolean
-        long:
-          type: boolean
-        float:
-          type: boolean
-        double:
-          type: boolean
-        bigDecimal:
-          type: boolean
-        bigInteger:
-          type: boolean
-        textual:
-          type: boolean
-        boolean:
-          type: boolean
-        "null":
-          type: boolean
-        binary:
-          type: boolean
-    JsonNodeType:
-      enum:
-      - ARRAY
-      - BINARY
-      - BOOLEAN
-      - MISSING
-      - "NULL"
-      - NUMBER
-      - OBJECT
-      - POJO
-      - STRING
-      type: string
     LabelDTO:
       type: object
       properties:
@@ -802,13 +754,57 @@ components:
           type: array
           items:
             type: string
+    LocalDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50
     SmartMeterDataDTO:
+      description: Smart Meter Data
       type: object
       properties:
         time:
+          $ref: '#/components/schemas/LocalDateTime'
+        sensorId:
           type: string
-        message:
-          $ref: '#/components/schemas/JsonNode'
+        "1.7.0":
+          format: float
+          type: number
+        "1.8.0":
+          format: float
+          type: number
+        "2.7.0":
+          format: float
+          type: number
+        "2.8.0":
+          format: float
+          type: number
+        "3.8.0":
+          format: float
+          type: number
+        "4.8.0":
+          format: float
+          type: number
+        "16.7.0":
+          format: float
+          type: number
+        "31.7.0":
+          format: float
+          type: number
+        "32.7.0":
+          format: float
+          type: number
+        "51.7.0":
+          format: float
+          type: number
+        "52.7.0":
+          format: float
+          type: number
+        "71.7.0":
+          format: float
+          type: number
+        "72.7.0":
+          format: float
+          type: number
     UserDTO:
       type: object
       properties:
