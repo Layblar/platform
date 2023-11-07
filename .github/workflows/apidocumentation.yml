@@ -22,7 +22,8 @@ jobs:
 
       - name: Run gradle build
         run: ./gateway/gradlew -p ./gateway build 
-      - name: Commit new Openapi YML and JSON
+
+      - name: Commit new OpenAPI YML and JSON
         run: |
           git config --global user.name 'Yescob'
           git config --global user.email 'yescob@users.noreply.github.com'
