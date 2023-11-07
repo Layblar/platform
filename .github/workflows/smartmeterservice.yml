@@ -1,11 +1,11 @@
-name: Build & Publish Dataservice
+name: Build & Publish Smart-Meter-Service
 on:
   push:
     branches: [ "main" ]
-    paths: dataservice/**
+    paths: smartmeterservice/**
 
 env:
-  Directory: dataservice
+  Directory: smartmeterservice
 
 jobs:
   build_and_push_to_registry:
