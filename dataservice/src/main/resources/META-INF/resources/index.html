@@ -19,7 +19,7 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    var source = new EventSource("/data");
+    var source = new EventSource("/data/stream");
     var quoteList = document.getElementById("quoteList");
 
     source.onmessage = (event) => {

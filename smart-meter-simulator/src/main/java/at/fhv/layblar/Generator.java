@@ -2,6 +2,9 @@ package at.fhv.layblar;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -10,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -18,6 +22,7 @@ public class Generator {
 
     @Channel("meter-data")
     Emitter<MeterDataReading> emitter;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public void sendMeterData() throws InterruptedException {
 
@@ -29,7 +34,10 @@ public class Generator {
     
                 while (parser.nextToken() != null) {
                     if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
-                        emitter.send(getMeterDataFromJson(parser));
+                        MeterDataReading mdr = getMeterDataFromJson(parser);
+                        // Set timestamp of reading to current LocalDateTime
+                        mdr.timestamp = LocalDateTime.now().format(formatter);
+                        emitter.send(mdr);
                         Thread.sleep(5000);
                     }
                 }
@@ -41,11 +49,11 @@ public class Generator {
 
     private MeterDataReading getMeterDataFromJson(JsonParser parser) throws JsonProcessingException, IllegalArgumentException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.treeToValue(processJsonObject(parser), MeterDataReading.class);
+        return mapper.treeToValue(processJsonObject(parser).get("message"), MeterDataReading.class);
     }
 
     private static ObjectNode processJsonObject(JsonParser parser) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         ObjectNode jsonObject = objectMapper.createObjectNode();
 
         while (parser.nextToken() != JsonToken.END_OBJECT) {
