@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.Response;
 public interface SmartMeterServiceRestClient {
 
     @GET
-    @Path("household/{householdId}")
+    @Path("/household/{householdId}")
     Uni<Response> getSmartMeterData(@PathParam("householdId") String householdId, @QueryParam("from") String from,
             @QueryParam("to") String to);
 
