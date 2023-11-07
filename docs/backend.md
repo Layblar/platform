@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-11-07 - ([Jakob Feistenauer](https://github.com/yescob))
+
+### Added
+
+- Additional Services
+- Local Docker Deployment
+
+## 2023-11-06 - ([Jakob Feistenauer](https://github.com/yescob))
+
+### Added
+
+- CI/CD for Docker Images
+
 ## 2023-11-06 - ([Marcel Nague](https://github.com/marcel-nague))
 
 ### Added
