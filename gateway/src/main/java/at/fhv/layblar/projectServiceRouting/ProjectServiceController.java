@@ -26,10 +26,12 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Tag(name = "Project", description = "Operations regarding Project management")
+
 @APIResponse(responseCode = "401", description = "Unauthorized")
 @APIResponse(responseCode = "403", description = "Invalid User")
 @APIResponse(responseCode = "500", description = "Server Error")
+@Path("/project")
+@Tag(name = "Project", description = "Operations regarding Project management")
 public class ProjectServiceController {
 
     @Inject
