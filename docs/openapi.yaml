@@ -1060,39 +1060,57 @@ components:
           type: number
         "1.8.0":
           format: float
+          description: This is the total positive active energy in watt-hours consumed
+            or generated from Phase A.
           type: number
         "2.7.0":
           format: float
+          description: This is the current negative active power in watts measured
+            from Phase A. This could indicate generated energy.
           type: number
         "2.8.0":
           format: float
+          description: This is the total negative active energy in watt-hours consumed
+            or generated from Phase A.
           type: number
         "3.8.0":
           format: float
+          description: This is the total positive reactive energy in var-hours consumed
+            or generated from Phase A.
           type: number
         "4.8.0":
           format: float
+          description: This is the total negative reactive energy in var-hours consumed
+            or generated from Phase A
           type: number
         "16.7.0":
           format: float
+          description: This is the difference between positive and negative active
+            instantaneous power in watts from Phase A.
           type: number
         "31.7.0":
           format: float
+          description: This is the current in amperes flowing in Phase L1.
           type: number
         "32.7.0":
           format: float
+          description: This is the instantaneous voltage in volts in Phase L1.
           type: number
         "51.7.0":
           format: float
+          description: This is the current in amperes flowing in Phase L2.
           type: number
         "52.7.0":
           format: float
+          description: This is the instantaneous voltage in volts in Phase L2.
           type: number
         "71.7.0":
           format: float
+          description: This is the current in amperes flowing in Phase L3.
           type: number
         "72.7.0":
           format: float
+          description: This is the instantaneous voltage in volts in Phase L3.
           type: number
     UserDTO:
       type: object
