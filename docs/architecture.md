@@ -7,6 +7,7 @@ Detailed overview of the architecture of the Layblar Platform
 ## System Architecture
 
 <img src="img/architecture.drawio.svg" alt="Layblar System Architecture" style="height: 550px">
+<img src="img/LayblarServiceArchitecture.drawio.svg" alt="Layblar Microservice Architecture" style="height: 550px">
 
 ## Domain Model
 
