@@ -13,7 +13,7 @@
     },
     "version" : "1.0.0",
     "x-logo" : {
-      "url" : "https://layblar.github.io/layblar_app/img/layblar_logo.png"
+      "url" : "https://layblar.github.io/docs/img/layblarlogo.svg"
     }
   },
   "servers" : [ {
