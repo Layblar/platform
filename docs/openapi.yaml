@@ -28,6 +28,8 @@ tags:
   description: Household Operations
 - name: Label
   description: Operations for labeling
+- name: Project
+  description: Operations regarding Project management
 - name: Smart-Meter
   description: Operations about Smart-Meter data
 - name: User
@@ -559,6 +561,272 @@ paths:
                     type: string
       security:
       - jwt: []
+  /project/project:
+    get:
+      tags:
+      - Project
+      summary: List all Projects
+      description: List all Projects
+      operationId: listProjects
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: List of all projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectDTO'
+      security:
+      - jwt: []
+    post:
+      tags:
+      - Project
+      summary: Create a Project
+      description: Create a new Project
+      operationId: createProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: The created project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  startDate:
+                    type: string
+                  endDate:
+                    type: string
+                  researcherId:
+                    type: string
+      security:
+      - jwt: []
+  /project/project/{projectId}:
+    get:
+      tags:
+      - Project
+      summary: Get a Project
+      description: Get a Project
+      operationId: getProject
+      parameters:
+      - name: projectId
+        in: path
+        description: The ID of the project to get
+        required: true
+        schema:
+          type: string
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: Project by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  startDate:
+                    type: string
+                  endDate:
+                    type: string
+                  researcherId:
+                    type: string
+      security:
+      - jwt: []
+    put:
+      tags:
+      - Project
+      summary: Update a Project
+      description: Update a Project
+      operationId: updateProject
+      parameters:
+      - name: projectId
+        in: path
+        description: The ID of the project to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: The updated project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  startDate:
+                    type: string
+                  endDate:
+                    type: string
+                  researcherId:
+                    type: string
+      security:
+      - jwt: []
+  /project/project/{projectId}/join:
+    post:
+      tags:
+      - Project
+      summary: Join a Project
+      description: Join a Project
+      operationId: joinProject
+      parameters:
+      - name: projectId
+        in: path
+        description: The ID of the project to join
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: The joined Project Information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectDTO'
+      security:
+      - jwt: []
+  /project/project/{projectId}/label:
+    get:
+      tags:
+      - Project
+      summary: Get Labels for a Project
+      description: Get Labels for a Project
+      operationId: getProjectLabels
+      parameters:
+      - name: projectId
+        in: path
+        description: The ID of the project to get labels for
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: The begin of the time intervall for which the data should be
+          fetched. Needs to be a Unix Timestamp as String
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The end of the time intervall for which the data should be fetched.
+          Needs to be a Unix Timestamp as String
+        required: false
+        schema:
+          type: string
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: Labels for the specified time period for given project
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LabelDTO'
+      security:
+      - jwt: []
+  /project/researcher}:
+    post:
+      tags:
+      - Project
+      summary: Create a Researcher
+      description: Create a new Researcher
+      operationId: createResearcher
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResearcherDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: The created researcher
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  organization:
+                    type: string
+      security:
+      - jwt: []
   /smartmeter/household/{householdId}:
     get:
       tags:
@@ -747,16 +1015,48 @@ components:
       format: date-time
       type: string
       example: 2022-03-10T12:15:50
+    ProjectDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        researcherId:
+          type: string
+    ResearcherDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organization:
+          type: string
     SmartMeterDataDTO:
       description: Smart Meter Data
       type: object
       properties:
         time:
-          $ref: '#/components/schemas/LocalDateTime'
-        sensorId:
+          description: Time at which Smart-Meter data was recored
           type: string
+          allOf:
+          - $ref: '#/components/schemas/LocalDateTime'
+          example: 2023-05-06T11:15:40
+        sensorId:
+          description: Id of the Smart-Meter that recored the meassurement
+          type: string
+          example: 123MF34FBDKAS
         "1.7.0":
           format: float
+          description: This is the current positive active power in watts measured
+            from Phase A.
           type: number
         "1.8.0":
           format: float
