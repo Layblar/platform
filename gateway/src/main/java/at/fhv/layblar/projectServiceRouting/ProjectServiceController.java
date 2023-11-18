@@ -39,7 +39,7 @@ public class ProjectServiceController {
     ProjectServiceRestClient restClient;
 
     @POST
-    @Path("/researcher}")
+    @Path("/researcher")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ResearcherDTO.class)), description = "The created researcher", responseCode = "200")
     @Operation(summary = "Create a Researcher", description = "Create a new Researcher")
@@ -84,19 +84,6 @@ public class ProjectServiceController {
     }
 
     @GET
-    @Path("/project/{projectId}/label")
-    @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = LabelDTO.class)), description = "Labels for the specified time period for given project", responseCode = "200")
-    @Operation(summary = "Get Labels for a Project", description = "Get Labels for a Project")
-    @SecurityRequirement(name = "jwt")
-    public Uni<Response> getProjectLabels(
-            @Parameter(description = "The ID of the project to get labels for", required = true) @PathParam("projectId") String projectId,
-            @Parameter(description = "The begin of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = false) @QueryParam("from") String from,
-            @Parameter(description = "The end of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = false) @QueryParam("to") String to) {
-        return restClient.getProjectLabels(projectId, from, to);
-    }
-
-    @GET
     @Path("/project")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectDTO.class)), description = "List of all projects", responseCode = "200")
@@ -107,14 +94,15 @@ public class ProjectServiceController {
     }
 
     @POST
-    @Path("/project/{projectId}/join")
+    @Path("/project/{projectId}/join/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectDTO.class)), description = "The joined Project Information", responseCode = "200")
     @Operation(summary = "Join a Project", description = "Join a Project")
     @SecurityRequirement(name = "jwt")
-    public Uni<Response> joinProject(
+        Uni<Response> joinProject(
             @Parameter(description = "The ID of the project to join", required = true) @PathParam("projectId") String projectId,
-            @Parameter(description = "The user object based on the UserDTO that should join the project", required = true) UserDTO user) {
+            @Parameter(description = "The ID of the user that wants to join the project", required = true) @PathParam("userId") String user){
+
         return restClient.joinProject(projectId, user);
     }
 }
