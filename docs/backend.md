@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-11-18 - ([Marcel Nague](https://github.com/marcel-nague))
+
+### Added
+
+- User Service implementation
+
+## 2023-11-16 - ([Jakob Feistenauer](https://github.com/yescob), [Marcel Nague](https://github.com/marcel-nague))
+
+### Added
+
+- Project Service implementation
+
 ## 2023-11-07 - ([Jakob Feistenauer](https://github.com/yescob))
 
 ### Added
