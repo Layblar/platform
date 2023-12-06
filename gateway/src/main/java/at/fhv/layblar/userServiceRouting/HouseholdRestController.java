@@ -35,7 +35,7 @@ public class HouseholdRestController {
 
     @Inject
     @RestClient
-    UserServiceRestClient restClient;
+    HouseholdServiceRestClient restClient;
 
     @POST
     @Path("/{householdId}/merge")

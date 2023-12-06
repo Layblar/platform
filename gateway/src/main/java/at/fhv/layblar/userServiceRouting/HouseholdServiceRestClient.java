@@ -3,9 +3,10 @@ package at.fhv.layblar.userServiceRouting;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import at.fhv.layblar.authentication.model.RegisterUserDTO;
+import at.fhv.layblar.authentication.model.LoginUserDTO;
 import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
-import at.fhv.layblar.userServiceRouting.model.UserDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -17,19 +18,11 @@ import jakarta.ws.rs.core.Response;
 
 @RegisterRestClient(configKey = "user-service-api")
 @RegisterClientHeaders
-public interface UserServiceRestClient {
+public interface HouseholdServiceRestClient {
 
     @POST
-    @Path("/register")
-    Uni<Response> createUser(UserDTO user);
-
-    @POST
-    @Path("/login")
-    Uni<Response> login(UserDTO user);
-
-    @POST
-    @Path("/logout")
-    Uni<Response> logout();
+    @Path("/household")
+    Uni<Response> createHousehold(RegisterUserDTO registerUserDTO);
 
     @POST
     @Path("/household/{householdId}/merge")

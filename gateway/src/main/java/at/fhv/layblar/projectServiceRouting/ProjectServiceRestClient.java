@@ -3,9 +3,9 @@ package at.fhv.layblar.projectServiceRouting;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import at.fhv.layblar.authentication.model.LoginUserDTO;
 import at.fhv.layblar.projectServiceRouting.model.ProjectDTO;
 import at.fhv.layblar.projectServiceRouting.model.ResearcherDTO;
-import at.fhv.layblar.userServiceRouting.model.UserDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;

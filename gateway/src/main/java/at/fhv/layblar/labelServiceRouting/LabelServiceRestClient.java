@@ -3,13 +3,12 @@ package at.fhv.layblar.labelServiceRouting;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import at.fhv.layblar.labelServiceRouting.model.LabelDTO;
+import at.fhv.layblar.labelServiceRouting.model.CreateLabelDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 @RegisterRestClient(configKey = "label-service-api")
@@ -17,15 +16,10 @@ import jakarta.ws.rs.core.Response;
 public interface LabelServiceRestClient {
 
     @GET
-    @Path("/label/{labelId}")
-    Uni<Response> getLabel(@PathParam("labelId") String labelId);
+    @Path("/{householdId}")
+    Uni<Response> getLabelsByHousehold(@PathParam("householdId") String householdId);
 
-    @GET
-    @Path("/label/project/{projectId}")
-    Uni<Response> getProjectLabels(@PathParam("projectId") String projectId, @QueryParam("from") String from,
-            @QueryParam("to") String to);
-
-    @PUT
+    @POST
     @Path("/label")
-    Uni<Response> createLabel(LabelDTO label);
+    Uni<Response> createLabel(CreateLabelDTO createLabelDTO);
 }

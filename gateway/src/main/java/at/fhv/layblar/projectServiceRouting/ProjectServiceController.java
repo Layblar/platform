@@ -10,10 +10,8 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import at.fhv.layblar.labelServiceRouting.model.LabelDTO;
 import at.fhv.layblar.projectServiceRouting.model.ProjectDTO;
 import at.fhv.layblar.projectServiceRouting.model.ResearcherDTO;
-import at.fhv.layblar.userServiceRouting.model.UserDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -22,7 +20,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 

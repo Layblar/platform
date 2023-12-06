@@ -1,18 +1,20 @@
-package at.fhv.layblar.authentication;
-
-import java.util.List;
+package at.fhv.layblar.authentication.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.security.jpa.Password;
+import io.quarkus.security.jpa.UserDefinition;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
+@UserDefinition
 public class LayblarUser extends PanacheEntityBase   {
 
     @Id
     public String userId;
-    public String username;
+    @Password
     public String password;
-    public List<String> roles;
-    
+    public String email;
+    public String householdId;
+
 }

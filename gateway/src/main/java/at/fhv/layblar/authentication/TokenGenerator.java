@@ -1,9 +1,8 @@
 package at.fhv.layblar.authentication;
 
-import java.util.HashSet;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import at.fhv.layblar.authentication.model.LayblarUser;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.smallrye.jwt.build.Jwt;
@@ -16,9 +15,8 @@ public class TokenGenerator {
 
     public String generateToken(LayblarUser user){
         return Jwt.issuer(ISSUER)
-        .claim("user", user.username)
+        .claim("householdId", user.householdId)
         .subject(user.userId)
-        .groups(new HashSet<>(user.roles))
       .sign();
     }
     
