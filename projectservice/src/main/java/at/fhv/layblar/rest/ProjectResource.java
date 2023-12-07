@@ -1,5 +1,6 @@
 package at.fhv.layblar.rest;
 
+import at.fhv.layblar.application.ProjectService;
 import at.fhv.layblar.domain.Project;
 import at.fhv.layblar.domain.Researcher;
 import at.fhv.layblar.infrastructure.ProjectRepository;
@@ -22,6 +23,8 @@ public class ProjectResource {
 
     @Inject
     ResearcherRepository researcherRepository;
+
+    ProjectService projectService;
 
     @POST
     @Path("/researcher")
@@ -51,15 +54,7 @@ public class ProjectResource {
     @Path("/project/{projectId}")
     Response updateProject(@PathParam("projectId") String projectId, Project project){
         try {
-            Project projectToUpdate = projectRepository.findById(projectId);
-            projectToUpdate.name = project.name;
-            projectToUpdate.description = project.description;
-            projectToUpdate.startDate = project.startDate;
-            projectToUpdate.endDate = project.endDate;
-            projectToUpdate.researcherId = project.researcherId;
-            projectToUpdate.participants = project.participants;
-            projectToUpdate.persist();
-            return Response.ok().build();
+            return Response.ok().entity(projectService.updateProject(projectId, project)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not update project").build();
         }
