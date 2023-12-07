@@ -1,4 +1,4 @@
-package at.fhv.layblar.userServiceRouting.model;
+package at.fhv.layblar.householdServiceRouting.model;
 
 public class HouseholdDTO {
     public String id;

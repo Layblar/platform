@@ -5,14 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Device extends PanacheEntityBase {
-
+public class SmartMeter extends PanacheEntityBase {
     @Id
-    public String id;
-    public String name;
-    public String type;
-    public String household;
+    public String smartMeterId;
 
-    public Device(){};
+    public SmartMeter(){};
 
 }

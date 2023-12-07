@@ -12,13 +12,14 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import at.fhv.layblar.authentication.dto.CreateHouseholdDTO;
 import at.fhv.layblar.authentication.dto.LoginUserDTO;
 import at.fhv.layblar.authentication.dto.RegisterUserDTO;
 import at.fhv.layblar.authentication.dto.TokenDTO;
 import at.fhv.layblar.authentication.dto.UserDTO;
 import at.fhv.layblar.authentication.model.LayblarUser;
 import at.fhv.layblar.authentication.service.TokenGenerator;
-import at.fhv.layblar.userServiceRouting.HouseholdServiceRestClient;
+import at.fhv.layblar.householdServiceRouting.HouseholdServiceRestClient;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -57,7 +58,8 @@ public class UserRestController {
         if(layblarUser.size() != 0){
             return Response.status(403).entity("Username not valid").build();
         }
-        LayblarUser user = (LayblarUser) restClient.createHousehold(registerUserDTO).await().indefinitely().getEntity();
+        CreateHouseholdDTO createHouseholdDTO = CreateHouseholdDTO.createHouseholdDTO(registerUserDTO);
+        LayblarUser user = (LayblarUser) restClient.createHousehold(createHouseholdDTO).await().indefinitely().getEntity();
         user.persist();
         UserDTO userDTO = new UserDTO();
         userDTO.email = user.email;

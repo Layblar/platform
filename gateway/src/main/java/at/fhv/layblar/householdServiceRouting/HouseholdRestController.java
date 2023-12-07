@@ -1,4 +1,4 @@
-package at.fhv.layblar.userServiceRouting;
+package at.fhv.layblar.householdServiceRouting;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -11,8 +11,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
+import at.fhv.layblar.householdServiceRouting.model.HouseholdDTO;
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
-import at.fhv.layblar.userServiceRouting.model.HouseholdDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;

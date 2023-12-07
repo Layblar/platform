@@ -1,10 +1,9 @@
-package at.fhv.layblar.userServiceRouting;
+package at.fhv.layblar.householdServiceRouting;
 
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import at.fhv.layblar.authentication.dto.LoginUserDTO;
-import at.fhv.layblar.authentication.dto.RegisterUserDTO;
+import at.fhv.layblar.authentication.dto.CreateHouseholdDTO;
 import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
 import io.smallrye.mutiny.Uni;
@@ -22,7 +21,7 @@ public interface HouseholdServiceRestClient {
 
     @POST
     @Path("/household")
-    Uni<Response> createHousehold(RegisterUserDTO registerUserDTO);
+    Uni<Response> createHousehold(CreateHouseholdDTO createHouseholdDTO);
 
     @POST
     @Path("/household/{householdId}/merge")
