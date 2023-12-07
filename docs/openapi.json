@@ -17,7 +17,7 @@
     }
   },
   "servers" : [ {
-    "url" : "http://{tenant}/api/v1",
+    "url" : "http://{tenant}",
     "variables" : {
       "tenant" : {
         "default" : "localhost:8080"
@@ -44,7 +44,7 @@
     "description" : "Operations about Smart-Meter data"
   } ],
   "paths" : {
-    "/api/v1/auth/login" : {
+    "/auth/login" : {
       "post" : {
         "tags" : [ "Authorization" ],
         "summary" : "Login",
@@ -76,7 +76,7 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "username" : {
+                    "email" : {
                       "type" : "string"
                     },
                     "password" : {
@@ -93,7 +93,7 @@
         } ]
       }
     },
-    "/api/v1/auth/register" : {
+    "/auth/register" : {
       "post" : {
         "tags" : [ "Authorization" ],
         "summary" : "Register a new UserAccount",
@@ -118,17 +118,23 @@
           "500" : {
             "description" : "Server Error"
           },
-          "200" : {
+          "204" : {
             "description" : "The registered user",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "type" : "object",
                   "properties" : {
+                    "userId" : {
+                      "type" : "string"
+                    },
                     "password" : {
                       "type" : "string"
                     },
                     "email" : {
+                      "type" : "string"
+                    },
+                    "householdId" : {
                       "type" : "string"
                     }
                   }
@@ -1242,7 +1248,7 @@
       "LoginUserDTO" : {
         "type" : "object",
         "properties" : {
-          "username" : {
+          "email" : {
             "type" : "string"
           },
           "password" : {

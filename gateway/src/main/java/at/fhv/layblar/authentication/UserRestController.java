@@ -1,7 +1,6 @@
 package at.fhv.layblar.authentication;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -13,22 +12,28 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import at.fhv.layblar.authentication.dto.LoginUserDTO;
+import at.fhv.layblar.authentication.dto.RegisterUserDTO;
+import at.fhv.layblar.authentication.dto.TokenDTO;
+import at.fhv.layblar.authentication.dto.UserDTO;
 import at.fhv.layblar.authentication.model.LayblarUser;
-import at.fhv.layblar.authentication.model.LoginUserDTO;
-import at.fhv.layblar.authentication.model.RegisterUserDTO;
+import at.fhv.layblar.authentication.service.TokenGenerator;
 import at.fhv.layblar.userServiceRouting.HouseholdServiceRestClient;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/v1/auth")
+@Path("/auth")
 @Tag(name = "Authorization", description = "Authorizaton operations. Use these Endpoints to get a valid JWT for the Layblar Platform.")
 @APIResponse(responseCode = "401", description = "Unauthorized")
 @APIResponse(responseCode = "403", description = "Invalid User")
 @APIResponse(responseCode = "500", description = "Server Error")
+@Produces(MediaType.APPLICATION_JSON)
 public class UserRestController {
 
     @Inject
@@ -40,10 +45,11 @@ public class UserRestController {
 
     @POST
     @Path("/register")
-    @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = RegisterUserDTO.class)), description = "The registered user", responseCode = "200")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The registered user", responseCode = "204")
     @Operation(summary = "Register a new UserAccount", description = "Creates a new user and assigns them to a new Household")
     @SecurityRequirement(name = "none")
+    @Transactional
     public Response createUser(
             @Parameter(description = "The user object based on the RegisterUserDTO that should be registered", required = true) RegisterUserDTO registerUserDTO) {
                 
@@ -51,23 +57,24 @@ public class UserRestController {
         if(layblarUser.size() != 0){
             return Response.status(403).entity("Username not valid").build();
         }
-        LayblarUser user = new LayblarUser();
-        user.userId = UUID.randomUUID().toString();
-        user.password = "TEST";
-        //LayblarUser user = (LayblarUser) restClient.createHousehold(registerUserDTO).await().indefinitely().getEntity();
+        LayblarUser user = (LayblarUser) restClient.createHousehold(registerUserDTO).await().indefinitely().getEntity();
         user.persist();
-        return Response.status(204).entity(user).build();
+        UserDTO userDTO = new UserDTO();
+        userDTO.email = user.email;
+        userDTO.householdId = user.householdId;
+        userDTO.userId = user.userId;
+        return Response.status(204).entity(userDTO).build();
     }
 
     @POST
     @Path("/login")
-    @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = LoginUserDTO.class)), description = "The logged in user", responseCode = "200")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = TokenDTO.class)), description = "The logged in user", responseCode = "200")
     @Operation(summary = "Login", description = "Login with given credentials")
     @SecurityRequirement(name = "none")
     public Response loginUser(
             @Parameter(description = "The user object based on the LoginUserDTO that should be logged in", required = true) LoginUserDTO loginUserDTO) {
-        List<LayblarUser> layblarUser = LayblarUser.find("username", loginUserDTO.username).list();
+        List<LayblarUser> layblarUser = LayblarUser.find("email", loginUserDTO.email).list();
         if(layblarUser.size() != 1 || !layblarUser.get(0).password.equals(loginUserDTO.password)){
             return Response.status(401).entity("Not Authorized").build();
         }

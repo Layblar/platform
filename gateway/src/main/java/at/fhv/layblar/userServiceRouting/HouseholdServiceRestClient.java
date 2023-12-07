@@ -3,8 +3,8 @@ package at.fhv.layblar.userServiceRouting;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import at.fhv.layblar.authentication.model.RegisterUserDTO;
-import at.fhv.layblar.authentication.model.LoginUserDTO;
+import at.fhv.layblar.authentication.dto.LoginUserDTO;
+import at.fhv.layblar.authentication.dto.RegisterUserDTO;
 import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
 import io.smallrye.mutiny.Uni;

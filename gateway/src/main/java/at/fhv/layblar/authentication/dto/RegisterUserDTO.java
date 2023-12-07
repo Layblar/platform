@@ -1,4 +1,4 @@
-package at.fhv.layblar.authentication.model;
+package at.fhv.layblar.authentication.dto;
 
 public class RegisterUserDTO {
 
