@@ -3,7 +3,6 @@ package at.fhv.layblar.projectServiceRouting;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import at.fhv.layblar.authentication.dto.LoginUserDTO;
 import at.fhv.layblar.projectServiceRouting.model.ProjectDTO;
 import at.fhv.layblar.projectServiceRouting.model.ResearcherDTO;
 import io.smallrye.mutiny.Uni;
@@ -12,7 +11,6 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 @RegisterRestClient(configKey = "project-service-api")

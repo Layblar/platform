@@ -3,8 +3,6 @@ package at.fhv.layblar.smartMeterServiceRouting.model;
 import java.time.LocalDateTime;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Schema(description = "Smart Meter Data")
