@@ -115,7 +115,7 @@
           "500" : {
             "description" : "Server Error"
           },
-          "204" : {
+          "201" : {
             "description" : "The registered user",
             "content" : {
               "application/json" : {
