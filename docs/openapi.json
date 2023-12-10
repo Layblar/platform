@@ -76,10 +76,7 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "email" : {
-                      "type" : "string"
-                    },
-                    "password" : {
+                    "token" : {
                       "type" : "string"
                     }
                   }
@@ -126,9 +123,6 @@
                   "type" : "object",
                   "properties" : {
                     "userId" : {
-                      "type" : "string"
-                    },
-                    "password" : {
                       "type" : "string"
                     },
                     "email" : {
@@ -218,14 +212,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -388,14 +388,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -446,14 +452,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -498,14 +510,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -559,14 +577,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -618,14 +642,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -670,14 +700,20 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
-                    "id" : {
+                    "householdId" : {
                       "type" : "string"
                     },
-                    "name" : {
-                      "type" : "string"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdUserDTO"
+                      }
                     },
-                    "address" : {
-                      "type" : "string"
+                    "devices" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/HouseholdDeviceDTO"
+                      }
                     }
                   }
                 }
@@ -1229,6 +1265,26 @@
           }
         }
       },
+      "HouseholdDeviceDTO" : {
+        "type" : "object"
+      },
+      "HouseholdUserDTO" : {
+        "type" : "object",
+        "properties" : {
+          "userId" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          }
+        }
+      },
       "LabelMetaDataDTO" : {
         "type" : "object",
         "properties" : {
@@ -1286,6 +1342,12 @@
             "type" : "string"
           },
           "email" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
             "type" : "string"
           }
         }

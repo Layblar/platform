@@ -1,11 +1,13 @@
 package at.fhv.layblar.householdServiceRouting;
 
+import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import at.fhv.layblar.authentication.dto.CreateHouseholdDTO;
 import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
+import io.quarkus.rest.client.reactive.NotBody;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -15,13 +17,14 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
-@RegisterRestClient(configKey = "user-service-api")
+@RegisterRestClient(configKey = "household-service-api")
 @RegisterClientHeaders
 public interface HouseholdServiceRestClient {
 
     @POST
     @Path("/household")
-    Uni<Response> createHousehold(CreateHouseholdDTO createHouseholdDTO);
+    @ClientHeaderParam(name = "Authorization", value = "Bearer {token}")
+    Uni<Response> createHousehold(CreateHouseholdDTO createHouseholdDTO, @NotBody String token);
 
     @POST
     @Path("/household/{householdId}/merge")

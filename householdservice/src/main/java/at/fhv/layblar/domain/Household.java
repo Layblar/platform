@@ -5,19 +5,24 @@ import java.util.List;
 import java.util.UUID;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Household extends PanacheEntityBase {
     @Id
     public String householdId;
-    public List<User> users;
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public List<HouseholdUser> users;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<Device> devices;
 
     public Household(){}
 
-    private Household(User user) {
+    private Household(HouseholdUser user) {
         this.householdId = UUID.randomUUID().toString();
         users = new LinkedList<>();
         users.add(user);
@@ -25,7 +30,7 @@ public class Household extends PanacheEntityBase {
     }
 
     public static Household createHouseHold(String email, String firstName, String lastName) {
-        User user = User.createUser(email, firstName, lastName);
+        HouseholdUser user = HouseholdUser.createUser(email, firstName, lastName);
         return new Household(user);
     }
 

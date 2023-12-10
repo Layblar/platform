@@ -59,9 +59,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  email:
-                    type: string
-                  password:
+                  token:
                     type: string
       security:
       - none: []
@@ -92,8 +90,6 @@ paths:
                 type: object
                 properties:
                   userId:
-                    type: string
-                  password:
                     type: string
                   email:
                     type: string
@@ -155,12 +151,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/device:
@@ -273,12 +273,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
     delete:
@@ -314,12 +318,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/merge:
@@ -350,12 +358,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/smartMeterReader:
@@ -392,12 +404,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
     delete:
@@ -433,12 +449,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/split:
@@ -469,12 +489,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /label:
@@ -846,6 +870,19 @@ components:
           type: number
         manufacturer:
           type: string
+    HouseholdDeviceDTO:
+      type: object
+    HouseholdUserDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
     LabelMetaDataDTO:
       type: object
       properties:
@@ -885,6 +922,10 @@ components:
         password:
           type: string
         email:
+          type: string
+        firstName:
+          type: string
+        lastName:
           type: string
     ResearcherDTO:
       type: object

@@ -20,6 +20,7 @@ import at.fhv.layblar.authentication.dto.UserDTO;
 import at.fhv.layblar.authentication.model.LayblarUser;
 import at.fhv.layblar.authentication.service.TokenGenerator;
 import at.fhv.layblar.householdServiceRouting.HouseholdServiceRestClient;
+import at.fhv.layblar.householdServiceRouting.model.HouseholdDTO;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -56,10 +57,15 @@ public class UserRestController {
                 
         List<LayblarUser> layblarUser = LayblarUser.find("email", registerUserDTO.email).list();
         if(layblarUser.size() != 0){
-            return Response.status(403).entity("Username not valid").build();
+            return Response.status(403).entity("You cannot create an Account with this Email-Address").build();
         }
         CreateHouseholdDTO createHouseholdDTO = CreateHouseholdDTO.createHouseholdDTO(registerUserDTO);
-        LayblarUser user = (LayblarUser) restClient.createHousehold(createHouseholdDTO).await().indefinitely().getEntity();
+        HouseholdDTO household = restClient.createHousehold(createHouseholdDTO, tokenGenerator.generateRegistrationToken()).await().indefinitely().readEntity(HouseholdDTO.class);
+        LayblarUser user = new LayblarUser();
+        user.email = household.users.get(0).email;
+        user.password = registerUserDTO.password;
+        user.userId = household.users.get(0).userId;
+        user.householdId = household.householdId;
         user.persist();
         UserDTO userDTO = new UserDTO();
         userDTO.email = user.email;
@@ -78,7 +84,7 @@ public class UserRestController {
             @Parameter(description = "The user object based on the LoginUserDTO that should be logged in", required = true) LoginUserDTO loginUserDTO) {
         List<LayblarUser> layblarUser = LayblarUser.find("email", loginUserDTO.email).list();
         if(layblarUser.size() != 1 || !layblarUser.get(0).password.equals(loginUserDTO.password)){
-            return Response.status(401).entity("Not Authorized").build();
+            return Response.status(401).entity("Email or password was wrong").build();
         }
         return Response.status(200).entity(tokenGenerator.generateToken(layblarUser.get(0))).build();
     }

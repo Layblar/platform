@@ -22,5 +22,12 @@ public class TokenGenerator {
       .sign();
       return tokenDTO;
     }
+
+    public String generateRegistrationToken(){
+      return Jwt.issuer(ISSUER)
+        .subject("LayblarUserRegistration")
+        .expiresIn(5000)
+      .sign();
+    }
     
 }

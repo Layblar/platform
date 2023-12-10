@@ -13,4 +13,10 @@ public class LayblarUser extends PanacheEntityBase   {
     public String email;
     public String householdId;
 
+    @Override
+    public String toString() {
+        return "LayblarUser [userId=" + userId + ", password=" + password + ", email=" + email + ", householdId="
+                + householdId + "]";
+    }
+
 }

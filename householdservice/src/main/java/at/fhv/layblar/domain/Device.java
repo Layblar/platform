@@ -8,11 +8,10 @@ import jakarta.persistence.Id;
 public class Device extends PanacheEntityBase {
 
     @Id
-    public String id;
+    public String deviceId;
     public String name;
     public String type;
-    public String household;
 
-    public Device(){};
+    public Device(){}
 
 }

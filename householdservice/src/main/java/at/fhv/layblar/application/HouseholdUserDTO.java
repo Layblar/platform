@@ -1,16 +1,16 @@
 package at.fhv.layblar.application;
 
-import at.fhv.layblar.domain.User;
+import at.fhv.layblar.domain.HouseholdUser;
 
-public class UserDTO {
+public class HouseholdUserDTO {
 
     public String userId;
     public String email;
     public String firstName;
     public String lastName;
 
-    public static UserDTO createUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
+    public static HouseholdUserDTO createUserDTO(HouseholdUser user) {
+        HouseholdUserDTO userDTO = new HouseholdUserDTO();
         userDTO.email = user.email;
         userDTO.userId = user.userId;
         userDTO.firstName = user.firstName;

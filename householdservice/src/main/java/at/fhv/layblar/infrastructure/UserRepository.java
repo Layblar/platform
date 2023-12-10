@@ -1,11 +1,13 @@
 package at.fhv.layblar.infrastructure;
 
-import at.fhv.layblar.domain.Device;
+import at.fhv.layblar.domain.HouseholdUser;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
-public class DeviceRepository implements PanacheRepositoryBase<Device, String> {
+@ApplicationScoped
+public class UserRepository implements PanacheRepositoryBase<HouseholdUser, String>{
     
     @Inject
     EntityManager entityManager;
