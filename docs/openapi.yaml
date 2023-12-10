@@ -14,7 +14,7 @@ info:
   x-logo:
     url: https://layblar.github.io/docs/img/layblarlogo.svg
 servers:
-- url: "http://{tenant}/api/v1"
+- url: "http://{tenant}"
   variables:
     tenant:
       default: localhost:8080
@@ -32,35 +32,71 @@ tags:
   description: Operations regarding Project management
 - name: Smart-Meter
   description: Operations about Smart-Meter data
-- name: User
-  description: User Operations
 paths:
   /auth/login:
     post:
       tags:
       - Authorization
-      operationId: login
+      summary: Login
+      description: Login with given credentials
+      operationId: loginUser
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LayblarUser'
+              $ref: '#/components/schemas/LoginUserDTO'
       responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
         "200":
-          description: OK
+          description: The logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+      security:
+      - none: []
   /auth/register:
     post:
       tags:
       - Authorization
-      operationId: register
+      summary: Register a new UserAccount
+      description: Creates a new user and assigns them to a new Household
+      operationId: createUser
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LayblarUser'
+              $ref: '#/components/schemas/RegisterUserDTO'
       responses:
-        "200":
-          description: OK
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "204":
+          description: The registered user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  email:
+                    type: string
+                  householdId:
+                    type: string
+      security:
+      - none: []
   /deviceLibrary:
     get:
       tags:
@@ -115,12 +151,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/device:
@@ -233,12 +273,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
     delete:
@@ -274,12 +318,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/merge:
@@ -310,12 +358,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/smartMeterReader:
@@ -352,12 +404,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
     delete:
@@ -393,12 +449,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /household/{householdId}/split:
@@ -429,16 +489,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  householdId:
                     type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
   /label:
-    put:
+    post:
       tags:
       - Label
       summary: Create a Label
@@ -448,7 +512,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LabelDTO'
+              $ref: '#/components/schemas/CreateLabelDTO'
       responses:
         "401":
           description: Unauthorized
@@ -465,69 +529,20 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/LabelDTO'
+                  $ref: '#/components/schemas/CreateLabelDTO'
       security:
       - jwt: []
-  /label/project/{projectId}:
+  /label/{householdId}:
     get:
       tags:
       - Label
-      summary: Get Labels
-      description: Get a List of Labels from the specified time frame
-      operationId: getProjectLabels
+      summary: Returns a list of labels
+      description: Returns a list of labels for the specific household
+      operationId: getLabelsByHousehold
       parameters:
-      - name: projectId
+      - name: householdId
         in: path
-        description: The id of the project for which the data should be fetched
-        required: true
-        schema:
-          type: string
-      - name: from
-        in: query
-        description: The begin of the time intervall for which the data should be
-          fetched. Needs to be a Unix Timestamp as String
-        required: false
-        schema:
-          type: string
-      - name: to
-        in: query
-        description: The end of the time intervall for which the data should be fetched.
-          Needs to be a Unix Timestamp as String
-        required: false
-        schema:
-          type: string
-      responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Invalid User
-        "500":
-          description: Server Error
-        "400":
-          description: Missing Query Parameters
-        "422":
-          description: Wrong Date Format
-        "200":
-          description: Labels for the specified time period
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LabelDTO'
-      security:
-      - jwt: []
-  /label/{labelId}:
-    get:
-      tags:
-      - Label
-      summary: Returns a Label
-      description: Returns the Label with the specified id
-      operationId: getLabel
-      parameters:
-      - name: labelId
-        in: path
-        description: The id of the label for which the data should be fetched
+        description: The id of the household for which the data should be fetched
         required: true
         schema:
           type: string
@@ -538,27 +553,23 @@ paths:
           description: Invalid User
         "500":
           description: Server Error
-        "404":
-          description: No label found
         "200":
-          description: Label by id
+          description: Label by Household
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
+                  labelId:
                     type: string
-                  startDate:
+                  householdId:
                     type: string
-                  endDate:
+                  smartMeterData:
+                    $ref: '#/components/schemas/SmartMeterDataDTO1'
+                  label:
                     type: string
-                  deviceId:
-                    type: string
-                  projectId:
-                    type: string
-                  userId:
-                    type: string
+                  createdAt:
+                    $ref: '#/components/schemas/LocalDateTime'
       security:
       - jwt: []
   /project/project:
@@ -712,7 +723,7 @@ paths:
                     type: string
       security:
       - jwt: []
-  /project/project/{projectId}/join:
+  /project/project/{projectId}/join/{userId}:
     post:
       tags:
       - Project
@@ -726,11 +737,12 @@ paths:
         required: true
         schema:
           type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDTO'
+      - name: userId
+        in: path
+        description: The ID of the user that wants to join the project
+        required: true
+        schema:
+          type: string
       responses:
         "401":
           description: Unauthorized
@@ -748,52 +760,7 @@ paths:
                   $ref: '#/components/schemas/ProjectDTO'
       security:
       - jwt: []
-  /project/project/{projectId}/label:
-    get:
-      tags:
-      - Project
-      summary: Get Labels for a Project
-      description: Get Labels for a Project
-      operationId: getProjectLabels
-      parameters:
-      - name: projectId
-        in: path
-        description: The ID of the project to get labels for
-        required: true
-        schema:
-          type: string
-      - name: from
-        in: query
-        description: The begin of the time intervall for which the data should be
-          fetched. Needs to be a Unix Timestamp as String
-        required: false
-        schema:
-          type: string
-      - name: to
-        in: query
-        description: The end of the time intervall for which the data should be fetched.
-          Needs to be a Unix Timestamp as String
-        required: false
-        schema:
-          type: string
-      responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Invalid User
-        "500":
-          description: Server Error
-        "200":
-          description: Labels for the specified time period for given project
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LabelDTO'
-      security:
-      - jwt: []
-  /project/researcher}:
+  /project/researcher:
     post:
       tags:
       - Project
@@ -876,99 +843,19 @@ paths:
                   $ref: '#/components/schemas/SmartMeterDataDTO'
       security:
       - jwt: []
-  /user/login:
-    post:
-      tags:
-      - User
-      summary: Login
-      description: Login with given credentials
-      operationId: loginUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDTO'
-      responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Invalid User
-        "500":
-          description: Server Error
-        "200":
-          description: The logged in user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                  password:
-                    type: string
-      security:
-      - none: []
-  /user/logout:
-    post:
-      tags:
-      - User
-      summary: Logout
-      description: Logout with given credentials
-      operationId: logoutUser
-      responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Invalid User
-        "500":
-          description: Server Error
-        "200":
-          description: The logged out user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                  password:
-                    type: string
-      security:
-      - jwt: []
-  /user/register:
-    post:
-      tags:
-      - User
-      summary: Register a new UserAccount
-      description: Creates a new user and assigns them to a new Household
-      operationId: createUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDTO'
-      responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Invalid User
-        "500":
-          description: Server Error
-        "200":
-          description: The registered user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                  password:
-                    type: string
-      security:
-      - none: []
 components:
   schemas:
+    CreateLabelDTO:
+      type: object
+      properties:
+        label:
+          type: string
+        labelData:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmartMeterDataDTO1'
+        labelMetaData:
+          $ref: '#/components/schemas/LabelMetaDataDTO'
     DeviceDTO:
       type: object
       properties:
@@ -983,38 +870,37 @@ components:
           type: number
         manufacturer:
           type: string
-    LabelDTO:
+    HouseholdDeviceDTO:
       type: object
-      properties:
-        id:
-          type: string
-        startDate:
-          type: string
-        endDate:
-          type: string
-        deviceId:
-          type: string
-        projectId:
-          type: string
-        userId:
-          type: string
-    LayblarUser:
+    HouseholdUserDTO:
       type: object
       properties:
         userId:
           type: string
-        username:
+        email:
           type: string
-        password:
+        firstName:
           type: string
-        roles:
-          type: array
-          items:
-            type: string
+        lastName:
+          type: string
+    LabelMetaDataDTO:
+      type: object
+      properties:
+        householdMetaData:
+          type: string
+        deviceMetaData:
+          type: string
     LocalDateTime:
       format: date-time
       type: string
       example: 2022-03-10T12:15:50
+    LoginUserDTO:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
     ProjectDTO:
       type: object
       properties:
@@ -1029,6 +915,17 @@ components:
         endDate:
           type: string
         researcherId:
+          type: string
+    RegisterUserDTO:
+      type: object
+      properties:
+        password:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
           type: string
     ResearcherDTO:
       type: object
@@ -1112,13 +1009,52 @@ components:
           format: float
           description: This is the instantaneous voltage in volts in Phase L3.
           type: number
-    UserDTO:
+    SmartMeterDataDTO1:
       type: object
       properties:
-        username:
+        time:
+          $ref: '#/components/schemas/LocalDateTime'
+        sensorId:
           type: string
-        password:
-          type: string
+        "1.7.0":
+          format: float
+          type: number
+        "1.8.0":
+          format: float
+          type: number
+        "2.7.0":
+          format: float
+          type: number
+        "2.8.0":
+          format: float
+          type: number
+        "3.8.0":
+          format: float
+          type: number
+        "4.8.0":
+          format: float
+          type: number
+        "16.7.0":
+          format: float
+          type: number
+        "31.7.0":
+          format: float
+          type: number
+        "32.7.0":
+          format: float
+          type: number
+        "51.7.0":
+          format: float
+          type: number
+        "52.7.0":
+          format: float
+          type: number
+        "71.7.0":
+          format: float
+          type: number
+        "72.7.0":
+          format: float
+          type: number
   securitySchemes:
     SecurityScheme:
       type: http

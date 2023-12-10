@@ -1,11 +1,11 @@
-name: Build & Publish Userservice
+name: Build & Publish Householdservice
 on:
   push:
     branches: [ "main" ]
-    paths: userservice/**
+    paths: householdservice/**
 
 env:
-  Directory: userservice
+  Directory: householdservice
 
 jobs:
   build_and_push_to_registry:
