@@ -48,7 +48,7 @@ public class UserRestController {
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The registered user", responseCode = "204")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The registered user", responseCode = "201")
     @Operation(summary = "Register a new UserAccount", description = "Creates a new user and assigns them to a new Household")
     @SecurityRequirement(name = "none")
     @Transactional
@@ -71,7 +71,7 @@ public class UserRestController {
         userDTO.email = user.email;
         userDTO.householdId = user.householdId;
         userDTO.userId = user.userId;
-        return Response.status(204).entity(userDTO).build();
+        return Response.status(201).entity(userDTO).build();
     }
 
     @POST
