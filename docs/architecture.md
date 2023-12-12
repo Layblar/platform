@@ -1,6 +1,6 @@
 # Platform Architecture
 
-#### by [Jakob Feistenauer](https://github.com/yescob) & [Marcel Nague](https://github.com/marcel-nague)
+__by [Jakob Feistenauer](https://github.com/yescob) & [Marcel Nague](https://github.com/marcel-nague)__
 
 Detailed overview of the architecture of the Layblar Platform
 

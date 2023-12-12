@@ -1,5 +1,6 @@
 # TimescaleDB
-#### [Jakob Feistenauer](https://github.com/yescob)
+
+__by [Jakob Feistenauer](https://github.com/yescob)__
 Short guide to setup, start and use the TimescaleDB for the Layblar-Platform.
 
 ## Starting Timescale
@@ -7,7 +8,7 @@ Short guide to setup, start and use the TimescaleDB for the Layblar-Platform.
 To start the database navigate to the docker folder of the platform repository.
 In the docker-compose.yaml the following Timescale container is defined:
 
-```
+```yaml
   timescaledb:
     image: timescale/timescaledb-ha:pg14-latest
     ports:
@@ -24,7 +25,7 @@ In the docker-compose.yaml the following Timescale container is defined:
 
 To start the database execute:
 
-```
+```console
 docker compose up timescaledb
 ```
 
@@ -55,12 +56,14 @@ CREATE TABLE smart_meter_data (
 ```
 
 Then create a Hypertable from the newly created Table.
+
 ```SQL
 SELECT create_hypertable('smart_meter_data','time');
 ```
+
 [Timescale Documentation](https://docs.timescale.com/)
 
-For Production Use all tables, even normal PostgreSQL tables should be created in this file. 
+For Production Use all tables, even normal PostgreSQL tables should be created in this file.
 During development you can let the Panache Framework create the necessary standart tables.
 
 ## Accessing the data with Quarkus
@@ -80,6 +83,7 @@ public class MeterDataReading extends PanacheEntityBase  {
     ...
 }
 ```
+
 [Quarkus Documentation on Panache](https://quarkus.io/guides/hibernate-orm-panache)
 
 ### Native Query
@@ -101,4 +105,3 @@ public List<String> nativeQuery() {
 
 }
 ```
-

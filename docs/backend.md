@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-12-12 - ([Jakob Feistenauer](https://github.com/yescob))
+
+### Added
+
+- Security Improvements
+  - JWT RBAC keys can be added at deploy time and not at build time
+  - Easier to switch between JWT RBAC and OAuth2 RBAC
+  - Passwords are now hashed and salted
+
+## 2023-10-12 - ([Jakob Feistenauer](https://github.com/yescob))
+
+### Added
+
+- User Registration
+
 ## 2023-11-18 - ([Marcel Nague](https://github.com/marcel-nague))
 
 ### Added
