@@ -115,7 +115,7 @@
           "500" : {
             "description" : "Server Error"
           },
-          "204" : {
+          "201" : {
             "description" : "The registered user",
             "content" : {
               "application/json" : {
@@ -130,6 +130,12 @@
                     },
                     "householdId" : {
                       "type" : "string"
+                    },
+                    "roles" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "string"
+                      }
                     }
                   }
                 }
@@ -1349,6 +1355,12 @@
           },
           "lastName" : {
             "type" : "string"
+          },
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -1518,8 +1530,7 @@
       "SecurityScheme" : {
         "type" : "http",
         "description" : "Authentication",
-        "scheme" : "bearer",
-        "bearerFormat" : "JWT"
+        "scheme" : "basic"
       },
       "jwt" : {
         "type" : "http",

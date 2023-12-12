@@ -82,7 +82,7 @@ paths:
           description: Invalid User
         "500":
           description: Server Error
-        "204":
+        "201":
           description: The registered user
           content:
             application/json:
@@ -95,6 +95,10 @@ paths:
                     type: string
                   householdId:
                     type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
       security:
       - none: []
   /deviceLibrary:
@@ -927,6 +931,10 @@ components:
           type: string
         lastName:
           type: string
+        roles:
+          type: array
+          items:
+            type: string
     ResearcherDTO:
       type: object
       properties:
@@ -1059,8 +1067,7 @@ components:
     SecurityScheme:
       type: http
       description: Authentication
-      scheme: bearer
-      bearerFormat: JWT
+      scheme: basic
     jwt:
       type: http
       description: Authentication
