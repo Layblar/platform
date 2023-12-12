@@ -1530,7 +1530,8 @@
       "SecurityScheme" : {
         "type" : "http",
         "description" : "Authentication",
-        "scheme" : "basic"
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
       },
       "jwt" : {
         "type" : "http",
