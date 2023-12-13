@@ -11,7 +11,7 @@ Detailed overview of the architecture of the Layblar Platform
 ## Domain Model
 
 <!-- <img src="https://layblar.github.io/platform/img/LayblarDomainModel.png" alt="Layblar Domain Model"> -->
-<img src="img/LayblarDomainModel.png" alt="Layblar Domain Model" style="height: 550px">
+<img src="img/LayblarDomainModel.svg" alt="Layblar Domain Model" style="height: 550px">
 
 ## Services and System Operations
 
