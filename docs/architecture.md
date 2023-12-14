@@ -1,52 +1,50 @@
 # Platform Architecture
 
-#### by [Jakob Feistenauer](https://github.com/yescob) & [Marcel Nague](https://github.com/marcel-nague)
+__by [Jakob Feistenauer](https://github.com/yescob) & [Marcel Nague](https://github.com/marcel-nague)__
 
 Detailed overview of the architecture of the Layblar Platform
 
 ## System Architecture
 
-<img src="img/architecture.drawio.svg" alt="Layblar System Architecture" style="height: 550px">
 <img src="img/LayblarServiceArchitecture.drawio.svg" alt="Layblar Microservice Architecture" style="height: 550px">
 
 ## Domain Model
 
 <!-- <img src="https://layblar.github.io/platform/img/LayblarDomainModel.png" alt="Layblar Domain Model"> -->
-<img src="img/LayblarDomainModel.png" alt="Layblar Domain Model" style="height: 550px">
+<img src="img/LayblarDomainModel.svg" alt="Layblar Domain Model" style="height: 550px">
 
 ## Services and System Operations
 
 | Service              | System Operation                                          | Collaborators                                                                                                |
 | -------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| UserService          | [createUser()](#createuser)                               | <ul><li>UserService::createHousehold()</li></ul>                                                             |
-| UserService          | [loginUser()](#loginuser)                                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| UserService          | [logoutUser()](#logoutuser)                                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| UserService          | [joinHousehold()](#joinhousehold)                         | <ul><li>UserService::verifyUser()</li><li>UserService::mergeHouseholds()</li></ul>                           |
-| UserService          | [leaveHousehold()](#leavehousehold)                       | <ul><li>UserService::verifyUser()</li><li>UserService::splitHouseholds()</li></ul>                           |
-| UserService          | [getHouseholdInformation()](#gethouseholdinformation)     | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| UserService          | [addDeviceToHousehold()](#adddevicetohousehold)           | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::addDeviceInformation()</li></ul>             |
-| UserService          | [updateDeviceInformation()](#updatedeviceinformation)     | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::updateDeviceInformation()</li></ul>          |
-| UserService          | [removeDeviceFromHousehold()](#removedevicefromhousehold) | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| UserService          | [listHouseholdDevices()](#listhouseholddevices)           | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li></ul>            |
-| UserService          | [registerSmartMeterReader()](#registersmartmeterreader)   | <ul><li>UserService::verifyUser()</li><li>SmartMeterService::addNewSmartMeter()</li></ul>                    |
-| UserService          | [removeSmartMeterReader()](#removesmartmeterreader)       | <ul><li>UserService::verifyUser()</li><li>SmartMeterService::removeSmartMeter()</li></ul>                    |
-| SmartMeterService    | [getSmartMeterData()](#getsmartmeterdata)                 | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
+| HouseholdService          | [createUser()](#createuser)                               | <ul><li>HouseholdService::createHousehold()</li></ul>                                                             |
+| HouseholdService          | [loginUser()](#loginuser)                                 | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
+| HouseholdService          | [joinHousehold()](#joinhousehold)                         | <ul><li>HouseholdService::verifyUser()</li><li>HouseholdService::mergeHouseholds()</li></ul>                           |
+| HouseholdService          | [leaveHousehold()](#leavehousehold)                       | <ul><li>HouseholdService::verifyUser()</li><li>HouseholdService::splitHouseholds()</li></ul>                           |
+| HouseholdService          | [getHouseholdInformation()](#gethouseholdinformation)     | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
+| HouseholdService          | [addDeviceToHousehold()](#adddevicetohousehold)           | <ul><li>HouseholdService::verifyUser()</li><li>DeviceLibraryService::addDeviceInformation()</li></ul>             |
+| HouseholdService          | [updateDeviceInformation()](#updatedeviceinformation)     | <ul><li>HouseholdService::verifyUser()</li><li>DeviceLibraryService::updateDeviceInformation()</li></ul>          |
+| HouseholdService          | [removeDeviceFromHousehold()](#removedevicefromhousehold) | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
+| HouseholdService          | [listHouseholdDevices()](#listhouseholddevices)           | <ul><li>HouseholdService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li></ul>            |
+| HouseholdService          | [registerSmartMeterReader()](#registersmartmeterreader)   | <ul><li>HouseholdService::verifyUser()</li><li>SmartMeterService::addNewSmartMeter()</li></ul>                    |
+| HouseholdService          | [removeSmartMeterReader()](#removesmartmeterreader)       | <ul><li>HouseholdService::verifyUser()</li><li>SmartMeterService::removeSmartMeter()</li></ul>                    |
+| SmartMeterService    | [getSmartMeterData()](#getsmartmeterdata)                 | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
 | ProjectService       | [createResearcher()](#createresearcher)                   |                                                                                                              |
 | ProjectService       | [createProject()](#createproject)                         | <ul><li>ProjectService:verifyResearcher()</li></ul>                                                          |
 | ProjectService       | [updateProjectInformation()](#updateprojectinformation)   | <ul><li>ProjectService:verifyResearcher()</li><li>ProjectService:verifyProjectInformationDetails()</li></ul> |
 | ProjectService       | [updateProjectSettings()](#updateprojectsettings)         | <ul><li>ProjectService:verifyResearcher()</li><li>ProjectService:verifyProjectSettingsDetails()</li></ul>    |
-| ProjectService       | [listProjects()](#listprojects)                           | <ul><li>UserService::verifyUser()</li><li>UserService::verifyResearcher()</li></ul>                          |
-| ProjectService       | [joinProject()](#joinproject)                             | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| ProjectService       | [getProjectInformation()](#getprojectinformation)         | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| LabelService         | [getProjectLabels()](#getprojectlabels)                   | <ul><li>UserService::verifyUser()</li></ul>                                                                  |
-| LabelService         | [createLabel()](#createlabel)                             | <ul><li>UserService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li></ul>            |
+| ProjectService       | [listProjects()](#listprojects)                           | <ul><li>HouseholdService::verifyUser()</li><li>HouseholdService::verifyResearcher()</li></ul>                          |
+| ProjectService       | [joinProject()](#joinproject)                             | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
+| ProjectService       | [getProjectInformation()](#getprojectinformation)         | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
+| LabelService         | [getProjectLabels()](#getprojectlabels)                   | <ul><li>HouseholdService::verifyUser()</li></ul>                                                                  |
+| LabelService         | [createLabel()](#createlabel)                             | <ul><li>HouseholdService::verifyUser()</li><li>DeviceLibraryService::findDeviceInformation()</li></ul>            |
 | DeviceLibraryService | [listDevices()](#listdevices)                             |                                                                                                              |
 
 ## Create User {createuser}
 
 **Description** : Create a new user.
 
-**Operation** : createUser()
+**Operation** : createUser(firstname, lastname, email, password)
 
 **Returns** : Household Information
 
@@ -66,13 +64,14 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Description** : Allow a user to log in.
 
-**Operation** : loginUser()
+**Operation** : loginUser(email, password)
 
 **Returns** : Authentication token
 
 **Preconditions** :
 
 - User exists and is part of a household.
+- The password is correct.
 
 **Postconditions** :
 
@@ -80,29 +79,11 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-## Logout User {logoutuser}
-
-**Description** : Allow a user to log out.
-
-**Operation** : logoutUser()
-
-**Returns** : Success status
-
-**Preconditions** :
-
-- User is logged in with a valid token.
-
-**Postconditions** :
-
-- The user is logged out and the token deleted.
-
-**Collaborators** :
-
 ## Join Household {joinhousehold}
 
 **Description** : Allow a user to join a household.
 
-**Operation** : joinHousehold()
+**Operation** : joinHousehold(userId, householdId)
 
 **Returns** : Success status
 
@@ -118,43 +99,45 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
-- UserService::mergeHouseholds()
+- HouseholdService::verifyUser()
+- HouseholdService::mergeHouseholds()
 
 ## Leave Household {leavehousehold}
 
 **Description** : Allow a user to leave a household.
 
-**Operation** : leaveHousehold()
+**Operation** : leaveHousehold(userId, householdId)
 
-**Returns** : Success status
+**Returns** : A new household with only the user as a member
 
 **Preconditions** :
 
 - User verification is successful.
-- The user is a member of a household.
+- The user is a member of the household.
 - Splitting households, if necessary, is successful.
 
 **Postconditions** :
 
 - The user has left the household.
+- The user is part of a new single household
 
 **Collaborators** :
 
-- UserService::verifyUser()
-- UserService::splitHouseholds()
+- HouseholdService::verifyUser()
+- HouseholdService::splitHouseholds()
 
 ## Get Household Information {gethouseholdinformation}
 
 **Description** : Retrieve information about a user's household.
 
-**Operation** : getHouseholdInformation()
+**Operation** : getHouseholdInformation(householdId)
 
 **Returns** : Household information
 
 **Preconditions** :
 
 - User verification is successful.
+- User is part of the household.
 
 **Postconditions** :
 
@@ -162,15 +145,15 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 
 ## Add Device to Household {adddevicetohousehold}
 
 **Description** : Add a device to a household.
 
-**Operation** : addDeviceToHousehold()
+**Operation** : addDeviceToHousehold(deviceInformation)
 
-**Returns** : Success status
+**Returns** : Confirmation that device has been added.
 
 **Preconditions** :
 
@@ -184,16 +167,16 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 - DeviceLibraryService::addDeviceInformation()
 
 ## Update Device Information {updatedeviceinformation}
 
 **Description** : Update information about a device in a household.
 
-**Operation** : updateDeviceInformation()
+**Operation** : updateDeviceInformation(householdId, deviceId, deviceInformation)
 
-**Returns** : Success status
+**Returns** : Updated Device Information.
 
 **Preconditions** :
 
@@ -207,20 +190,21 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 - DeviceLibraryService::updateDeviceInformation()
 
 ## Remove Device from Household {removedevicefromhousehold}
 
 **Description** : Remove a device from a household.
 
-**Operation** : removeDeviceFromHousehold()
+**Operation** : removeDeviceFromHousehold(householdId, deviceId)
 
-**Returns** : Success status
+**Returns** : Confirmation that device information was removed.
 
 **Preconditions** :
 
 - User verification is successful.
+- Device with the Id exists in the household.
 
 **Postconditions** :
 
@@ -228,13 +212,13 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 
 ## List Household Devices {listhouseholddevices}
 
 **Description** : Retrieve a list of devices in a household.
 
-**Operation** : listHouseholdDevices()
+**Operation** : listHouseholdDevices(householdId)
 
 **Returns** : List of devices
 
@@ -248,14 +232,13 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
-- DeviceLibraryService::findDeviceInformation()
+- HouseholdService::verifyUser()
 
 ## Register Smart Meter Reader {registersmartmeterreader}
 
 **Description** : Register a smart meter reader for a user.
 
-**Operation** : registerSmartMeterReader()
+**Operation** : registerSmartMeterReader(householdId, smartReaderId)
 
 **Returns** : Success status
 
@@ -269,14 +252,14 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 - SmartMeterService::addNewSmartMeter()
 
 ## Remove Smart Meter Reader {removesmartmeterreader}
 
 **Description** : Remove a registered smart meter reader.
 
-**Operation** : removeSmartMeterReader()
+**Operation** : removeSmartMeterReader(householdId, smartMeterId)
 
 **Returns** : Success status
 
@@ -290,14 +273,14 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 - SmartMeterService::removeSmartMeter()
 
 ## Get Smart Meter Data {getsmartmeterdata}
 
 **Description** : Retrieve smart meter data.
 
-**Operation** : getSmartMeterData()
+**Operation** : getSmartMeterData(householdId, smartMeterId)
 
 **Returns** : Smart meter data
 
@@ -311,13 +294,13 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 
 ## Create Researcher {createresearcher}
 
 **Description** : Create a new researcher.
 
-**Operation** : createResearcher()
+**Operation** : createResearcher(firstname, lastname, email)
 
 **Returns** : Researcher ID
 
@@ -335,7 +318,7 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Description** : Create a new project.
 
-**Operation** : createProject()
+**Operation** : createProject(projektName, startDate, endDate)
 
 **Returns** : Project ID
 
@@ -355,9 +338,9 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Description** : Update project information.
 
-**Operation** : updateProjectInformation()
+**Operation** : updateProjectInformation(projektId, projektInformation)
 
-**Returns** : Success status
+**Returns** : Updated Projektinformation
 
 **Preconditions** :
 
@@ -377,7 +360,7 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Description** : Update project settings.
 
-**Operation** : updateProjectSettings()
+**Operation** : updateProjectSettings(projektId, projektSettings)
 
 **Returns** : Success status
 
@@ -414,20 +397,21 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
-- UserService::verifyResearcher()
+- HouseholdService::verifyUser()
+- HouseholdService::verifyResearcher()
 
 ## Join Project {joinproject}
 
 **Description** : Allow a user to join a project.
 
-**Operation** : joinProject()
+**Operation** : joinProject(projektId, householdId)
 
 **Returns** : Success status
 
 **Preconditions** :
 
 - User verification is successful.
+- User is part of the household.
 
 **Postconditions** :
 
@@ -435,13 +419,13 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 
 ## Get Project Information {getprojectinformation}
 
 **Description** : Retrieve project information.
 
-**Operation** : getProjectInformation()
+**Operation** : getProjectInformation(projektId)
 
 **Returns** : Project information
 
@@ -455,19 +439,20 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 
 ## Get Project Labels {getprojectlabels}
 
 **Description** : Retrieve project labels.
 
-**Operation** : getProjectLabels()
+**Operation** : getProjectLabels(projektId, householdId)
 
 **Returns** : Project labels
 
 **Preconditions** :
 
 - User verification is successful.
+- User is allowed to view labels.
 
 **Postconditions** :
 
@@ -475,20 +460,20 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 
 ## Create Label {createlabel}
 
 **Description** : Create a label.
 
-**Operation** : createLabel()
+**Operation** : createLabel(projektId, householdId, lableData)
 
 **Returns** : Success status
 
 **Preconditions** :
 
 - User verification is successful.
-- Device information is provided and valid.
+- Lable information is provided and valid.
 
 **Postconditions** :
 
@@ -496,7 +481,7 @@ Detailed overview of the architecture of the Layblar Platform
 
 **Collaborators** :
 
-- UserService::verifyUser()
+- HouseholdService::verifyUser()
 - DeviceLibraryService::findDeviceInformation()
 
 ## List Devices {listdevices}
