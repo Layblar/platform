@@ -19,6 +19,8 @@ public class Household extends PanacheEntityBase {
     public List<HouseholdUser> users;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<Device> devices;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public List<SmartMeter> smartMeters;
 
     public Household(){}
 

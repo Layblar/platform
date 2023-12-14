@@ -19,7 +19,7 @@ public class HouseholdUser extends PanacheEntityBase {
     @ManyToOne(fetch = FetchType.LAZY)
     public Household household;
 
-    public HouseholdUser(){};
+    public HouseholdUser(){}
 
     private HouseholdUser(String email, String firstName, String lastName){
         this.userId = UUID.randomUUID().toString();
