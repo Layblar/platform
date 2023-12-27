@@ -1,6 +1,10 @@
 package at.fhv.layblar.rest;
 
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import io.smallrye.reactive.messaging.MutinyEmitter;
+
 import at.fhv.layblar.application.DeviceService;
+import at.fhv.layblar.infrastructure.events.DeviceEvent;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -15,10 +19,16 @@ public class DeviceResource {
     @Inject
     DeviceService deviceService;
 
+    @Inject
+    @Channel("device-event")
+    MutinyEmitter<DeviceEvent> emitter;
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response listDevices(){
         return Response.ok().entity(deviceService.getAllDevices()).build();
     }
+
+    
 }
