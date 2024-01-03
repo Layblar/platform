@@ -1,4 +1,4 @@
-package at.fhv.layblar.application;
+package at.fhv.layblar.application.dto;
 
 public class CreateHouseholdDTO {
 

@@ -1,11 +1,18 @@
 package at.fhv.layblar.rest;
 
-import at.fhv.layblar.application.CreateHouseholdDTO;
+import java.util.List;
+
 import at.fhv.layblar.application.HouseholdService;
+import at.fhv.layblar.application.dto.CreateHouseholdDTO;
 import at.fhv.layblar.domain.Device;
+import at.fhv.layblar.domain.Household;
 import at.fhv.layblar.domain.SmartMeter;
+import at.fhv.layblar.es.Event;
+import at.fhv.layblar.es.HouseholdCreatedEvent;
+import at.fhv.layblar.es.HouseholdJoinedEvent;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -14,12 +21,23 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
-@Authenticated
+//@Authenticated
 @Path("/api/household")
 public class HouseholdResource {
 
     @Inject
     HouseholdService householdService;
+
+    @GET
+    @Transactional
+    public List<Event> test(){
+        Household household = Household.createHouseHold("test", "email", "test");
+        Event event = new HouseholdCreatedEvent(household);
+        Event event2 = new HouseholdJoinedEvent(household);
+        event.persist();
+        event2.persist();
+        return Event.listAll();
+    }
 
     @POST
     public Response createHousehold(CreateHouseholdDTO createHouseholdDTO){

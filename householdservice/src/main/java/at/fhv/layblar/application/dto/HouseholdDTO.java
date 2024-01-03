@@ -1,4 +1,4 @@
-package at.fhv.layblar.application;
+package at.fhv.layblar.application.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
