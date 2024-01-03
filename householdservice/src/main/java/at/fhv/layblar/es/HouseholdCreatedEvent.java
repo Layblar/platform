@@ -8,39 +8,40 @@ import at.fhv.layblar.domain.Household;
 import jakarta.persistence.Entity;
 
 @Entity
+public class HouseholdCreatedEvent extends HouseholdEvent {
 
-public class HouseholdCreatedEvent extends Event {
-
-    public HouseholdCreatedEvent(){
+    public HouseholdCreatedEvent() {
         super();
         this.eventType = "HouseHoldCreatedEvent";
     };
 
-    
-    public HouseholdCreatedEvent(Household household){
+    public HouseholdCreatedEvent(Household household) {
         super();
         this.eventType = "HouseHoldCreatedEvent";
         this.entityId = household.householdId;
-        this.entityType = "Household";
         this.payload = createEventPayload(household);
     }
 
-
     @JsonIgnore
-    public String getHouseholdId(){
+    public String getHouseholdId() {
         return this.payload.get("householdId").asText();
     }
 
     @JsonIgnore
-    public String getHouseName(){
+    public String getHouseName() {
         return this.payload.get("householdId").asText();
     }
 
-    private ObjectNode createEventPayload(Household household){
+    private ObjectNode createEventPayload(Household household) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
         root.put("householdId", household.householdId);
         return root;
     }
-    
+
+    @Override
+    public void accept(EventVisitor visitor) {
+        visitor.visit(this);
+    }
+
 }

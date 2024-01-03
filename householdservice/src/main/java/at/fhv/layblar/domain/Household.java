@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import at.fhv.layblar.es.HouseholdCreatedEvent;
+import at.fhv.layblar.es.HouseholdJoinedEvent;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -34,6 +36,14 @@ public class Household extends PanacheEntityBase {
     public static Household createHouseHold(String email, String firstName, String lastName) {
         HouseholdUser user = HouseholdUser.createUser(email, firstName, lastName);
         return new Household(user);
+    }
+
+    public void apply(HouseholdCreatedEvent event) {
+
+    }
+
+    public void apply(HouseholdJoinedEvent event) {
+        
     }
 
 }

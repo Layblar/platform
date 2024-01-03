@@ -5,9 +5,9 @@ import java.util.Set;
 
 import org.bson.codecs.pojo.annotations.BsonId;
 
-import at.fhv.layblar.infrastructure.events.DeviceAddedEvent;
-import at.fhv.layblar.infrastructure.events.DeviceDeletedEvent;
-import at.fhv.layblar.infrastructure.events.DeviceUpdatedEvent;
+import at.fhv.layblar.events.DeviceAddedEvent;
+import at.fhv.layblar.events.DeviceDeletedEvent;
+import at.fhv.layblar.events.DeviceUpdatedEvent;
 import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 

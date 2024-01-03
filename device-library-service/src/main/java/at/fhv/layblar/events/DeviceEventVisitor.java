@@ -1,4 +1,4 @@
-package at.fhv.layblar.infrastructure.events;
+package at.fhv.layblar.events;
 
 public interface DeviceEventVisitor {
 

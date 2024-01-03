@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import at.fhv.layblar.domain.Device;
-import at.fhv.layblar.infrastructure.events.DeviceAddedEvent;
-import at.fhv.layblar.infrastructure.events.DeviceDeletedEvent;
-import at.fhv.layblar.infrastructure.events.DeviceEvent;
-import at.fhv.layblar.infrastructure.events.DeviceEventVisitor;
-import at.fhv.layblar.infrastructure.events.DeviceUpdatedEvent;
+import at.fhv.layblar.events.DeviceAddedEvent;
+import at.fhv.layblar.events.DeviceDeletedEvent;
+import at.fhv.layblar.events.DeviceEvent;
+import at.fhv.layblar.events.DeviceEventVisitor;
+import at.fhv.layblar.events.DeviceUpdatedEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -18,7 +18,7 @@ public class HouseholdDeviceConsumer {
     @Incoming("device")
     public void consume(DeviceEvent deviceEvent){
 
-        Optional<Device> optDevice = Device.findByIdOptional(deviceEvent.entity_id);
+        Optional<Device> optDevice = Device.findByIdOptional(deviceEvent.entityId);
         Device device = new Device();
         if(optDevice.isPresent()){
             device = optDevice.get();

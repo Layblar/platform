@@ -7,8 +7,11 @@ import at.fhv.layblar.application.dto.CreateHouseholdDTO;
 import at.fhv.layblar.domain.Device;
 import at.fhv.layblar.domain.Household;
 import at.fhv.layblar.domain.SmartMeter;
+import at.fhv.layblar.es.DeviceAddedEvent;
+import at.fhv.layblar.es.DeviceEvent;
 import at.fhv.layblar.es.Event;
 import at.fhv.layblar.es.HouseholdCreatedEvent;
+import at.fhv.layblar.es.HouseholdEvent;
 import at.fhv.layblar.es.HouseholdJoinedEvent;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -33,9 +36,11 @@ public class HouseholdResource {
     public List<Event> test(){
         Household household = Household.createHouseHold("test", "email", "test");
         Event event = new HouseholdCreatedEvent(household);
-        Event event2 = new HouseholdJoinedEvent(household);
+        HouseholdEvent event2 = new HouseholdJoinedEvent(household);
+        DeviceEvent event3 = new DeviceAddedEvent(household);
         event.persist();
         event2.persist();
+        event3.persist();
         return Event.listAll();
     }
 

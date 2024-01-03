@@ -1,4 +1,4 @@
-package at.fhv.layblar.infrastructure.events;
+package at.fhv.layblar.events;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class DeviceUpdatedEvent extends DeviceEvent {
 
     @Override
     public String toString() {
-        return this.event_type;
+        return this.eventType;
     }
 
 

@@ -1,4 +1,4 @@
-package at.fhv.layblar.infrastructure.events;
+package at.fhv.layblar.events;
 
 public class DeviceDeletedEvent extends DeviceEvent {
 
@@ -9,7 +9,7 @@ public class DeviceDeletedEvent extends DeviceEvent {
 
     @Override
     public String toString() {
-        return this.event_type;
+        return this.eventType;
     }
 
 

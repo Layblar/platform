@@ -4,7 +4,7 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import io.smallrye.reactive.messaging.MutinyEmitter;
 
 import at.fhv.layblar.application.DeviceService;
-import at.fhv.layblar.infrastructure.events.DeviceEvent;
+import at.fhv.layblar.events.DeviceEvent;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
