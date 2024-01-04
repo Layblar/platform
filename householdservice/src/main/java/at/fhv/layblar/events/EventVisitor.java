@@ -1,12 +1,12 @@
-package at.fhv.layblar.es;
+package at.fhv.layblar.events;
 
 public interface EventVisitor {
 
     void visit(HouseholdCreatedEvent event);
 
-    void visit(HouseholdJoinedEvent event);
+    void visit(HouseholdUserJoinedEvent event);
 
-    void visit(HouseholdLeftEvent event);
+    void visit(HouseholdUserLeftEvent event);
 
     void visit(SmartMeterRegisteredEvent event);
 
@@ -16,6 +16,8 @@ public interface EventVisitor {
 
     void visit(DeviceUpdatedEvent event);
 
-    void visit(DeviceDeletedEvent event);
+    void visit(DeviceRemovedEvent event);
+
+    void visit(HouseholdDeletedEvent householdDeletedEvent);
 
 }

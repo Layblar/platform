@@ -1,11 +1,13 @@
-package at.fhv.layblar.householdServiceRouting.model;
+package at.fhv.layblar.commands;
 
 import java.util.List;
 
-import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceCategoryDTO;
+import at.fhv.layblar.application.dto.DeviceCategoryDTO;
+import io.smallrye.common.constraint.NotNull;
 
-public class HouseholdDeviceDTO {
-
+public class UpdateDeviceCommand {
+    
+    @NotNull
     public String deviceId;
     public String deviceName;
     public String deviceDescription;
@@ -15,6 +17,5 @@ public class HouseholdDeviceDTO {
     public String energyEfficiencyRating;
     public Float weight;
     public List<DeviceCategoryDTO> categories;
-
 
 }

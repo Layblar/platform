@@ -1,4 +1,4 @@
-package at.fhv.layblar.es;
+package at.fhv.layblar.events;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -10,13 +10,13 @@ import jakarta.persistence.Entity;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DeviceAddedEvent.class, name = "DeviceAddedEvent"),
         @JsonSubTypes.Type(value = DeviceUpdatedEvent.class, name = "DeviceLockedEvent"),
-        @JsonSubTypes.Type(value = DeviceDeletedEvent.class, name = "DeviceUnlockedEvent")
+        @JsonSubTypes.Type(value = DeviceRemovedEvent.class, name = "DeviceUnlockedEvent")
 })
 public abstract class DeviceEvent extends Event {
 
     public DeviceEvent(){
         super();
-        this.entityType = "Device";
+        this.entityType = "Household";
     }
 
 }

@@ -1,5 +1,8 @@
-package at.fhv.layblar.es;
+package at.fhv.layblar.events;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class SmartMeterRegisteredEvent extends HouseholdEvent {
 
     @Override

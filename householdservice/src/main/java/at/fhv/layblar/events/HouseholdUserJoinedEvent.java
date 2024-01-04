@@ -1,4 +1,4 @@
-package at.fhv.layblar.es;
+package at.fhv.layblar.events;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,16 +8,16 @@ import at.fhv.layblar.domain.Household;
 import jakarta.persistence.Entity;
 
 @Entity
-public class HouseholdJoinedEvent extends HouseholdEvent {
+public class HouseholdUserJoinedEvent extends HouseholdEvent {
 
-    public HouseholdJoinedEvent() {
+    public HouseholdUserJoinedEvent() {
         super();
-        this.eventType = "HouseHoldJoinedEvent";
+        this.eventType = "HouseholdJoinedEvent";
     };
 
-    public HouseholdJoinedEvent(Household household) {
+    public HouseholdUserJoinedEvent(Household household) {
         super();
-        this.eventType = "HouseHoldJoinedEvent";
+        this.eventType = "HouseholdJoinedEvent";
         this.entityId = household.householdId;
         this.payload = createEventPayload(household);
     }

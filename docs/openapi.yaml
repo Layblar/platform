@@ -165,6 +165,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/HouseholdDeviceDTO'
+                  smartMeters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SmartMeterDTO'
       security:
       - jwt: []
   /household/{householdId}/device:
@@ -195,7 +199,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DeviceDTO'
+                  $ref: '#/components/schemas/HouseholdDeviceDTO'
       security:
       - jwt: []
     put:
@@ -215,7 +219,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeviceDTO'
+              $ref: '#/components/schemas/UpdateDeviceDTO'
       responses:
         "401":
           description: Unauthorized
@@ -234,16 +238,26 @@ paths:
                     type: string
                   deviceName:
                     type: string
-                  serialNumber:
+                  deviceDescription:
                     type: string
-                  powerUsage:
-                    format: float
-                    type: number
                   manufacturer:
                     type: string
+                  modelNumber:
+                    type: string
+                  powerDraw:
+                    format: int32
+                    type: integer
+                  energyEfficiencyRating:
+                    type: string
+                  weight:
+                    format: float
+                    type: number
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DeviceCategoryDTO'
       security:
       - jwt: []
-  /household/{householdId}/device/{deviceId}:
     post:
       tags:
       - Household
@@ -251,18 +265,17 @@ paths:
       description: Add device to household
       operationId: addDeviceToHousehold
       parameters:
-      - name: deviceId
-        in: path
-        description: The id of the device that should be added to the household
-        required: true
-        schema:
-          type: string
       - name: householdId
         in: path
         description: The id of the household to which the device should be added
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDeviceDTO'
       responses:
         "401":
           description: Unauthorized
@@ -287,8 +300,13 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/HouseholdDeviceDTO'
+                  smartMeters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SmartMeterDTO'
       security:
       - jwt: []
+  /household/{householdId}/device/{deviceId}:
     delete:
       tags:
       - Household
@@ -322,23 +340,70 @@ paths:
               schema:
                 type: object
                 properties:
-                  householdId:
+                  deviceId:
                     type: string
-                  users:
+                  deviceName:
+                    type: string
+                  deviceDescription:
+                    type: string
+                  manufacturer:
+                    type: string
+                  modelNumber:
+                    type: string
+                  powerDraw:
+                    format: int32
+                    type: integer
+                  energyEfficiencyRating:
+                    type: string
+                  weight:
+                    format: float
+                    type: number
+                  categories:
                     type: array
                     items:
-                      $ref: '#/components/schemas/HouseholdUserDTO'
-                  devices:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/HouseholdDeviceDTO'
+                      $ref: '#/components/schemas/DeviceCategoryDTO'
       security:
       - jwt: []
-  /household/{householdId}/merge:
+  /household/{householdId}/join:
+    get:
+      tags:
+      - Household
+      summary: Get household join code
+      description: Get the code for joining the given household
+      operationId: getHouseholdJoinCode
+      parameters:
+      - name: householdId
+        in: path
+        description: The id of the household for which the join code should be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: JoinCode Information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  householdId:
+                    type: string
+                  joinCode:
+                    type: string
+                  validTill:
+                    $ref: '#/components/schemas/LocalDateTime'
+      security:
+      - jwt: []
     post:
       tags:
       - Household
-      summary: Merge household
+      summary: Join household
       description: Join given household
       operationId: joinHousehold
       parameters:
@@ -348,6 +413,11 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinHouseholdDTO'
       responses:
         "401":
           description: Unauthorized
@@ -372,6 +442,59 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/HouseholdDeviceDTO'
+                  smartMeters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SmartMeterDTO'
+      security:
+      - jwt: []
+  /household/{householdId}/leave:
+    post:
+      tags:
+      - Household
+      summary: Leave household
+      description: Leave given household
+      operationId: leaveHousehold
+      parameters:
+      - name: householdId
+        in: path
+        description: The id of the household that should be split
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveHouseholdDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: Your household
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  householdId:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdUserDTO'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HouseholdDeviceDTO'
+                  smartMeters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SmartMeterDTO'
       security:
       - jwt: []
   /household/{householdId}/smartMeterReader:
@@ -393,7 +516,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SmartMeterDataDTO'
+              $ref: '#/components/schemas/SmartMeterDTO'
       responses:
         "401":
           description: Unauthorized
@@ -418,6 +541,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/HouseholdDeviceDTO'
+                  smartMeters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SmartMeterDTO'
       security:
       - jwt: []
     delete:
@@ -438,7 +565,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SmartMeterDataDTO'
+              $ref: '#/components/schemas/SmartMeterDTO'
       responses:
         "401":
           description: Unauthorized
@@ -463,46 +590,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/HouseholdDeviceDTO'
-      security:
-      - jwt: []
-  /household/{householdId}/split:
-    post:
-      tags:
-      - Household
-      summary: Split household
-      description: Leave given household
-      operationId: leaveHousehold
-      parameters:
-      - name: householdId
-        in: path
-        description: The id of the household that should be split
-        required: true
-        schema:
-          type: string
-      responses:
-        "401":
-          description: Unauthorized
-        "403":
-          description: Invalid User
-        "500":
-          description: Server Error
-        "200":
-          description: Your household
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  householdId:
-                    type: string
-                  users:
+                  smartMeters:
                     type: array
                     items:
-                      $ref: '#/components/schemas/HouseholdUserDTO'
-                  devices:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/HouseholdDeviceDTO'
+                      $ref: '#/components/schemas/SmartMeterDTO'
       security:
       - jwt: []
   /label:
@@ -849,6 +940,38 @@ paths:
       - jwt: []
 components:
   schemas:
+    AddDeviceDTO:
+      description: Add Device to Household
+      required:
+      - deviceName
+      - categories
+      type: object
+      properties:
+        deviceId:
+          description: If not provided a new deviceId will be created
+          type: string
+        deviceName:
+          description: Name of the device
+          type: string
+        deviceDescription:
+          type: string
+        manufacturer:
+          type: string
+        modelNumber:
+          type: string
+        powerDraw:
+          format: int32
+          type: integer
+        energyEfficiencyRating:
+          type: string
+        weight:
+          format: float
+          type: number
+        categories:
+          description: At least one category must be provided
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCategoryDTO'
     CreateLabelDTO:
       type: object
       properties:
@@ -860,6 +983,15 @@ components:
             $ref: '#/components/schemas/SmartMeterDataDTO1'
         labelMetaData:
           $ref: '#/components/schemas/LabelMetaDataDTO'
+    DeviceCategoryDTO:
+      type: object
+      properties:
+        deviceCategoryId:
+          type: string
+        deviceCategoryName:
+          type: string
+        deviceCategoryDescription:
+          type: string
     DeviceDTO:
       type: object
       properties:
@@ -867,15 +999,49 @@ components:
           type: string
         deviceName:
           type: string
-        serialNumber:
+        deviceDescription:
           type: string
-        powerUsage:
-          format: float
-          type: number
         manufacturer:
           type: string
+        modelNumber:
+          type: string
+        powerDraw:
+          format: int32
+          type: integer
+        energyEfficiencyRating:
+          type: string
+        weight:
+          format: float
+          type: number
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCategoryDTO'
     HouseholdDeviceDTO:
       type: object
+      properties:
+        deviceId:
+          type: string
+        deviceName:
+          type: string
+        deviceDescription:
+          type: string
+        manufacturer:
+          type: string
+        modelNumber:
+          type: string
+        powerDraw:
+          format: int32
+          type: integer
+        energyEfficiencyRating:
+          type: string
+        weight:
+          format: float
+          type: number
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCategoryDTO'
     HouseholdUserDTO:
       type: object
       properties:
@@ -887,12 +1053,28 @@ components:
           type: string
         lastName:
           type: string
+    JoinHouseholdDTO:
+      type: object
+      properties:
+        householdId:
+          type: string
+        userId:
+          type: string
+        joinCode:
+          type: string
     LabelMetaDataDTO:
       type: object
       properties:
         householdMetaData:
           type: string
         deviceMetaData:
+          type: string
+    LeaveHouseholdDTO:
+      type: object
+      properties:
+        householdId:
+          type: string
+        userId:
           type: string
     LocalDateTime:
       format: date-time
@@ -943,6 +1125,11 @@ components:
         name:
           type: string
         organization:
+          type: string
+    SmartMeterDTO:
+      type: object
+      properties:
+        smartMeterReaderId:
           type: string
     SmartMeterDataDTO:
       description: Smart Meter Data
@@ -1063,6 +1250,31 @@ components:
         "72.7.0":
           format: float
           type: number
+    UpdateDeviceDTO:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        deviceName:
+          type: string
+        deviceDescription:
+          type: string
+        manufacturer:
+          type: string
+        modelNumber:
+          type: string
+        powerDraw:
+          format: int32
+          type: integer
+        energyEfficiencyRating:
+          type: string
+        weight:
+          format: float
+          type: number
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCategoryDTO'
   securitySchemes:
     SecurityScheme:
       type: http

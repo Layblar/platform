@@ -12,7 +12,6 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import at.fhv.layblar.authentication.dto.CreateHouseholdDTO;
 import at.fhv.layblar.authentication.dto.LoginUserDTO;
 import at.fhv.layblar.authentication.dto.RegisterUserDTO;
 import at.fhv.layblar.authentication.dto.TokenDTO;
@@ -20,6 +19,7 @@ import at.fhv.layblar.authentication.dto.UserDTO;
 import at.fhv.layblar.authentication.model.LayblarAccount;
 import at.fhv.layblar.authentication.service.TokenGenerator;
 import at.fhv.layblar.householdServiceRouting.HouseholdServiceRestClient;
+import at.fhv.layblar.householdServiceRouting.model.CreateHouseholdDTO;
 import at.fhv.layblar.householdServiceRouting.model.HouseholdDTO;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.annotation.security.PermitAll;

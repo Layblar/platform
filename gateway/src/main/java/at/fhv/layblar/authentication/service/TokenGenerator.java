@@ -22,6 +22,7 @@ public class TokenGenerator {
         .claim("householdId", user.householdId)
         .subject(user.userId)
         .groups(new HashSet<>(user.roles))
+        .expiresIn(28800000)
       .sign();
       return tokenDTO;
     }

@@ -1,4 +1,4 @@
-package at.fhv.layblar.es;
+package at.fhv.layblar.events;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Event")
-public abstract class Event extends PanacheEntityBase {
+public abstract class Event extends PanacheEntityBase implements Comparable<Event> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,5 +29,10 @@ public abstract class Event extends PanacheEntityBase {
     public ObjectNode payload;
 
     public abstract void accept(EventVisitor visitor);
+
+    @Override
+    public int compareTo(Event event) {
+        return timestamp.compareTo(event.timestamp);
+    }
 
 }
