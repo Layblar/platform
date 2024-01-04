@@ -1,4 +1,6 @@
-package at.fhv.layblar.authentication.dto;
+package at.fhv.layblar.householdServiceRouting.model;
+
+import at.fhv.layblar.authentication.dto.RegisterUserDTO;
 
 public class CreateHouseholdDTO {
 

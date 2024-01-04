@@ -6,9 +6,10 @@ import jakarta.persistence.Id;
 
 @Entity
 public class SmartMeter extends PanacheEntityBase {
+
     @Id
     public String smartMeterId;
 
-    public SmartMeter(){};
+    public SmartMeter(){}
 
 }

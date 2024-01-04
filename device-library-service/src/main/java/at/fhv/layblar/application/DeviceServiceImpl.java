@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import at.fhv.layblar.domain.Device;
+import jakarta.enterprise.context.ApplicationScoped;
 
+@ApplicationScoped
 public class DeviceServiceImpl implements DeviceService {
 
     @Override

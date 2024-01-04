@@ -2,8 +2,22 @@ package at.fhv.layblar.domain;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
-
+import at.fhv.layblar.commands.AddDeviceCommand;
+import at.fhv.layblar.commands.CreateHouseholdCommand;
+import at.fhv.layblar.commands.JoinHouseholdCommand;
+import at.fhv.layblar.commands.LeaveHouseholdCommand;
+import at.fhv.layblar.commands.RemoveDeviceCommand;
+import at.fhv.layblar.commands.UpdateDeviceCommand;
+import at.fhv.layblar.events.DeviceAddedEvent;
+import at.fhv.layblar.events.DeviceRemovedEvent;
+import at.fhv.layblar.events.DeviceUpdatedEvent;
+import at.fhv.layblar.events.Event;
+import at.fhv.layblar.events.HouseholdCreatedEvent;
+import at.fhv.layblar.events.HouseholdUserJoinedEvent;
+import at.fhv.layblar.events.HouseholdUserLeftEvent;
+import at.fhv.layblar.events.SmartMeterRegisteredEvent;
+import at.fhv.layblar.events.SmartMeterRemovedEvent;
+import at.fhv.layblar.utils.exceptions.DeviceNotFoundException;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -19,19 +33,84 @@ public class Household extends PanacheEntityBase {
     public List<HouseholdUser> users;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<Device> devices;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public List<SmartMeter> smartMeters;
 
     public Household(){}
 
-    private Household(HouseholdUser user) {
-        this.householdId = UUID.randomUUID().toString();
-        users = new LinkedList<>();
-        users.add(user);
-        devices = new LinkedList<>();
+    public boolean has() {
+        return users.isEmpty();
     }
 
-    public static Household createHouseHold(String email, String firstName, String lastName) {
-        HouseholdUser user = HouseholdUser.createUser(email, firstName, lastName);
-        return new Household(user);
+    public void apply(HouseholdCreatedEvent event) {
+        this.householdId = event.entityId;
+        this.users = new LinkedList<>();
+        this.users.add(HouseholdUser.createUser(event.getEmail(), event.getFirstName(), event.getLastName()));
+        this.devices = new LinkedList<>();
+        this.smartMeters = new LinkedList<>();
+    }
+
+    public void apply(HouseholdUserJoinedEvent event) {
+        
+    }
+
+    public HouseholdCreatedEvent process(CreateHouseholdCommand createHouseholdCommand){
+        return HouseholdCreatedEvent.create(createHouseholdCommand);
+    }
+
+    public void apply(HouseholdUserLeftEvent event) {
+    }
+
+    public void apply(SmartMeterRegisteredEvent event) {
+    }
+
+    public void apply(SmartMeterRemovedEvent event) {
+    }
+
+    public void apply(DeviceAddedEvent event) {
+        Device device = Device.create(event);
+        this.devices.add(device);
+    }
+
+    public void apply(DeviceUpdatedEvent event) {
+        Device device = this.devices.stream().filter(d -> d.deviceId.equals(event.getDeviceId())).findFirst().get();
+        this.devices.remove(device);
+        device.updateDeviceInformation(event);
+        this.devices.add(device);
+    }
+
+    public void apply(DeviceRemovedEvent event) {
+        Device device = this.devices.stream().filter(d -> d.deviceId.equals(event.getDeviceId())).findFirst().get();
+        this.devices.remove(device);
+    }
+
+    public void apply(Event event) {
+    }
+
+    public HouseholdUserLeftEvent process(LeaveHouseholdCommand leaveHouseholdCommand) {
+        return null;
+    }
+
+    public HouseholdUserJoinedEvent process(JoinHouseholdCommand command) {
+        return null;
+    }
+
+    public DeviceAddedEvent process(AddDeviceCommand command) {
+        return DeviceAddedEvent.create(command, this);
+    }
+
+    public DeviceUpdatedEvent process(UpdateDeviceCommand command) throws DeviceNotFoundException{
+        if(this.devices.stream().anyMatch(device -> device.deviceId.equals(command.deviceId))){
+            return DeviceUpdatedEvent.create(command, this);
+        }
+        throw new DeviceNotFoundException();
+    }
+
+    public DeviceRemovedEvent process(RemoveDeviceCommand command) throws DeviceNotFoundException {
+        if(this.devices.stream().anyMatch(device -> device.deviceId.equals(command.deviceId))){
+            return DeviceRemovedEvent.create(command, this);
+        }
+        throw new DeviceNotFoundException();
     }
 
 }

@@ -4,9 +4,12 @@ import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import at.fhv.layblar.authentication.dto.CreateHouseholdDTO;
-import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
-import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
+import at.fhv.layblar.householdServiceRouting.model.AddDeviceDTO;
+import at.fhv.layblar.householdServiceRouting.model.CreateHouseholdDTO;
+import at.fhv.layblar.householdServiceRouting.model.JoinHouseholdDTO;
+import at.fhv.layblar.householdServiceRouting.model.LeaveHouseholdDTO;
+import at.fhv.layblar.householdServiceRouting.model.SmartMeterDTO;
+import at.fhv.layblar.householdServiceRouting.model.UpdateDeviceDTO;
 import io.quarkus.rest.client.reactive.NotBody;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.DELETE;
@@ -27,25 +30,29 @@ public interface HouseholdServiceRestClient {
     Uni<Response> createHousehold(CreateHouseholdDTO createHouseholdDTO, @NotBody String token);
 
     @POST
-    @Path("/household/{householdId}/merge")
-    Uni<Response> joinHousehold(@PathParam("householdId") String householdId);
+    @Path("/household/{householdId}/join")
+    Uni<Response> joinHousehold(@PathParam("householdId") String householdId, JoinHouseholdDTO joinHouseholdDTO);
+
+    @GET
+    @Path("/household/{householdId}/join")
+    Uni<Response> getJoinHouseholdCode(@PathParam("householdId") String householdId);
 
     @POST
-    @Path("/household/{householdId}/split")
-    Uni<Response> leaveHousehold(@PathParam("householdId") String householdId);
+    @Path("/household/{householdId}/leave")
+    Uni<Response> leaveHousehold(@PathParam("householdId") String householdId, LeaveHouseholdDTO leaveHouseholdDTO);
 
     @GET
     @Path("/household/{householdId}")
     Uni<Response> getHouseholdInformation(@PathParam("householdId") String householdId);
 
     @POST
-    @Path("/household/{householdId}/device/{deviceId}")
+    @Path("/household/{householdId}/device")
     Uni<Response> addDeviceToHousehold(@PathParam("householdId") String householdId,
-            @PathParam("deviceId") String deviceId);
+            AddDeviceDTO deviceDTO);
 
     @PUT
     @Path("/household/{householdId}/device")
-    Uni<Response> updateDeviceInformation(String householdId, DeviceDTO device);
+    Uni<Response> updateDeviceInformation(String householdId, UpdateDeviceDTO device);
 
     @DELETE
     @Path("/household/{householdId}/device/{deviceId}")
@@ -58,10 +65,10 @@ public interface HouseholdServiceRestClient {
 
     @POST
     @Path("household/{householdId}/smartMeterReader")
-    Uni<Response> registerSmartMeterReader(@PathParam("householdId") String householdId, SmartMeterDataDTO smartMeter);
+    Uni<Response> registerSmartMeterReader(@PathParam("householdId") String householdId, SmartMeterDTO smartMeterDTO);
 
     @DELETE
     @Path("household/{householdId}/smartMeterReader")
-    Uni<Response> removeSmartMeterReader(@PathParam("householdId") String householdId, SmartMeterDataDTO smartMeter);
+    Uni<Response> removeSmartMeterReader(@PathParam("householdId") String householdId, SmartMeterDTO smartMeterDTO);
 
 }
