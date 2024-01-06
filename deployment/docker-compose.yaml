@@ -5,6 +5,7 @@ include:
   - household-service.yaml
   - smart-meter-service.yaml
   - simulator.yaml
+  - kafka.yaml
 
 services:
 
