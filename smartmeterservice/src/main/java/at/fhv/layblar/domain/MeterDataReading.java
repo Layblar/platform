@@ -2,6 +2,7 @@ package at.fhv.layblar.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
@@ -15,11 +16,15 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 @Entity
 @Table(name = "smart_meter_data")
 @JsonIgnoreProperties({ "timestamp" })
+@IdClass(MeterDataReadingKey.class)
 public class MeterDataReading extends PanacheEntityBase  {
 
     @Id
     public LocalDateTime time;
+    @Id
     public String sensorId;
+    @Id
+    public String householdId;
     @JsonProperty("1.7.0")
     public Float v1_7_0;
     @JsonProperty("1.8.0")

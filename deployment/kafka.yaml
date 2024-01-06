@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   zookeeper:
     image: quay.io/debezium/zookeeper:2.1
     ports:
@@ -9,6 +10,7 @@ services:
      - 3888:3888
     networks:
      - layblar-platform
+
   kafka:
     image: quay.io/debezium/kafka:2.1
     ports:
@@ -19,6 +21,7 @@ services:
      - ZOOKEEPER_CONNECT=zookeeper:2181
     networks:
      - layblar-platform
+
   connect:
     image: quay.io/debezium/connect:2.1
     ports:

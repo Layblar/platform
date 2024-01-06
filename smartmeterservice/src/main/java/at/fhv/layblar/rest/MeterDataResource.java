@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import at.fhv.layblar.domain.MeterDataReading;
+import at.fhv.layblar.domain.MeterDataReadingKey;
 import at.fhv.layblar.infrastructure.MeterDataRepository;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -33,14 +34,18 @@ public class MeterDataResource {
         LocalDateTime fromDate = Instant.ofEpochSecond(Long.parseLong(from)).atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime toDate = Instant.ofEpochSecond(Long.parseLong(to)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        return Response.ok().entity(meterDataRepository.find("time between ?1 and ?2", fromDate, toDate).list()).build();
+        return Response.ok().entity(meterDataRepository.find("time between ?1 and ?2 and householdId = ?3", fromDate, toDate, householdId).list()).build();
 
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public List<MeterDataReading> list() {
-        return MeterDataReading.listAll();
+    public MeterDataReading list() {
+        MeterDataReadingKey key = new MeterDataReadingKey();
+        key.householdId = "1";
+        key.sensorId = "TESTMETER-1";
+        key.time = LocalDateTime.of(2024,1,6,21,4,59);
+        return MeterDataReading.findById(key);
     }
 
     @GET

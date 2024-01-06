@@ -1,17 +1,17 @@
 package at.fhv.layblar.infrastructure;
 
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
 import at.fhv.layblar.domain.MeterDataReading;
+import at.fhv.layblar.domain.MeterDataReadingKey;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
-public class MeterDataRepository implements PanacheRepositoryBase<MeterDataReading,LocalDateTime> {
+public class MeterDataRepository implements PanacheRepositoryBase<MeterDataReading,MeterDataReadingKey> {
 
     @Inject
     EntityManager entityManager;

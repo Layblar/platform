@@ -1,6 +1,7 @@
 CREATE TABLE smart_meter_data (
   time TIMESTAMPTZ NOT NULL,
   sensorId VARCHAR(255) NOT NULL,
+  householdId VARCHAR(255) NOT NULL,
   v1_7_0 NUMERIC NULL,
   v1_8_0 NUMERIC NULL,
   v2_7_0 NUMERIC NULL,
