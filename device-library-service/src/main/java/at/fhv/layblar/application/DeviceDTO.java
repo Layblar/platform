@@ -33,7 +33,7 @@ public class DeviceDTO {
     public static DeviceDTO createDTO(Device device) {
         return new DeviceDTO(device.deviceId, device.deviceName, device.deviceDescription, device.manufacturer,
         device.modelNumber, device.powerDraw, device.energyEfficiencyRating, device.weight,
-        device.deviceCategory.stream().map(category -> DeviceCategoryDTO.creatDeviceCategoryDTO(category)).collect(Collectors.toList()));
+        device.deviceCategory.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category)).collect(Collectors.toList()));
     }
 
 }

@@ -12,4 +12,12 @@ public class SmartMeter extends PanacheEntityBase {
 
     public SmartMeter(){}
 
+    private SmartMeter(String smartMeterId) {
+        this.smartMeterId = smartMeterId;
+    }
+
+    public static SmartMeter create(String smartMeterId){
+        return new SmartMeter(smartMeterId);
+    }
+
 }

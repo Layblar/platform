@@ -1,7 +1,5 @@
 package at.fhv.layblar.domain;
 
-import java.util.UUID;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,15 +19,15 @@ public class HouseholdUser extends PanacheEntityBase {
 
     public HouseholdUser(){}
 
-    private HouseholdUser(String email, String firstName, String lastName){
-        this.userId = UUID.randomUUID().toString();
+    private HouseholdUser(String userId, String email, String firstName, String lastName){
+        this.userId = userId;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
-    public static HouseholdUser createUser(String email, String firstName, String lastName) {
-        return new HouseholdUser(email, firstName, lastName);
+    
+    public static HouseholdUser createUser(String userId, String email, String firstName, String lastName) {
+        return new HouseholdUser(userId, email, firstName, lastName);
     }
 
 }

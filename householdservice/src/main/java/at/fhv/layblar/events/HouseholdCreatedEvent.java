@@ -29,6 +29,11 @@ public class HouseholdCreatedEvent extends HouseholdEvent {
     }
 
     @JsonIgnore
+    public String getUserId() {
+        return this.payload.get("userId").asText();
+    }
+
+    @JsonIgnore
     public String getEmail() {
         return this.payload.get("email").asText();
     }
@@ -46,6 +51,7 @@ public class HouseholdCreatedEvent extends HouseholdEvent {
     private ObjectNode createEventPayload(CreateHouseholdCommand command) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
+        root.put("userId", UUID.randomUUID().toString());
         root.put("email", command.email);
         root.put("firstName", command.firstName);
         root.put("lastName", command.lastName);
