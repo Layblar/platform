@@ -22,7 +22,6 @@ import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class HouseholdEventConsumer {
@@ -32,7 +31,6 @@ public class HouseholdEventConsumer {
 
     @Incoming("household")
     @Blocking
-    @Transactional
     public void process(Record<String,JsonNode> record) {
         try {
             DeviceEvent event = deserializeEvent(record.value());

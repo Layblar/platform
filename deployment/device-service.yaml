@@ -22,10 +22,6 @@ services:
   mongodb-device:
     image: mongo
     mem_limit: 128m
-    environment:
-      MONGODB_DATABASE: device
-      MONGODB_USER: ${DEVICE_DB_USER}
-      MONGODB_PASS: ${DEVICE_DB_PW}
     ports:
       - 27017:27017
     networks:
