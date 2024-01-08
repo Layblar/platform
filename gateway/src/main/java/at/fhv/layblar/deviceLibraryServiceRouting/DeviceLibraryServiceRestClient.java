@@ -15,18 +15,19 @@ import jakarta.ws.rs.core.Response;
 public interface DeviceLibraryServiceRestClient {
 
     @GET
+    @Path("device")
     public Uni<Response> listDevices(@QueryParam("name") String name);
 
     @GET
-    @Path("/{deviceId}")
+    @Path("device/{deviceId}")
     public Uni<Response> getDeviceById(@PathParam("deviceId") String deviceId);
 
     @GET
-    @Path("/category")
+    @Path("device/category")
     public Uni<Response> listCategoires(@QueryParam("name") String name);
 
     @GET
-    @Path("/category/{categoryId}")
+    @Path("device/category/{categoryId}")
     public Uni<Response> getCategoryById(@PathParam("categoryId") String categoryId);
 
 }
