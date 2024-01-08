@@ -22,6 +22,10 @@ public class HouseholdDeletedEvent extends HouseholdEvent {
         this.payload = createEventPayload(command, household);
     }
 
+    public static HouseholdDeletedEvent create(LeaveHouseholdCommand command, Household household){
+        return new HouseholdDeletedEvent(command, household);
+    }
+
     private ObjectNode createEventPayload(LeaveHouseholdCommand command, Household household) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();

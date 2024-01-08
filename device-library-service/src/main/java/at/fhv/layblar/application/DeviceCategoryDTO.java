@@ -14,7 +14,7 @@ public class DeviceCategoryDTO {
         this.deviceCategoryDescription = deviceCategoryDescription;
     }
 
-    public static DeviceCategoryDTO creatDeviceCategoryDTO(DeviceCategory deviceCategory){
+    public static DeviceCategoryDTO createDeviceCategoryDTO(DeviceCategory deviceCategory){
         return new DeviceCategoryDTO(deviceCategory.deviceCategoryId, deviceCategory.deviceCategoryName, deviceCategory.deviceCategoryDescription);
     }
 

@@ -1,6 +1,7 @@
-package at.fhv.layblar.utils.exceptions;
+package at.fhv.layblar.utils;
 
 
+import at.fhv.layblar.utils.exceptions.ResponseException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
 

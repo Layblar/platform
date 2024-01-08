@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -16,6 +18,16 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Event")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "eventType", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = DeviceAddedEvent.class, name = "DeviceAddedEvent"),
+        @JsonSubTypes.Type(value = DeviceUpdatedEvent.class, name = "DeviceUpdatedEvent"),
+        @JsonSubTypes.Type(value = DeviceRemovedEvent.class, name = "DeviceRemovedEvent"),
+        @JsonSubTypes.Type(value = HouseholdCreatedEvent.class, name = "HouseholdCreatedEvent"),
+        @JsonSubTypes.Type(value = HouseholdUserJoinedEvent.class, name = "HouseholdJoinedEvent"),
+        @JsonSubTypes.Type(value = SmartMeterRegisteredEvent.class, name = "SmartMeterRegisteredEvent"),
+        @JsonSubTypes.Type(value = SmartMeterRemovedEvent.class, name = "SmartMeterRemovedEvent")
+})
 public abstract class Event extends PanacheEntityBase implements Comparable<Event> {
 
     @Id

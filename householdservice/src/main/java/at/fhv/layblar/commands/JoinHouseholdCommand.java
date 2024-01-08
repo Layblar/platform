@@ -10,5 +10,11 @@ public class JoinHouseholdCommand {
     public String userId;
     @NotNull
     public String joinCode;
+    @NotNull
+    public String email;
+    @NotNull
+    public String firstName;
+    @NotNull
+    public String lastName;
     
 }

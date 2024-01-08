@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  layblar-device-service:
+      container_name: layblar-device-service
+      image: jfe7727/layblar-device-library-service:main
+      depends_on:
+        - mongodb-device
+      environment:
+        KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        QUARKUS_MONGODB_CONNECTION_STRING: ${MONODB_DEVICE_CON}
+        MP_JWT_VERIFY_PUBLICKEY_LOCATION: file:///key/publicKey.pem
+        MP_JWT_VERIFY_ISSUER: ${JWT_ISSUER}
+      volumes:
+        - ./publicKey.pem:/key/publicKey.pem
+      ports:
+        - 8085:8080
+      networks:
+        - layblar-platform
+
+  mongodb-device:
+    image: mongo
+    mem_limit: 128m
+    environment:
+      MONGODB_DATABASE: device
+      MONGODB_USER: ${DEVICE_DB_USER}
+      MONGODB_PASS: ${DEVICE_DB_PW}
+    ports:
+      - 27017:27017
+    networks:
+      - layblar-platform

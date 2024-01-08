@@ -65,7 +65,7 @@ public class EntityBuilder {
                 }
 
                 @Override
-                public void visit(HouseholdDeletedEvent householdDeletedEvent) {
+                public void visit(HouseholdDeletedEvent event) {
                     household.apply(event);
                 }
                 

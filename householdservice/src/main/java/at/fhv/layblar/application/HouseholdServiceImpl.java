@@ -24,11 +24,15 @@ import at.fhv.layblar.events.Event;
 import at.fhv.layblar.events.HouseholdCreatedEvent;
 import at.fhv.layblar.events.HouseholdUserJoinedEvent;
 import at.fhv.layblar.events.HouseholdUserLeftEvent;
+import at.fhv.layblar.events.SmartMeterRegisteredEvent;
+import at.fhv.layblar.events.SmartMeterRemovedEvent;
 import at.fhv.layblar.utils.EntityBuilder;
 import at.fhv.layblar.utils.exceptions.DeviceNotFoundException;
 import at.fhv.layblar.utils.exceptions.HouseholdNotFoundException;
 import at.fhv.layblar.utils.exceptions.JoinHouseholdException;
 import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
+import at.fhv.layblar.utils.exceptions.SmartMeterAlreadyRegisteredException;
+import at.fhv.layblar.utils.exceptions.SmartMeterNotFoundException;
 import at.fhv.layblar.utils.exceptions.VersionNotMatchingException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -95,6 +99,7 @@ public class HouseholdServiceImpl implements HouseholdService {
             throw new HouseholdNotFoundException("The household was not found");
         }
         Household household = EntityBuilder.buildEntity(events);
+        validateHousehold(household);
         HouseholdUserLeftEvent event = household.process(command);
         checkForVersionMismatch(events, household);
         event.persist();
@@ -105,8 +110,9 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     @Override
     public HouseholdDTO getHouseholdInformation(String householdId) throws NotAuthorizedException {
-        validateHouseholdId(householdId);
-        return HouseholdDTO.createHouseholdDTO(EntityBuilder.buildEntity(getEventsByEntityId(householdId)));
+        Household household = EntityBuilder.buildEntity(getEventsByEntityId(householdId));
+        validateHousehold(household);
+        return HouseholdDTO.createHouseholdDTO(household);
     }
 
     @Override
@@ -125,27 +131,45 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     @Override
     @Transactional
-    public HouseholdDTO registerSmartMeter(String householdId, RegisterSmartMeterCommand command) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registerSmartMeter'");
-    }
-
-    @Override
-    @Transactional
-    public HouseholdDTO removeSmartMeter(String householdId, RemoveSmartMeterCommand command) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeSmartMeter'");
-    }
-
-    @Override
-    @Transactional
-    public HouseholdDTO addDeviceToHousehold(String householdId, AddDeviceCommand command) throws VersionNotMatchingException, HouseholdNotFoundException, NotAuthorizedException {
-        validateHouseholdId(householdId);
+    public HouseholdDTO registerSmartMeter(String householdId, RegisterSmartMeterCommand command) throws NotAuthorizedException, HouseholdNotFoundException, VersionNotMatchingException, SmartMeterAlreadyRegisteredException {
         List<Event> events = getEventsByEntityId(householdId);
         if(events.size() == 0){
             throw new HouseholdNotFoundException("The household was not found");
         }
         Household household = EntityBuilder.buildEntity(events);
+        validateHousehold(household);
+        SmartMeterRegisteredEvent event = household.process(command);
+        checkForVersionMismatch(events, household);
+        event.persist();
+        household.apply(event);
+        return HouseholdDTO.createHouseholdDTO(household);
+    }
+
+    @Override
+    @Transactional
+    public HouseholdDTO removeSmartMeter(String householdId, RemoveSmartMeterCommand command) throws VersionNotMatchingException, HouseholdNotFoundException, NotAuthorizedException, SmartMeterNotFoundException {
+        List<Event> events = getEventsByEntityId(householdId);
+        if(events.size() == 0){
+            throw new HouseholdNotFoundException("The household was not found");
+        }
+        Household household = EntityBuilder.buildEntity(events);
+        validateHousehold(household);
+        SmartMeterRemovedEvent event = household.process(command);
+        checkForVersionMismatch(events, household);
+        event.persist();
+        household.apply(event);
+        return HouseholdDTO.createHouseholdDTO(household);
+    }
+
+    @Override
+    @Transactional
+    public HouseholdDTO addDeviceToHousehold(String householdId, AddDeviceCommand command) throws VersionNotMatchingException, HouseholdNotFoundException, NotAuthorizedException {
+        List<Event> events = getEventsByEntityId(householdId);
+        if(events.size() == 0){
+            throw new HouseholdNotFoundException("The household was not found");
+        }
+        Household household = EntityBuilder.buildEntity(events);
+        validateHousehold(household);
         DeviceAddedEvent event = household.process(command);
         checkForVersionMismatch(events, household);
         event.persist();
@@ -156,12 +180,12 @@ public class HouseholdServiceImpl implements HouseholdService {
     @Override
     @Transactional
     public HouseholdDTO updateDeviceInformation(String householdId, UpdateDeviceCommand command) throws VersionNotMatchingException, HouseholdNotFoundException, NotAuthorizedException, DeviceNotFoundException {
-        validateHouseholdId(householdId);
         List<Event> events = getEventsByEntityId(householdId);
         if(events.size() == 0){
             throw new HouseholdNotFoundException("The household was not found");
         }
         Household household = EntityBuilder.buildEntity(events);
+        validateHousehold(household);
         DeviceUpdatedEvent event = household.process(command);
         checkForVersionMismatch(events, household);
         event.persist();
@@ -172,12 +196,12 @@ public class HouseholdServiceImpl implements HouseholdService {
     @Override
     @Transactional
     public HouseholdDTO removeDeviceFromHousehold(String householdId, RemoveDeviceCommand command) throws VersionNotMatchingException, NotAuthorizedException, HouseholdNotFoundException, DeviceNotFoundException {
-        validateHouseholdId(householdId);
         List<Event> events = getEventsByEntityId(householdId);
         if(events.size() == 0){
             throw new HouseholdNotFoundException("The household was not found");
         }
         Household household = EntityBuilder.buildEntity(events);
+        validateHousehold(household);
         DeviceRemovedEvent event = household.process(command);
         checkForVersionMismatch(events, household);
         event.persist();
@@ -189,6 +213,15 @@ public class HouseholdServiceImpl implements HouseholdService {
     public List<HouseholdDeviceDTO> getHouseholdDevices(String householdId) throws NotAuthorizedException {
         validateHouseholdId(householdId);
         return HouseholdDTO.createHouseholdDTO(EntityBuilder.buildEntity(getEventsByEntityId(householdId))).devices;
+    }
+
+    private void validateHousehold(Household household) throws NotAuthorizedException {
+        if(!jsonWebToken.getClaim("householdId").equals(household.householdId)) {
+            throw new NotAuthorizedException("Household not authorized to do this action");
+        }
+        if(!household.users.stream().anyMatch(user -> user.userId.equals(jsonWebToken.getSubject()))){
+            throw new NotAuthorizedException("Users not authorized to do this action");
+        }
     }
 
     private void validateHouseholdId(String householdId) throws NotAuthorizedException {

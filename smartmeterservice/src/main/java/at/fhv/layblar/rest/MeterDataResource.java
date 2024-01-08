@@ -3,9 +3,6 @@ package at.fhv.layblar.rest;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
-
-import at.fhv.layblar.domain.MeterDataReading;
 import at.fhv.layblar.infrastructure.MeterDataRepository;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -33,20 +30,7 @@ public class MeterDataResource {
         LocalDateTime fromDate = Instant.ofEpochSecond(Long.parseLong(from)).atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime toDate = Instant.ofEpochSecond(Long.parseLong(to)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        return Response.ok().entity(meterDataRepository.find("time between ?1 and ?2", fromDate, toDate).list()).build();
+        return Response.ok().entity(meterDataRepository.find("time between ?1 and ?2 and householdId = ?3", fromDate, toDate, householdId).list()).build();
 
-    }
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public List<MeterDataReading> list() {
-        return MeterDataReading.listAll();
-    }
-
-    @GET
-    @Path("/bucket")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<String> bucket() {
-        return meterDataRepository.nativeQuery();
     }
 }

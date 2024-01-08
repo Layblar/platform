@@ -10,7 +10,6 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import at.fhv.layblar.householdServiceRouting.model.AddDeviceDTO;
 import at.fhv.layblar.householdServiceRouting.model.HouseholdDTO;
 import at.fhv.layblar.householdServiceRouting.model.HouseholdDeviceDTO;

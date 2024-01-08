@@ -17,6 +17,8 @@ import at.fhv.layblar.utils.exceptions.DeviceNotFoundException;
 import at.fhv.layblar.utils.exceptions.HouseholdNotFoundException;
 import at.fhv.layblar.utils.exceptions.JoinHouseholdException;
 import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
+import at.fhv.layblar.utils.exceptions.SmartMeterAlreadyRegisteredException;
+import at.fhv.layblar.utils.exceptions.SmartMeterNotFoundException;
 import at.fhv.layblar.utils.exceptions.VersionNotMatchingException;
 
 public interface HouseholdService {
@@ -31,9 +33,9 @@ public interface HouseholdService {
 
     public HouseholdJoinCodeDTO getHouseholdJoinCodeInformation(String householdId) throws NotAuthorizedException;
 
-    public HouseholdDTO registerSmartMeter(String householdId, RegisterSmartMeterCommand command) throws NotAuthorizedException, VersionNotMatchingException;
+    public HouseholdDTO registerSmartMeter(String householdId, RegisterSmartMeterCommand command) throws NotAuthorizedException, VersionNotMatchingException, HouseholdNotFoundException, SmartMeterAlreadyRegisteredException;
 
-    public HouseholdDTO removeSmartMeter(String householdId, RemoveSmartMeterCommand command) throws NotAuthorizedException, VersionNotMatchingException;
+    public HouseholdDTO removeSmartMeter(String householdId, RemoveSmartMeterCommand command) throws NotAuthorizedException, VersionNotMatchingException, HouseholdNotFoundException, SmartMeterNotFoundException;
 
     public HouseholdDTO addDeviceToHousehold(String householdId, AddDeviceCommand command) throws NotAuthorizedException, VersionNotMatchingException, HouseholdNotFoundException;
 
