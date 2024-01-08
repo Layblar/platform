@@ -9,8 +9,9 @@ services:
       - timescaledb
       - rabbit
     environment:
-      RABBITMQ_HOST: rabbit
-      RABBITMQ_PORT: 5672
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      QUARKUS_RABBITMQCLIENT_HOSTNAME: rabbit
+      QUARKUS_RABBITMQCLIENT_PORT: 5672
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://timescaledb:5432/meterdata
       QUARKUS_DATASOURCE_USERNAME: ${SMARTMETER_DB_USER}
       QUARKUS_DATASOURCE_PASSWORD: ${SMARTMETER_DB_PW}

@@ -18,6 +18,6 @@ public interface EventVisitor {
 
     void visit(DeviceRemovedEvent event);
 
-    void visit(HouseholdDeletedEvent householdDeletedEvent);
+    void visit(HouseholdDeletedEvent event);
 
 }

@@ -25,22 +25,26 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public DeviceCategoryDTO getCategoryById(String categoryId) throws DeviceCategoryNotFoundException {
-        List<DeviceCategory> categories = Device.find("deviceCategory.deviceCategoryId", categoryId)
-        .project(DeviceCategory.class).list()
-        .stream()
-        .distinct()
-        .collect(Collectors.toList());
-        if(!categories.isEmpty()){
-            return DeviceCategoryDTO.createDeviceCategoryDTO(categories.get(0));
+
+        List<Device> devices = Device.listAll();
+
+        for (Device device : devices) {
+            for (DeviceCategory category : device.deviceCategory) {
+                if (category.deviceCategoryId.equals(categoryId)) {
+                    return DeviceCategoryDTO.createDeviceCategoryDTO(category);
+                }
+            }
         }
+
         throw new DeviceCategoryNotFoundException();
+
     }
 
     @Override
     public List<DeviceDTO> listDevices(String name) {
         List<Device> devices = new LinkedList<>();
         if(name != null){
-            devices = Device.find("deviceName", name).list();
+            devices = Device.find("{'$or': [{'deviceName': ?1}, {'alternativeNames': {'$in': [?1]}}]}", name).list();
         } else {
             devices = Device.listAll();
         }
@@ -49,10 +53,25 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<DeviceCategoryDTO> listCategories(String name) {
-        List<DeviceCategory> categories = Device.findAll().project(DeviceCategory.class).list().stream().distinct()
-                .collect(Collectors.toList());
-        return categories.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category))
-                .collect(Collectors.toList());
-    }
+        List<Device> devices = Device.listAll();
 
+        List<DeviceCategory> categories = new LinkedList<>();
+
+        for (Device device : devices) {
+            for (DeviceCategory category : device.deviceCategory) {
+                if (name != null) {
+                    if (category.deviceCategoryName.equals(name)) {
+                        categories.add(category);
+                    }
+                } else {
+                    categories.add(category);
+                }
+            }
+        }
+
+        categories = categories.stream().distinct().collect(Collectors.toList());
+
+        return categories.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category)).collect(Collectors.toList());
+
+    }
 }
