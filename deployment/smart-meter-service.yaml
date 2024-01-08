@@ -5,6 +5,7 @@ services:
   layblar-smart-meter-service:
     container_name: layblar-smart-meter-service
     image: jfe7727/layblar-smartmeterservice:main
+    restart: always
     depends_on:
       - timescaledb
       - rabbit

@@ -2,8 +2,8 @@ version: '3'
 
 services:
 
-  layblar-device-service:
-      container_name: layblar-device-service
+  layblar-device-library-service:
+      container_name: layblar-device-library-service
       image: jfe7727/layblar-device-library-service:main
       depends_on:
         - mongodb-device
