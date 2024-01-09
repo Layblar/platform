@@ -10,8 +10,10 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import at.fhv.layblar.projectServiceRouting.model.ProjectDTO;
+import at.fhv.layblar.projectServiceRouting.model.CreateProjectDTO;
+import at.fhv.layblar.projectServiceRouting.model.ProjectInfoDTO;
 import at.fhv.layblar.projectServiceRouting.model.ResearcherDTO;
+import at.fhv.layblar.projectServiceRouting.model.UpdateProjectDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -49,30 +51,30 @@ public class ProjectServiceController {
     @POST
     @Path("/project")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectDTO.class)), description = "The created project", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "The created project", responseCode = "200")
     @Operation(summary = "Create a Project", description = "Create a new Project")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> createProject(
-            @Parameter(description = "The project object based on the ProjectDTO that should be created", required = true) ProjectDTO project) {
+            @Parameter(description = "The project object based on the ProjectDTO that should be created", required = true) CreateProjectDTO project) {
         return restClient.createProject(project);
     }
 
     @PUT
     @Path("/project/{projectId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectDTO.class)), description = "The updated project", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "The updated project", responseCode = "200")
     @Operation(summary = "Update a Project", description = "Update a Project")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> updateProject(
             @Parameter(description = "The ID of the project to update", required = true) @PathParam("projectId") String projectId,
-            @Parameter(description = "The project object based on the ProjectDTO that should be updated", required = true) ProjectDTO project) {
+            @Parameter(description = "The project object based on the ProjectDTO that should be updated", required = true) UpdateProjectDTO project) {
         return restClient.updateProject(projectId, project);
     }
 
     @GET
     @Path("/project/{projectId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectDTO.class)), description = "Project by id", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "Project by id", responseCode = "200")
     @Operation(summary = "Get a Project", description = "Get a Project")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> getProject(
@@ -81,9 +83,20 @@ public class ProjectServiceController {
     }
 
     @GET
+    @Path("/project/{projectId}/data")
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "Project data by id", responseCode = "200")
+    @Operation(summary = "Get data from a Project", description = "Get data from a Project")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response> getProjectData(
+            @Parameter(description = "The ID of the project to get data from", required = true) @PathParam("projectId") String projectId) {
+        return restClient.getProjectData(projectId);
+    }
+
+    @GET
     @Path("/project")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectDTO.class)), description = "List of all projects", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectInfoDTO.class)), description = "List of all projects", responseCode = "200")
     @Operation(summary = "List all Projects", description = "List all Projects")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> listProjects() {
@@ -91,15 +104,15 @@ public class ProjectServiceController {
     }
 
     @POST
-    @Path("/project/{projectId}/join/{userId}")
+    @Path("/project/{projectId}/household/{householdId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectDTO.class)), description = "The joined Project Information", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "The joined Project Information", responseCode = "200")
     @Operation(summary = "Join a Project", description = "Join a Project")
     @SecurityRequirement(name = "jwt")
         Uni<Response> joinProject(
             @Parameter(description = "The ID of the project to join", required = true) @PathParam("projectId") String projectId,
-            @Parameter(description = "The ID of the user that wants to join the project", required = true) @PathParam("userId") String user){
+            @Parameter(description = "The ID of the household that wants to join the project", required = true) @PathParam("householdId") String householdId){
 
-        return restClient.joinProject(projectId, user);
+        return restClient.joinProject(projectId, householdId);
     }
 }
