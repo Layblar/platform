@@ -826,7 +826,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProjectDTO'
+                  $ref: '#/components/schemas/ProjectInfoDTO'
       security:
       - jwt: []
     post:
@@ -839,7 +839,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectDTO'
+              $ref: '#/components/schemas/CreateProjectDTO'
       responses:
         "401":
           description: Unauthorized
@@ -854,18 +854,28 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  projectId:
                     type: string
-                  name:
+                  projectName:
                     type: string
-                  description:
+                  projectDescription:
+                    type: string
+                  projectDataUseDeclartion:
                     type: string
                   startDate:
-                    type: string
+                    $ref: '#/components/schemas/LocalDateTime'
                   endDate:
-                    type: string
-                  researcherId:
-                    type: string
+                    $ref: '#/components/schemas/LocalDateTime'
+                  created:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  metaData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectMetaDataDTO'
+                  labels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabelDTO'
       security:
       - jwt: []
   /project/project/{projectId}:
@@ -896,18 +906,28 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  projectId:
                     type: string
-                  name:
+                  projectName:
                     type: string
-                  description:
+                  projectDescription:
+                    type: string
+                  projectDataUseDeclartion:
                     type: string
                   startDate:
-                    type: string
+                    $ref: '#/components/schemas/LocalDateTime'
                   endDate:
-                    type: string
-                  researcherId:
-                    type: string
+                    $ref: '#/components/schemas/LocalDateTime'
+                  created:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  metaData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectMetaDataDTO'
+                  labels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabelDTO'
       security:
       - jwt: []
     put:
@@ -927,7 +947,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectDTO'
+              $ref: '#/components/schemas/UpdateProjectDTO'
       responses:
         "401":
           description: Unauthorized
@@ -942,21 +962,83 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  projectId:
                     type: string
-                  name:
+                  projectName:
                     type: string
-                  description:
+                  projectDescription:
+                    type: string
+                  projectDataUseDeclartion:
                     type: string
                   startDate:
-                    type: string
+                    $ref: '#/components/schemas/LocalDateTime'
                   endDate:
-                    type: string
-                  researcherId:
-                    type: string
+                    $ref: '#/components/schemas/LocalDateTime'
+                  created:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  metaData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectMetaDataDTO'
+                  labels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabelDTO'
       security:
       - jwt: []
-  /project/project/{projectId}/join/{userId}:
+  /project/project/{projectId}/data:
+    get:
+      tags:
+      - Project
+      summary: Get data from a Project
+      description: Get data from a Project
+      operationId: getProjectData
+      parameters:
+      - name: projectId
+        in: path
+        description: The ID of the project to get data from
+        required: true
+        schema:
+          type: string
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: Project data by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projectId:
+                    type: string
+                  projectName:
+                    type: string
+                  projectDescription:
+                    type: string
+                  projectDataUseDeclartion:
+                    type: string
+                  startDate:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  endDate:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  created:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  metaData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectMetaDataDTO'
+                  labels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabelDTO'
+      security:
+      - jwt: []
+  /project/project/{projectId}/household/{householdId}:
     post:
       tags:
       - Project
@@ -964,15 +1046,15 @@ paths:
       description: Join a Project
       operationId: joinProject
       parameters:
-      - name: projectId
+      - name: householdId
         in: path
-        description: The ID of the project to join
+        description: The ID of the household that wants to join the project
         required: true
         schema:
           type: string
-      - name: userId
+      - name: projectId
         in: path
-        description: The ID of the user that wants to join the project
+        description: The ID of the project to join
         required: true
         schema:
           type: string
@@ -988,9 +1070,30 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProjectDTO'
+                type: object
+                properties:
+                  projectId:
+                    type: string
+                  projectName:
+                    type: string
+                  projectDescription:
+                    type: string
+                  projectDataUseDeclartion:
+                    type: string
+                  startDate:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  endDate:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  created:
+                    $ref: '#/components/schemas/LocalDateTime'
+                  metaData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectMetaDataDTO'
+                  labels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabelDTO'
       security:
       - jwt: []
   /project/researcher:
@@ -1121,6 +1224,27 @@ components:
             $ref: '#/components/schemas/SmartMeterDataDTO1'
         labelMetaData:
           $ref: '#/components/schemas/LabelMetaDataDTO'
+    CreateProjectDTO:
+      type: object
+      properties:
+        projectName:
+          type: string
+        projectDescription:
+          type: string
+        projectDataUseDeclartion:
+          type: string
+        startDate:
+          $ref: '#/components/schemas/LocalDateTime'
+        endDate:
+          $ref: '#/components/schemas/LocalDateTime'
+        metaData:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectMetaDataDTO'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabelDTO'
     DeviceCategoryDTO:
       type: object
       properties:
@@ -1206,6 +1330,21 @@ components:
           type: string
         lastName:
           type: string
+    LabelDTO:
+      type: object
+      properties:
+        labelId:
+          type: string
+        labelName:
+          type: string
+        labelDescription:
+          type: string
+        labelMethod:
+          type: string
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCategoryDTO'
     LabelMetaDataDTO:
       type: object
       properties:
@@ -1231,21 +1370,42 @@ components:
           type: string
         password:
           type: string
-    ProjectDTO:
+    ProjectInfoDTO:
       type: object
       properties:
-        id:
+        projectId:
           type: string
-        name:
+        projectName:
           type: string
-        description:
+        projectDescription:
+          type: string
+        projectDataUseDeclartion:
           type: string
         startDate:
-          type: string
+          $ref: '#/components/schemas/LocalDateTime'
         endDate:
+          $ref: '#/components/schemas/LocalDateTime'
+        created:
+          $ref: '#/components/schemas/LocalDateTime'
+        metaData:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectMetaDataDTO'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabelDTO'
+    ProjectMetaDataDTO:
+      type: object
+      properties:
+        metaDataId:
           type: string
-        researcherId:
+        metaDataName:
           type: string
+        type:
+          type: string
+        isRequired:
+          type: boolean
     RegisterUserDTO:
       type: object
       properties:
@@ -1419,6 +1579,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceCategoryDTO'
+    UpdateProjectDTO:
+      type: object
+      properties:
+        projectId:
+          type: string
+        projectName:
+          type: string
+        projectDescription:
+          type: string
+        projectDataUseDeclartion:
+          type: string
+        startDate:
+          $ref: '#/components/schemas/LocalDateTime'
+        endDate:
+          $ref: '#/components/schemas/LocalDateTime'
+        metaData:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectMetaDataDTO'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabelDTO'
   securitySchemes:
     SecurityScheme:
       type: http
