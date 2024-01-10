@@ -1,12 +1,12 @@
 version: '3'
 
 include:
-  # - gateway.yaml
-  # - household-service.yaml
-  # - smart-meter-service.yaml
-  # - device-service.yaml
+  - gateway.yaml
+  - household-service.yaml
+  - smart-meter-service.yaml
+  - device-service.yaml
   - simulator.yaml
-  # - kafka.yaml
+  - kafka.yaml
   - rabbit.yaml
 
 networks:

@@ -4,5 +4,6 @@ node_modules
 
 # Ignore key files
 deployment/*.pem
+deployment/rabbitmq/*.pem
 deployment/.env
 #deployment/*-config.json
