@@ -1,29 +1,13 @@
 version: '3'
 
 include:
-  - gateway.yaml
-  - household-service.yaml
-  - smart-meter-service.yaml
-  - device-service.yaml
+  # - gateway.yaml
+  # - household-service.yaml
+  # - smart-meter-service.yaml
+  # - device-service.yaml
   - simulator.yaml
-  - kafka.yaml
-
-services:
-
-  rabbit:
-    image: rabbitmq:management-alpine
-    container_name: rabbitmq
-    restart: unless-stopped
-    build:
-      context: docker/
-    ports:
-      - "1883:1883"
-      - "5672:5672"
-      - "8090:15672"
-      - "1885:15675"
-    command: "/bin/bash -c \"rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_web_mqtt rabbitmq_amqp1_0; rabbitmq-server\""
-    networks:
-      - layblar-platform
+  # - kafka.yaml
+  - rabbit.yaml
 
 networks:
   layblar-platform:

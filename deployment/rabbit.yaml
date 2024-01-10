@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  rabbit:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    build:
+      context: docker/
+    ports:
+      - "1883:1883"
+      - "5672:5672"
+      - "1882:1882"
+      - "5671:5671"
+      - "8090:15672"
+      - "1885:15675"
+    command: "/bin/bash -c \"rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_web_mqtt rabbitmq_amqp1_0; rabbitmq-server\""
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/ca_certificate.pem:/key/ca_certificate.pem
+      - ./rabbitmq/server_certificate.pem:/key/server_certificate.pem
+      - ./rabbitmq/server_key.pem:/key/server_key.pem
+    networks:
+      - layblar-platform
