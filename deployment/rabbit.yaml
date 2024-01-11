@@ -5,6 +5,7 @@ services:
   rabbit:
     image: rabbitmq:management-alpine
     container_name: rabbitmq
+    hostname: rabbit
     restart: unless-stopped
     build:
       context: docker/
@@ -19,7 +20,7 @@ services:
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - ./rabbitmq/ca_certificate.pem:/key/ca_certificate.pem
-      - ./rabbitmq/server_certificate.pem:/key/server_certificate.pem
-      - ./rabbitmq/server_key.pem:/key/server_key.pem
+      - ./rabbitmq/server_rabbit_certificate.pem:/key/server_rabbit_certificate.pem
+      - ./rabbitmq/server_rabbit_key.pem:/key/server_rabbit_key.pem
     networks:
       - layblar-platform
