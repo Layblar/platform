@@ -1,60 +1,141 @@
 package at.fhv.layblar.application;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
+import at.fhv.layblar.application.dto.ProjectDataDTO;
+import at.fhv.layblar.application.dto.ProjectInfoDTO;
+import at.fhv.layblar.application.dto.ResearcherDTO;
+import at.fhv.layblar.commands.CreateProjectCommand;
+import at.fhv.layblar.commands.JoinProjectCommand;
+import at.fhv.layblar.commands.RegisterResearcherCommand;
+import at.fhv.layblar.commands.UpdateProjectCommand;
 import at.fhv.layblar.domain.Project;
 import at.fhv.layblar.domain.Researcher;
-import at.fhv.layblar.infrastructure.ProjectRepository;
-import at.fhv.layblar.infrastructure.ResearcherRepository;
-import jakarta.ws.rs.core.Response;
+import at.fhv.layblar.events.ProjectCreatedEvent;
+import at.fhv.layblar.events.ProjectEvent;
+import at.fhv.layblar.events.ProjectJoinedEvent;
+import at.fhv.layblar.events.ProjectUpdatedEvent;
+import at.fhv.layblar.utils.EntityBuilder;
+import at.fhv.layblar.utils.exceptions.ProjectNotFoundException;
+import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
+import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
+import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
+import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
+import at.fhv.layblar.utils.exceptions.VersionNotMatchingException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
+@ApplicationScoped
 public class ProjectServiceImpl implements ProjectService {
 
-    ProjectRepository projectRepository;
-
-    ResearcherRepository researcherRepository;
+    @Inject
+    JsonWebToken jsonWebToken;
 
     @Override
-    public ProjectDTO updateProject(String projectId, Project project) {
-        
-        
-        Project projectToUpdate = projectRepository.findById(projectId);
-        projectToUpdate.name = project.name;
-        projectToUpdate.description = project.description;
-        projectToUpdate.startDate = project.startDate;
-        projectToUpdate.endDate = project.endDate;
-        projectToUpdate.researcherId = project.researcherId;
-        projectToUpdate.participants = project.participants;
-        projectToUpdate.persist();
-        return new ProjectDTO(projectToUpdate.id, projectToUpdate.name, projectToUpdate.description, projectToUpdate.startDate, projectToUpdate.endDate, projectToUpdate.researcherId, projectToUpdate.participants);
-    
+    @Transactional
+    public ResearcherDTO createResearcher(RegisterResearcherCommand command) {
+        Researcher researcher = Researcher.creatResearcher(command);
+        Researcher.persist(researcher);
+        return ResearcherDTO.createResearcherDTO(researcher);
     }
 
     @Override
-    public ProjectDTO createProject(Project project) {
-        projectRepository.persist(project);
-        return new ProjectDTO(project.id, project.name, project.description, project.startDate, project.endDate, project.researcherId, project.participants);
+    @Transactional
+    public ProjectInfoDTO createProject(CreateProjectCommand command) throws NotAuthorizedException {
+        Optional<Researcher> optResearcher = Researcher.findByIdOptional(jsonWebToken.getClaim("researcherId"));
+        if(optResearcher.isEmpty()){
+            throw new NotAuthorizedException("");
+        }
+        Project project = new Project();
+        ProjectCreatedEvent event = project.process(command, optResearcher.get());
+        event.persist();
+        project.apply(event);
+        return ProjectInfoDTO.createProjectInfoDTO(project);
     }
 
     @Override
-    public ProjectDTO getProject(String projectId) {
-        Project project = projectRepository.findById(projectId);
-        return new ProjectDTO(project.id, project.name, project.description, project.startDate, project.endDate, project.researcherId, project.participants);
+    @Transactional
+    public ProjectInfoDTO updateProject(String projectId, UpdateProjectCommand command) throws ProjectNotFoundException, NotAuthorizedException, VersionNotMatchingException, ProjectValidityTimeframeException {
+        List<ProjectEvent> events = getEventsByEntityId(projectId);
+        if(events.size() == 0){
+            throw new ProjectNotFoundException("The project was not found");
+        }
+        Project project = EntityBuilder.buildEntity(events);
+        validateProjectResearcher(project);
+        ProjectUpdatedEvent event = project.process(command);
+        checkForVersionMismatch(events, project);
+        event.persist();
+        project.apply(event);
+        return ProjectInfoDTO.createProjectInfoDTO(project);
     }
 
     @Override
-    public ResearcherDTO createResearcher(Researcher researcher) {
-        researcherRepository.persist(researcher);
-        return new ResearcherDTO(researcher.id, researcher.name, researcher.organization);
+    @Transactional
+    public ProjectInfoDTO joinProject(String projectId, String houeholdId, JoinProjectCommand command)
+            throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing {
+        validateHouseholdId(houeholdId);
+        command.householdId = houeholdId;
+        List<ProjectEvent> events = getEventsByEntityId(projectId);
+        if(events.size() == 0){
+            throw new ProjectNotFoundException("The project was not found");
+        }
+        Project project = EntityBuilder.buildEntity(events);
+        validateProjectResearcher(project);
+        ProjectJoinedEvent event = project.process(command);
+        checkForVersionMismatch(events, project);
+        event.persist();
+        project.apply(event);
+        return ProjectInfoDTO.createProjectInfoDTO(project);
     }
 
     @Override
-    public List<ProjectDTO> getProjects() {
-        List<Project> projects = projectRepository.listAll();
-        List<ProjectDTO> projectDTOs = new LinkedList<>();
-        projects.forEach(project -> projectDTOs.add(new ProjectDTO(project.id, project.name, project.description, project.startDate, project.endDate, project.researcherId, project.participants)));
-        return projectDTOs;
+    public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException {
+        List<ProjectEvent> events = getEventsByEntityId(projectId);
+        if(events.size() == 0){
+            throw new ProjectNotFoundException("The project was not found");
+        }
+        Project project = EntityBuilder.buildEntity(events);
+        validateProjectResearcher(project);
+        return ProjectInfoDTO.createProjectInfoDTO(project);
     }
-    
+
+    @Override
+    public ProjectDataDTO getProjectData(String projectId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProjectData'");
+    }
+
+    @Override
+    public List<ProjectInfoDTO> getProjects() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProjects'");
+    }
+
+
+    private void validateProjectResearcher(Project project) throws NotAuthorizedException {
+        if(!jsonWebToken.getClaim("researcherId").equals(project.researcher.researcherId)) {
+            throw new NotAuthorizedException("Not Authorized to do this action");
+        }
+    }
+
+    private void validateHouseholdId(String householdId) throws NotAuthorizedException {
+        if(!jsonWebToken.getClaim("householdId").equals(householdId)){
+            throw new NotAuthorizedException("Users not authorized to do this action");
+        }
+    }
+
+    private List<ProjectEvent> getEventsByEntityId(String entittyId) {
+        return ProjectEvent.find("entityId", entittyId).list();
+    }
+
+    private void checkForVersionMismatch(List<ProjectEvent> events, Project project) throws VersionNotMatchingException {
+        if(events.size() != getEventsByEntityId(project.projectId).size()){
+            throw new VersionNotMatchingException();
+        }
+    }
+      
 }

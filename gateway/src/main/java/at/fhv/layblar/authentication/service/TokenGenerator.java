@@ -9,6 +9,7 @@ import at.fhv.layblar.authentication.model.LayblarAccount;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.smallrye.jwt.build.Jwt;
+import io.smallrye.jwt.build.JwtClaimsBuilder;
 
 @ApplicationScoped
 public class TokenGenerator {
@@ -17,10 +18,17 @@ public class TokenGenerator {
     private String ISSUER;
 
     public TokenDTO generateToken(LayblarAccount user){
+      
       TokenDTO tokenDTO = new TokenDTO();
-      tokenDTO.token = Jwt.issuer(ISSUER)
-        .claim("householdId", user.householdId)
-        .subject(user.userId)
+      JwtClaimsBuilder builder = Jwt.issuer(ISSUER);
+      if(user.userId != null){
+        builder.claim("householdId", user.householdId)
+        .claim("userId", user.userId);
+      }
+      if(user.researcherId != null){
+        builder.claim("researcherId", user.researcherId);
+      }
+      tokenDTO.token = builder
         .groups(new HashSet<>(user.roles))
         .expiresIn(28800000)
       .sign();

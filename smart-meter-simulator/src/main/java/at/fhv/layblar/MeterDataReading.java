@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class MeterDataReading {
 
     public String timestamp;
-    public String sensorId = "Simulator";
+    public String sensorId = "meter-data2";
     @JsonProperty("1.7.0")
     public Float v1_7_0;
     @JsonProperty("1.8.0")

@@ -18,6 +18,7 @@ import at.fhv.layblar.householdServiceRouting.model.JoinHouseholdDTO;
 import at.fhv.layblar.householdServiceRouting.model.LeaveHouseholdDTO;
 import at.fhv.layblar.householdServiceRouting.model.SmartMeterDTO;
 import at.fhv.layblar.householdServiceRouting.model.UpdateDeviceDTO;
+import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;

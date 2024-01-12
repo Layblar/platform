@@ -74,7 +74,7 @@ public class HouseholdServiceImpl implements HouseholdService {
             throw new HouseholdNotFoundException("The household to join was not found");
         }
         Household oldHousehold = EntityBuilder.buildEntity(oldHouseholdEvents);
-        HouseholdUserLeftEvent householdLeftEvent = oldHousehold.process(LeaveHouseholdCommand.create(jsonWebToken.getClaim("householdId"), jsonWebToken.getSubject()));
+        HouseholdUserLeftEvent householdLeftEvent = oldHousehold.process(LeaveHouseholdCommand.create(jsonWebToken.getClaim("householdId"), jsonWebToken.getClaim("userId")));
         checkForVersionMismatch(oldHouseholdEvents, oldHousehold);
         householdLeftEvent.persist();
         oldHousehold.apply(householdLeftEvent);
@@ -109,8 +109,12 @@ public class HouseholdServiceImpl implements HouseholdService {
     }
 
     @Override
-    public HouseholdDTO getHouseholdInformation(String householdId) throws NotAuthorizedException {
-        Household household = EntityBuilder.buildEntity(getEventsByEntityId(householdId));
+    public HouseholdDTO getHouseholdInformation(String householdId) throws NotAuthorizedException, HouseholdNotFoundException {
+        List<Event> events = getEventsByEntityId(householdId);
+        if(events.size() == 0){
+            throw new HouseholdNotFoundException("The household was not found");
+        }
+        Household household = EntityBuilder.buildEntity(events);
         validateHousehold(household);
         return HouseholdDTO.createHouseholdDTO(household);
     }
@@ -219,7 +223,7 @@ public class HouseholdServiceImpl implements HouseholdService {
         if(!jsonWebToken.getClaim("householdId").equals(household.householdId)) {
             throw new NotAuthorizedException("Household not authorized to do this action");
         }
-        if(!household.users.stream().anyMatch(user -> user.userId.equals(jsonWebToken.getSubject()))){
+        if(!household.users.stream().anyMatch(user -> user.userId.equals(jsonWebToken.getClaim("userId")))){
             throw new NotAuthorizedException("Users not authorized to do this action");
         }
     }
@@ -231,7 +235,7 @@ public class HouseholdServiceImpl implements HouseholdService {
     }
 
     private void validateUserId(String userId) throws NotAuthorizedException {
-        if(!jsonWebToken.getSubject().equals(userId)){
+        if(!jsonWebToken.getClaim("userId").equals(userId)){
             throw new NotAuthorizedException("Users not authorized to do this action");
         }
     }

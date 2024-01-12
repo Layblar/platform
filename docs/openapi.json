@@ -54,7 +54,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/LoginUserDTO"
+                "$ref" : "#/components/schemas/AccountLoginDTO"
               }
             }
           }
@@ -90,17 +90,17 @@
         } ]
       }
     },
-    "/auth/register" : {
+    "/auth/register/householduser" : {
       "post" : {
         "tags" : [ "Authorization" ],
-        "summary" : "Register a new UserAccount",
+        "summary" : "Register a new Household user",
         "description" : "Creates a new user and assigns them to a new Household",
         "operationId" : "createUser",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/RegisterUserDTO"
+                "$ref" : "#/components/schemas/RegisterHouseholdUserDTO"
               }
             }
           }
@@ -123,6 +123,70 @@
                   "type" : "object",
                   "properties" : {
                     "userId" : {
+                      "type" : "string"
+                    },
+                    "researcherId" : {
+                      "type" : "string"
+                    },
+                    "email" : {
+                      "type" : "string"
+                    },
+                    "householdId" : {
+                      "type" : "string"
+                    },
+                    "roles" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "none" : [ ]
+        } ]
+      }
+    },
+    "/auth/register/researcher" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "Register a new researcher",
+        "description" : "Creates a new researcher",
+        "operationId" : "createResearcher",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterResearcherDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Invalid User"
+          },
+          "500" : {
+            "description" : "Server Error"
+          },
+          "201" : {
+            "description" : "The registered researcher",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "userId" : {
+                      "type" : "string"
+                    },
+                    "researcherId" : {
                       "type" : "string"
                     },
                     "email" : {
@@ -1473,42 +1537,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "projectId" : {
-                      "type" : "string"
-                    },
-                    "projectName" : {
-                      "type" : "string"
-                    },
-                    "projectDescription" : {
-                      "type" : "string"
-                    },
-                    "projectDataUseDeclartion" : {
-                      "type" : "string"
-                    },
-                    "startDate" : {
-                      "$ref" : "#/components/schemas/LocalDateTime"
-                    },
-                    "endDate" : {
-                      "$ref" : "#/components/schemas/LocalDateTime"
-                    },
-                    "created" : {
-                      "$ref" : "#/components/schemas/LocalDateTime"
-                    },
-                    "metaData" : {
-                      "type" : "array",
-                      "items" : {
-                        "$ref" : "#/components/schemas/ProjectMetaDataDTO"
-                      }
-                    },
-                    "labels" : {
-                      "type" : "array",
-                      "items" : {
-                        "$ref" : "#/components/schemas/LabelDTO"
-                      }
-                    }
-                  }
+                  "type" : "object"
                 }
               }
             }
@@ -1542,6 +1571,15 @@
             "type" : "string"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JoinProjectDTO"
+              }
+            }
+          }
+        },
         "responses" : {
           "401" : {
             "description" : "Unauthorized"
@@ -1591,58 +1629,6 @@
                       "items" : {
                         "$ref" : "#/components/schemas/LabelDTO"
                       }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "jwt" : [ ]
-        } ]
-      }
-    },
-    "/project/researcher" : {
-      "post" : {
-        "tags" : [ "Project" ],
-        "summary" : "Create a Researcher",
-        "description" : "Create a new Researcher",
-        "operationId" : "createResearcher",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ResearcherDTO"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "403" : {
-            "description" : "Invalid User"
-          },
-          "500" : {
-            "description" : "Server Error"
-          },
-          "200" : {
-            "description" : "The created researcher",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "id" : {
-                      "type" : "string"
-                    },
-                    "name" : {
-                      "type" : "string"
-                    },
-                    "organization" : {
-                      "type" : "string"
                     }
                   }
                 }
@@ -1724,6 +1710,17 @@
   },
   "components" : {
     "schemas" : {
+      "AccountLoginDTO" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        }
+      },
       "AddDeviceDTO" : {
         "description" : "Add Device to Household",
         "required" : [ "deviceName", "categories" ],
@@ -1943,6 +1940,26 @@
           }
         }
       },
+      "JoinProjectDTO" : {
+        "type" : "object",
+        "properties" : {
+          "householdId" : {
+            "type" : "string"
+          },
+          "metaData" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProjectMetaDataDTO"
+            }
+          },
+          "devices" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DeviceDTO"
+            }
+          }
+        }
+      },
       "LabelDTO" : {
         "type" : "object",
         "properties" : {
@@ -1992,17 +2009,6 @@
         "format" : "date-time",
         "type" : "string",
         "example" : "2022-03-10T12:15:50"
-      },
-      "LoginUserDTO" : {
-        "type" : "object",
-        "properties" : {
-          "email" : {
-            "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
-          }
-        }
       },
       "ProjectInfoDTO" : {
         "type" : "object",
@@ -2059,7 +2065,7 @@
           }
         }
       },
-      "RegisterUserDTO" : {
+      "RegisterHouseholdUserDTO" : {
         "type" : "object",
         "properties" : {
           "password" : {
@@ -2073,22 +2079,22 @@
           },
           "lastName" : {
             "type" : "string"
-          },
-          "roles" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
           }
         }
       },
-      "ResearcherDTO" : {
+      "RegisterResearcherDTO" : {
         "type" : "object",
         "properties" : {
-          "id" : {
+          "password" : {
             "type" : "string"
           },
-          "name" : {
+          "email" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
             "type" : "string"
           },
           "organization" : {

@@ -1,96 +1,83 @@
 package at.fhv.layblar.rest;
 
 import at.fhv.layblar.application.ProjectService;
-import at.fhv.layblar.domain.Project;
-import at.fhv.layblar.domain.Researcher;
-import at.fhv.layblar.infrastructure.ProjectRepository;
-import at.fhv.layblar.infrastructure.ResearcherRepository;
-import io.smallrye.mutiny.Uni;
+import at.fhv.layblar.commands.CreateProjectCommand;
+import at.fhv.layblar.commands.JoinProjectCommand;
+import at.fhv.layblar.commands.RegisterResearcherCommand;
+import at.fhv.layblar.commands.UpdateProjectCommand;
+import at.fhv.layblar.utils.ResponseExceptionBuilder;
+import at.fhv.layblar.utils.exceptions.ResponseException;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/data")
+@Path("/api")
+@Authenticated
 public class ProjectResource {
 
     @Inject
-    ProjectRepository projectRepository;
-
-    @Inject
-    ResearcherRepository researcherRepository;
-
     ProjectService projectService;
 
     @POST
     @Path("/researcher")
-    Response createResearcher(Researcher researcher){
-        
-        try {
-            researcherRepository.persist(researcher);
-            return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not create researcher").build();
-        }
+    public Response registerResearcher(RegisterResearcherCommand command){
+        return Response.ok().entity(projectService.createResearcher(command)).build();
     }
 
     @POST
     @Path("/project")
-    Response createProject(Project project){
-            
+    public Response createProject(CreateProjectCommand command){
         try {
-            projectRepository.persist(project);
-            return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not create project").build();
+            return Response.ok().entity(projectService.createProject(command)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
         }
     }
 
     @PUT
     @Path("/project/{projectId}")
-    Response updateProject(@PathParam("projectId") String projectId, Project project){
+    public Response updateProject(@PathParam("projectId") String projectId, UpdateProjectCommand command){
         try {
-            return Response.ok().entity(projectService.updateProject(projectId, project)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not update project").build();
+            return Response.ok().entity(projectService.updateProject(projectId, command)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
         }
     }
 
     @GET
     @Path("/project/{projectId}")
-    Response getProject(@PathParam("projectId") String projectId){
+    public Response getProject(@PathParam("projectId") String projectId){
         try {
-            Project project = projectRepository.findById(projectId);
-            return Response.ok(project).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not get project").build();
+            return Response.ok().entity(projectService.getProjectInfo(projectId)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
         }
     }
 
     @GET
+    @Path("/project/{projectId}/data")
+    public Response getProjectData(@PathParam("projectId") String projectId){
+        return Response.ok().entity(projectService.getProjectData(projectId)).build();
+    }
+
+    @GET
     @Path("/project")
-    Response listProjects() {
-        try {
-            return Response.ok(projectRepository.listAll()).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not list projects").build();
-        }
+    public Response listProjects(){
+        return Response.ok().entity(projectService.getProjects()).build();
     }
 
     @POST
-    @Path("/project/{projectId}/join/{userId}")
-    Response joinProject(@PathParam("projectId") String projectId, @PathParam("userId") String userId) {
+    @Path("/project/{projectId}/household/{householdId}")
+    public Response joinProject(@PathParam("projectId") String projectId, @PathParam("householdId") String householdId, JoinProjectCommand command){
         try {
-            Project project = projectRepository.findById(projectId);
-            project.participants.add(userId);
-            project.persist();
-            return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not join project").build();
+            return Response.ok().entity(projectService.joinProject(projectId, householdId, command)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
         }
     }
 

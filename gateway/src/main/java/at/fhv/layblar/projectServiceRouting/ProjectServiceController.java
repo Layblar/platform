@@ -11,9 +11,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.projectServiceRouting.model.CreateProjectDTO;
+import at.fhv.layblar.projectServiceRouting.model.JoinProjectDTO;
+import at.fhv.layblar.projectServiceRouting.model.ProjectDataDTO;
 import at.fhv.layblar.projectServiceRouting.model.ProjectInfoDTO;
-import at.fhv.layblar.projectServiceRouting.model.ResearcherDTO;
 import at.fhv.layblar.projectServiceRouting.model.UpdateProjectDTO;
+import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -25,7 +27,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-
+//@Authenticated
 @APIResponse(responseCode = "401", description = "Unauthorized")
 @APIResponse(responseCode = "403", description = "Invalid User")
 @APIResponse(responseCode = "500", description = "Server Error")
@@ -36,17 +38,6 @@ public class ProjectServiceController {
     @Inject
     @RestClient
     ProjectServiceRestClient restClient;
-
-    @POST
-    @Path("/researcher")
-    @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ResearcherDTO.class)), description = "The created researcher", responseCode = "200")
-    @Operation(summary = "Create a Researcher", description = "Create a new Researcher")
-    @SecurityRequirement(name = "jwt")
-    public Uni<Response> createResearcher(
-            @Parameter(description = "The researcher object based on the ResearcherDTO that should be created", required = true) ResearcherDTO researcher) {
-        return restClient.createResearcher(researcher);
-    }
 
     @POST
     @Path("/project")
@@ -85,7 +76,7 @@ public class ProjectServiceController {
     @GET
     @Path("/project/{projectId}/data")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "Project data by id", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectDataDTO.class)), description = "Project data by id", responseCode = "200")
     @Operation(summary = "Get data from a Project", description = "Get data from a Project")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> getProjectData(
@@ -111,8 +102,9 @@ public class ProjectServiceController {
     @SecurityRequirement(name = "jwt")
         Uni<Response> joinProject(
             @Parameter(description = "The ID of the project to join", required = true) @PathParam("projectId") String projectId,
-            @Parameter(description = "The ID of the household that wants to join the project", required = true) @PathParam("householdId") String householdId){
+            @Parameter(description = "The ID of the household that wants to join the project", required = true) @PathParam("householdId") String householdId,
+            @Parameter(description = "Household meta data and a list of devices", required = true) JoinProjectDTO joinProjectDTO){
 
-        return restClient.joinProject(projectId, householdId);
+        return restClient.joinProject(projectId, householdId, joinProjectDTO);
     }
 }

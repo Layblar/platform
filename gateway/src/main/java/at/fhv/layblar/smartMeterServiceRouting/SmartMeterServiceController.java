@@ -16,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
+import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 
 //@Authenticated

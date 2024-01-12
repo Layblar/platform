@@ -1,6 +1,6 @@
 package at.fhv.layblar.householdServiceRouting.model;
 
-import at.fhv.layblar.authentication.dto.RegisterUserDTO;
+import at.fhv.layblar.authentication.dto.RegisterHouseholdUserDTO;
 
 public class CreateHouseholdDTO {
 
@@ -8,7 +8,7 @@ public class CreateHouseholdDTO {
     public String firstName;
     public String lastName;
 
-    public static CreateHouseholdDTO createHouseholdDTO(RegisterUserDTO registerUserDTO){
+    public static CreateHouseholdDTO createHouseholdDTO(RegisterHouseholdUserDTO registerUserDTO){
         CreateHouseholdDTO createHouseholdDTO = new CreateHouseholdDTO();
         createHouseholdDTO.email = registerUserDTO.email;
         createHouseholdDTO.firstName = registerUserDTO.firstName;
