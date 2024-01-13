@@ -4,7 +4,8 @@ import java.util.HashSet;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import at.fhv.layblar.authentication.dto.TokenDTO;
+import at.fhv.layblar.authentication.dto.AccountDTO;
+import at.fhv.layblar.authentication.dto.AccountTokenDTO;
 import at.fhv.layblar.authentication.model.LayblarAccount;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -17,9 +18,9 @@ public class TokenGenerator {
     @ConfigProperty(name = "mp.jwt.verify.issuer")
     private String ISSUER;
 
-    public TokenDTO generateToken(LayblarAccount user){
+    public AccountTokenDTO generateToken(LayblarAccount user){
       
-      TokenDTO tokenDTO = new TokenDTO();
+      AccountTokenDTO loginDTO = new AccountTokenDTO();
       JwtClaimsBuilder builder = Jwt.issuer(ISSUER);
       if(user.userId != null){
         builder.claim("householdId", user.householdId)
@@ -28,11 +29,13 @@ public class TokenGenerator {
       if(user.researcherId != null){
         builder.claim("researcherId", user.researcherId);
       }
-      tokenDTO.token = builder
+      loginDTO.token = builder
+        .subject(user.accountId)
         .groups(new HashSet<>(user.roles))
         .expiresIn(28800000)
       .sign();
-      return tokenDTO;
+      loginDTO.account = AccountDTO.createAccountDTO(user);
+      return loginDTO;
     }
 
     public String generateRegistrationToken(){

@@ -12,6 +12,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.labelServiceRouting.model.CreateLabelDTO;
 import at.fhv.layblar.labelServiceRouting.model.LabeledDataDTO;
+import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -22,6 +23,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+@Authenticated
 @Path("label")
 @Tag(name = "Label", description = "Operations for labeling")
 @APIResponse(responseCode = "401", description = "Unauthorized")

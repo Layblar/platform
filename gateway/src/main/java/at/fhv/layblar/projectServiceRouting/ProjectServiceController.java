@@ -27,7 +27,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-//@Authenticated
+@Authenticated
 @APIResponse(responseCode = "401", description = "Unauthorized")
 @APIResponse(responseCode = "403", description = "Invalid User")
 @APIResponse(responseCode = "500", description = "Server Error")

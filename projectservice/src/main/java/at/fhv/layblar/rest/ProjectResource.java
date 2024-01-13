@@ -8,6 +8,7 @@ import at.fhv.layblar.commands.UpdateProjectCommand;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -16,8 +17,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api")
 @Authenticated
+@Path("/api")
 public class ProjectResource {
 
     @Inject
@@ -31,6 +32,7 @@ public class ProjectResource {
 
     @POST
     @Path("/project")
+    @RolesAllowed("Researcher")
     public Response createProject(CreateProjectCommand command){
         try {
             return Response.ok().entity(projectService.createProject(command)).build();
@@ -41,6 +43,7 @@ public class ProjectResource {
 
     @PUT
     @Path("/project/{projectId}")
+    @RolesAllowed("Researcher")
     public Response updateProject(@PathParam("projectId") String projectId, UpdateProjectCommand command){
         try {
             return Response.ok().entity(projectService.updateProject(projectId, command)).build();
@@ -61,6 +64,7 @@ public class ProjectResource {
 
     @GET
     @Path("/project/{projectId}/data")
+    @RolesAllowed("Researcher")
     public Response getProjectData(@PathParam("projectId") String projectId){
         return Response.ok().entity(projectService.getProjectData(projectId)).build();
     }

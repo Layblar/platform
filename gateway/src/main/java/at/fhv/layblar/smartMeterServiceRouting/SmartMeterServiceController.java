@@ -19,7 +19,7 @@ import at.fhv.layblar.smartMeterServiceRouting.model.SmartMeterDataDTO;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 
-//@Authenticated
+@Authenticated
 @Path("smartmeter")
 @Tag(name = "Smart-Meter", description = "Operations about Smart-Meter data")
 @APIResponse(responseCode = "401", description = "Unauthorized")

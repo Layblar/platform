@@ -31,7 +31,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-//@Authenticated
+@Authenticated
 @Path("household")
 @Tag(name = "Household", description = "Household Operations")
 @APIResponse(responseCode = "401", description = "Unauthorized")

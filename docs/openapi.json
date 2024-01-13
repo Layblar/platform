@@ -76,6 +76,9 @@
                 "schema" : {
                   "type" : "object",
                   "properties" : {
+                    "account" : {
+                      "$ref" : "#/components/schemas/AccountDTO"
+                    },
                     "token" : {
                       "type" : "string"
                     }
@@ -1710,6 +1713,29 @@
   },
   "components" : {
     "schemas" : {
+      "AccountDTO" : {
+        "type" : "object",
+        "properties" : {
+          "userId" : {
+            "type" : "string"
+          },
+          "researcherId" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "householdId" : {
+            "type" : "string"
+          },
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
       "AccountLoginDTO" : {
         "type" : "object",
         "properties" : {

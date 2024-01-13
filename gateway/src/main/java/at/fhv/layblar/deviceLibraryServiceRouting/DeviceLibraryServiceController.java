@@ -19,7 +19,7 @@ import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 
-//@Authenticated
+@Authenticated
 @Path("deviceLibrary")
 @Tag(name = "Device-Library", description = "Operations about Device Library")
 @APIResponse(responseCode = "401", description = "Unauthorized")

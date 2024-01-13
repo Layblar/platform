@@ -10,21 +10,17 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
 import at.fhv.layblar.authentication.dto.AccountLoginDTO;
+import at.fhv.layblar.authentication.dto.AccountTokenDTO;
 import at.fhv.layblar.authentication.dto.RegisterHouseholdUserDTO;
 import at.fhv.layblar.authentication.dto.RegisterResearcherDTO;
-import at.fhv.layblar.authentication.dto.TokenDTO;
 import at.fhv.layblar.authentication.dto.AccountDTO;
 import at.fhv.layblar.authentication.model.LayblarAccount;
 import at.fhv.layblar.authentication.service.RegistrationService;
 import at.fhv.layblar.authentication.service.TokenGenerator;
-import at.fhv.layblar.householdServiceRouting.HouseholdServiceRestClient;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -73,7 +69,7 @@ public class UserRestController {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = TokenDTO.class)), description = "The logged in user", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = AccountTokenDTO.class)), description = "The logged in user", responseCode = "200")
     @Operation(summary = "Login", description = "Login with given credentials")
     @SecurityRequirement(name = "none")
     public Response loginUser(
