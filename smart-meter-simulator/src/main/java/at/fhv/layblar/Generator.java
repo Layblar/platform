@@ -38,6 +38,7 @@ public class Generator {
                         // Set timestamp of reading to current LocalDateTime
                         mdr.timestamp = LocalDateTime.now().format(formatter);
                         emitter.send(mdr);
+                        System.out.println(mdr);
                         Thread.sleep(5000);
                     }
                 }

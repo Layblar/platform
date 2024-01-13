@@ -12,8 +12,7 @@ services:
     ports:
       - "1883:1883"
       - "5672:5672"
-      - "1882:1882"
-      - "5671:5671"
+      - "8883:8883"
       - "8090:15672"
       - "1885:15675"
     command: "/bin/bash -c \"rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_web_mqtt rabbitmq_amqp1_0; rabbitmq-server\""
