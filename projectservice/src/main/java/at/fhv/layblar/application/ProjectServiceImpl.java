@@ -14,9 +14,10 @@ import at.fhv.layblar.commands.CreateProjectCommand;
 import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.commands.RegisterResearcherCommand;
 import at.fhv.layblar.commands.UpdateProjectCommand;
-import at.fhv.layblar.domain.Project;
-import at.fhv.layblar.domain.ProjectParticipant;
-import at.fhv.layblar.domain.Researcher;
+import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.domain.model.ProjectParticipant;
+import at.fhv.layblar.domain.model.Researcher;
+import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
 import at.fhv.layblar.events.ProjectJoinedEvent;
@@ -98,13 +99,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException {
-        List<ProjectEvent> events = getEventsByEntityId(projectId);
-        if(events.size() == 0){
+        Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
+        if(optProject.isEmpty()){
             throw new ProjectNotFoundException("The project was not found");
         }
-        Project project = EntityBuilder.buildEntity(events);
-        validateProjectResearcher(project);
-        return ProjectInfoDTO.createProjectInfoDTO(project);
+        validateProjectResearcher(optProject.get());
+        return ProjectInfoDTO.createProjectInfoDTO(optProject.get());
     }
 
     @Override
@@ -115,19 +115,20 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectInfoDTO> getProjects() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProjects'");
+        List<ProjectReadModel> projects = ProjectReadModel.listAll();
+        return projects.stream().map(
+            project -> ProjectInfoDTO.createProjectInfoDTO(project)
+        ).collect(Collectors.toList());
     }
 
     @Override
     public List<ProjectMetaDataDTO> getProjectDagetProjectHouseholdMetadatata(String projectId, String householdId) throws NotAuthorizedException, ProjectNotFoundException {
         validateHouseholdId(householdId);
-        List<ProjectEvent> events = getEventsByEntityId(projectId);
-        if(events.size() == 0){
+        Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
+        if(optProject.isEmpty()){
             throw new ProjectNotFoundException("The project was not found");
         }
-        Project project = EntityBuilder.buildEntity(events);
-        Optional<ProjectParticipant> optParticipant = project.participants.stream().filter(particitpant -> particitpant.householdId.equals(householdId)).findAny();
+        Optional<ProjectParticipant> optParticipant = optProject.get().participants.stream().filter(particitpant -> particitpant.householdId.equals(householdId)).findAny();
         if(optParticipant.isPresent()){
             return optParticipant.get().householdMetaData.stream().map(data -> ProjectMetaDataDTO.createProjectMetaDataDTO(data)).collect(Collectors.toList());
         }
@@ -137,6 +138,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     private void validateProjectResearcher(Project project) throws NotAuthorizedException {
         if(!jsonWebToken.getClaim("researcherId").equals(project.researcher.researcherId)) {
+            throw new NotAuthorizedException("Not Authorized to do this action");
+        }
+    }
+
+    private void validateProjectResearcher(ProjectReadModel project) throws NotAuthorizedException {
+        if(!jsonWebToken.getClaim("researcherId").equals(project.researcherId)) {
             throw new NotAuthorizedException("Not Authorized to do this action");
         }
     }

@@ -2,17 +2,15 @@ package at.fhv.layblar.events;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import at.fhv.layblar.commands.UpdateProjectCommand;
-import at.fhv.layblar.domain.Label;
-import at.fhv.layblar.domain.Project;
-import at.fhv.layblar.domain.ProjectMetaData;
+import at.fhv.layblar.domain.model.Label;
+import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.domain.model.ProjectMetaData;
 import jakarta.persistence.Entity;
 
 @Entity
@@ -39,8 +37,8 @@ public class ProjectUpdatedEvent extends ProjectEvent {
     private ObjectNode createEventPayload(UpdateProjectCommand command, Project project) {
         ObjectNode root = mapper.createObjectNode();
         root.put(PROJECT_NAME, command.projectName);
-        root.put(PROJECT_DESCRIPTION, command.projectName);
-        root.put(PROJECT_DATA_USE_DECLARATION, command.projectName);
+        root.put(PROJECT_DESCRIPTION, command.projectDescription);
+        root.put(PROJECT_DATA_USE_DECLARATION, command.projectDataUseDeclartion);
         root.put(START_DATE, command.startDate.toString());
         root.put(END_DATE, command.endDate.toString());
         root.putPOJO(META_DATA_INFO, command.metaData);

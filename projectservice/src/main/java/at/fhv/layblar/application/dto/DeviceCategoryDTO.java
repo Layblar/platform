@@ -1,6 +1,6 @@
 package at.fhv.layblar.application.dto;
 
-import at.fhv.layblar.domain.DeviceCategory;
+import at.fhv.layblar.domain.model.DeviceCategory;
 
 public class DeviceCategoryDTO {
 

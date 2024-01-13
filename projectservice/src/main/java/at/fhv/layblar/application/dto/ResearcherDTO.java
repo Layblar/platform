@@ -1,6 +1,6 @@
 package at.fhv.layblar.application.dto;
 
-import at.fhv.layblar.domain.Researcher;
+import at.fhv.layblar.domain.model.Researcher;
 
 public class ResearcherDTO {
 

@@ -6,4 +6,4 @@ node_modules
 deployment/*.pem
 deployment/rabbitmq/*.pem
 deployment/.env
-deployment/*-config.json
+#deployment/*-config.json

@@ -7,16 +7,13 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import at.fhv.layblar.application.dto.DeviceCategoryDTO;
-import at.fhv.layblar.application.dto.LabelDTO;
 import at.fhv.layblar.commands.CreateProjectCommand;
-import at.fhv.layblar.domain.Label;
-import at.fhv.layblar.domain.ProjectMetaData;
-import at.fhv.layblar.domain.ProjectParticipant;
-import at.fhv.layblar.domain.Researcher;
+import at.fhv.layblar.domain.model.Label;
+import at.fhv.layblar.domain.model.ProjectMetaData;
+import at.fhv.layblar.domain.model.ProjectParticipant;
+import at.fhv.layblar.domain.model.Researcher;
 import jakarta.persistence.Entity;
 
 @Entity
@@ -91,7 +88,7 @@ public class ProjectCreatedEvent extends ProjectEvent {
 
     @JsonIgnore
     public Researcher getResearcher() {
-        return mapper.convertValue(payload.get(PARTICIPANTS),
+        return mapper.convertValue(payload.get(RESEARCHER),
         new TypeReference<Researcher>() {
         });
     }
@@ -105,10 +102,10 @@ public class ProjectCreatedEvent extends ProjectEvent {
 
     private ObjectNode createEventPayload(CreateProjectCommand command, Researcher researcher) {
         ObjectNode root = mapper.createObjectNode();
-        root.put(PROJECT_ID, UUID.randomUUID().toString());
+        root.put(PROJECT_ID, entityId);
         root.put(PROJECT_NAME, command.projectName);
-        root.put(PROJECT_DESCRIPTION, command.projectName);
-        root.put(PROJECT_DATA_USE_DECLARATION, command.projectName);
+        root.put(PROJECT_DESCRIPTION, command.projectDescription);
+        root.put(PROJECT_DATA_USE_DECLARATION, command.projectDataUseDeclartion);
         root.put(START_DATE, command.startDate.toString());
         root.put(END_DATE, command.endDate.toString());
         root.put(CREATED_AT, LocalDateTime.now().toString());

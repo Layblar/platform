@@ -58,14 +58,12 @@ public class MeterDataProcessor {
 
     private void createChannel(String householdId, String smartMeterId) {
         try {
-            System.out.println(smartMeterId);
             channel = connection.createChannel();
             channel.queueDeclare(smartMeterId, true, false, false, null);
             channel.queueBind(smartMeterId, "amq.topic", smartMeterId);
             channel.basicConsume(smartMeterId, true, new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    System.out.println(new String(body, StandardCharsets.UTF_8));
                     saveToDatabase(householdId, smartMeterId, JsonObject.mapFrom(mapper.readTree(new String(body, StandardCharsets.UTF_8))));
                 }
             });

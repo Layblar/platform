@@ -1,6 +1,6 @@
 package at.fhv.layblar.application.dto;
 
-import at.fhv.layblar.domain.ProjectMetaData;
+import at.fhv.layblar.domain.model.ProjectMetaData;
 
 public class ProjectMetaDataDTO {
 

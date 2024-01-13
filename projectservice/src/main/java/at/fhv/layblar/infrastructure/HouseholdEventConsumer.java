@@ -12,10 +12,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import at.fhv.layblar.events.Event;
+import at.fhv.layblar.infrastructure.events.HouseholdEvent;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class HouseholdEventConsumer {
@@ -24,18 +26,18 @@ public class HouseholdEventConsumer {
     ObjectMapper mapper;
 
     @Incoming("household")
+    @Blocking
+    @Transactional
     public void process(Record<String,JsonNode> record) {
         try {
-            Event event = deserializeEvent(record.value());
-            System.out.println(event.timestamp);
+            HouseholdEvent event = deserializeEvent(record.value());
+            //TODO delete all the data of household event.entityId
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-
-    private Event deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
+    private HouseholdEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
         ObjectNode root = mapper.createObjectNode();
         root.put("entityId",value.get("after").get("entityid").asText());
         root.put("entityType",value.get("after").get("entitytype").asText());
@@ -47,7 +49,7 @@ public class HouseholdEventConsumer {
         root.put("timestamp", timestamp.toString());
         JsonNode payload = mapper.readTree(value.get("after").get("payload").asText());
         root.set("payload", payload);
-        return mapper.treeToValue(root, Event.class);
+        return mapper.treeToValue(root, HouseholdEvent.class);
     }
     
 }

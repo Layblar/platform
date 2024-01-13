@@ -3,9 +3,9 @@ package at.fhv.layblar.utils;
 import java.util.Collections;
 import java.util.List;
 
-import at.fhv.layblar.domain.Project;
 import at.fhv.layblar.events.ProjectEventVisitor;
 import at.fhv.layblar.events.ProjectJoinedEvent;
+import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
 import at.fhv.layblar.events.ProjectUpdatedEvent;

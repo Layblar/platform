@@ -13,57 +13,67 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import at.fhv.layblar.domain.Device;
-import at.fhv.layblar.events.DeviceAddedEvent;
-import at.fhv.layblar.events.DeviceEvent;
-import at.fhv.layblar.events.DeviceUpdatedEvent;
-import at.fhv.layblar.events.EventVisitor;
+import at.fhv.layblar.domain.readmodel.ProjectReadModel;
+import at.fhv.layblar.events.ProjectCreatedEvent;
+import at.fhv.layblar.events.ProjectEvent;
+import at.fhv.layblar.events.ProjectEventVisitor;
+import at.fhv.layblar.events.ProjectJoinedEvent;
+import at.fhv.layblar.events.ProjectUpdatedEvent;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class HouseholdEventConsumer {
+public class ProjectEventConsumer {
 
     @Inject
     ObjectMapper mapper;
 
-    @Incoming("household")
+    @Incoming("project")
     @Blocking
+    @Transactional
     public void process(Record<String,JsonNode> record) {
         try {
-            DeviceEvent event = deserializeEvent(record.value());
-            Optional<Device> optDevice = Device.findByIdOptional(event.getDeviceId());
-            Device device = new Device();
-            if(optDevice.isPresent()){
-                device = optDevice.get();
+            ProjectEvent event = deserializeEvent(record.value());
+            Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(event.entityId);
+            ProjectReadModel project = new ProjectReadModel();
+            if(optProject.isPresent()){
+                project = optProject.get();
             }
-            device = handleDeviceEvent(device, event);
-            Device.persistOrUpdate(device);
+            project.projectId = event.entityId;
+            project = handleProjectEvent(project, event);
+            project.persist();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
     }
 
-    private Device handleDeviceEvent(Device device, DeviceEvent deviceEvent){
-        deviceEvent.accept(new EventVisitor() {
+    private ProjectReadModel handleProjectEvent(ProjectReadModel project, ProjectEvent event) {
+        event.accept(new ProjectEventVisitor() {
 
             @Override
-            public void visit(DeviceAddedEvent event) {
-                device.apply(event);
+            public void visit(ProjectCreatedEvent event) {
+                project.apply(event);
             }
 
             @Override
-            public void visit(DeviceUpdatedEvent event) {
-                device.apply(event);
+            public void visit(ProjectUpdatedEvent event) {
+                project.apply(event);
+            }
+
+            @Override
+            public void visit(ProjectJoinedEvent event) {
+                project.apply(event);
             }
             
         });
-        return device;
+        return project;
     }
 
-    private DeviceEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
+    private ProjectEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
         ObjectNode root = mapper.createObjectNode();
         root.put("entityId",value.get("after").get("entityid").asText());
         root.put("entityType",value.get("after").get("entitytype").asText());
@@ -75,7 +85,7 @@ public class HouseholdEventConsumer {
         root.put("timestamp", timestamp.toString());
         JsonNode payload = mapper.readTree(value.get("after").get("payload").asText());
         root.set("payload", payload);
-        return mapper.treeToValue(root, DeviceEvent.class);
+        return mapper.treeToValue(root, ProjectEvent.class);
     }
     
 }

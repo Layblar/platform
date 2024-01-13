@@ -5,7 +5,7 @@ import at.fhv.layblar.commands.CreateProjectCommand;
 import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.commands.RegisterResearcherCommand;
 import at.fhv.layblar.commands.UpdateProjectCommand;
-import at.fhv.layblar.domain.MetaDataTemplate;
+import at.fhv.layblar.domain.model.MetaDataTemplate;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;

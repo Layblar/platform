@@ -1,4 +1,4 @@
-package at.fhv.layblar.domain;
+package at.fhv.layblar.domain.model;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -48,6 +48,7 @@ public class Project {
         this.labels = event.getLabels();
         this.createdAt = event.getCreatedAt();
         this.participants = new LinkedList<>();
+        this.researcher = event.getResearcher();
     }
 
 
@@ -57,8 +58,8 @@ public class Project {
         this.projectDataUseDeclartion = event.getProjectDataUseDeclaration();
         this.startDate = event.getStartDate();
         this.endDate = event.getEndDate();
-        this.metaDataInfo = event.getMetaDataInfo();
-        this.labels = event.getLabels();
+        updateLabels(event.getLabels());
+        updateMetaData(event.getMetaDataInfo());
     }
 
     public void apply(ProjectJoinedEvent event) {
@@ -126,6 +127,20 @@ public class Project {
                     .contains(category.deviceCategoryId)));
         if(hasConflictingLabelCategories){
             throw new LabelCategoryConflictException();
+        }
+    }
+
+    private void updateLabels(List<Label> labels){
+        for (Label label : labels) {
+            this.labels.remove(label);
+            this.labels.add(label);
+        }
+    }
+
+    private void updateMetaData(List<ProjectMetaData> metaData){
+        for (ProjectMetaData data : metaData) {
+            this.metaDataInfo.remove(data);
+            this.metaDataInfo.add(data);
         }
     }
 

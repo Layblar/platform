@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import at.fhv.layblar.application.dto.ProjectMetaDataDTO;
 import at.fhv.layblar.commands.JoinProjectCommand;
-import at.fhv.layblar.domain.Project;
-import at.fhv.layblar.domain.ProjectMetaData;
+import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.domain.model.ProjectMetaData;
 import jakarta.persistence.Entity;
 
 @Entity

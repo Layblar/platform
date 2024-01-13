@@ -3,7 +3,7 @@ package at.fhv.layblar.application.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import at.fhv.layblar.domain.Label;
+import at.fhv.layblar.domain.model.Label;
 
 public class LabelDTO {
 

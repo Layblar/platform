@@ -95,7 +95,6 @@ public class HouseholdEventConsumer {
         root.put("timestamp", timestamp.toString());
         JsonNode payload = mapper.readTree(value.get("after").get("payload").asText());
         root.set("payload", payload);
-        System.out.println(root);
         return mapper.treeToValue(root, HouseholdEvent.class);
     }
     
