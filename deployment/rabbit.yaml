@@ -18,8 +18,8 @@ services:
     command: "/bin/bash -c \"rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_web_mqtt rabbitmq_amqp1_0; rabbitmq-server\""
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-      - ./rabbitmq/ca_certificate.pem:/key/ca_certificate.pem
-      - ./rabbitmq/server_rabbit_certificate.pem:/key/server_rabbit_certificate.pem
-      - ./rabbitmq/server_rabbit_key.pem:/key/server_rabbit_key.pem
+      - ./rabbitmq/result/ca_certificate.pem:/key/ca_certificate.pem
+      - ./rabbitmq/result/server_rabbit_certificate.pem:/key/server_rabbit_certificate.pem
+      - ./rabbitmq/result/server_rabbit_key.pem:/key/server_rabbit_key.pem
     networks:
       - layblar-platform
