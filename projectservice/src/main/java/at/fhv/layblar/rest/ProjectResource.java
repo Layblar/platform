@@ -5,6 +5,7 @@ import at.fhv.layblar.commands.CreateProjectCommand;
 import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.commands.RegisterResearcherCommand;
 import at.fhv.layblar.commands.UpdateProjectCommand;
+import at.fhv.layblar.domain.MetaDataTemplate;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;
@@ -70,6 +71,16 @@ public class ProjectResource {
     }
 
     @GET
+    @Path("/project/{projectId}/household/{householdId}")
+    public Response getProjectHouseholdMetadata(@PathParam("projectId") String projectId, @PathParam("houesholdId") String householdId){
+        try {
+            return Response.ok().entity(projectService.getProjectDagetProjectHouseholdMetadatata(projectId, householdId)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
+        }
+    }
+
+    @GET
     @Path("/project")
     public Response listProjects(){
         return Response.ok().entity(projectService.getProjects()).build();
@@ -83,6 +94,12 @@ public class ProjectResource {
         } catch (ResponseException e) {
             return ResponseExceptionBuilder.buildResponse(e);
         }
+    }
+
+    @GET
+    @Path("/metadata")
+    public Response listMetaData(){
+        return Response.ok().entity(MetaDataTemplate.listAll()).build();
     }
 
 }

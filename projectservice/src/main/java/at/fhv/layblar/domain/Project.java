@@ -3,8 +3,11 @@ package at.fhv.layblar.domain;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import at.fhv.layblar.application.dto.DeviceCategoryDTO;
+import at.fhv.layblar.application.dto.LabelDTO;
 import at.fhv.layblar.commands.CreateProjectCommand;
 import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.commands.UpdateProjectCommand;
@@ -12,6 +15,7 @@ import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectJoinedEvent;
 import at.fhv.layblar.events.ProjectUpdatedEvent;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
+import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
 
@@ -62,21 +66,33 @@ public class Project {
     }
 
 
-    public ProjectCreatedEvent process(CreateProjectCommand command, Researcher researcher) {
+    public ProjectCreatedEvent process(CreateProjectCommand command, Researcher researcher) throws ProjectValidityTimeframeException, LabelCategoryConflictException {
+        if(command.startDate.isAfter(command.endDate) || command.startDate.isBefore(LocalDateTime.now())){
+            throw new ProjectValidityTimeframeException("Start date cannot be in the past or after the end date");
+        }
+        for (LabelDTO label : command.labels) {
+            label.labelId = UUID.randomUUID().toString();
+            for(DeviceCategoryDTO category : label.categories){
+                if(category.deviceCategoryId == null){
+                    category.deviceCategoryId = UUID.randomUUID().toString();
+                }
+            }
+        }
+        checkForConflictingLabelCategories(command.labels);
         return ProjectCreatedEvent.create(command, researcher);
     }
 
-
-    public ProjectUpdatedEvent process(UpdateProjectCommand command) throws ProjectValidityTimeframeException {
+    public ProjectUpdatedEvent process(UpdateProjectCommand command) throws ProjectValidityTimeframeException, LabelCategoryConflictException {
         if(LocalDateTime.now().isAfter(startDate)){
             throw new ProjectValidityTimeframeException("Project has already started");
         }
+        checkForConflictingLabelCategories(command.labels);
         return ProjectUpdatedEvent.create(command, this);
     }
 
     public ProjectJoinedEvent process(JoinProjectCommand command) throws ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing {
-        if(LocalDateTime.now().isAfter(endDate)){
-            throw new ProjectValidityTimeframeException("Validity period of project has ended");
+        if(LocalDateTime.now().isAfter(endDate) || LocalDateTime.now().isBefore(startDate)){
+            throw new ProjectValidityTimeframeException("Project has not started or has already ended");
         }
 
         List<String> metaDataIds = metaDataInfo.stream().map(metadata -> metadata.metaDataId).collect(Collectors.toList());
@@ -96,6 +112,21 @@ public class Project {
         }
 
         return ProjectJoinedEvent.create(command,this);
+    }
+
+
+    private void checkForConflictingLabelCategories(List<LabelDTO> labels) throws LabelCategoryConflictException {
+        boolean hasConflictingLabelCategories = labels.stream()
+            .anyMatch(label -> labels.stream()
+                .filter(otherLabel -> !otherLabel.labelId.equals(label.labelId))
+                .flatMap(otherLabel -> otherLabel.categories.stream())
+                .anyMatch(category -> label.categories.stream()
+                    .map(cat -> cat.deviceCategoryId)
+                    .collect(Collectors.toList())
+                    .contains(category.deviceCategoryId)));
+        if(hasConflictingLabelCategories){
+            throw new LabelCategoryConflictException();
+        }
     }
 
 }

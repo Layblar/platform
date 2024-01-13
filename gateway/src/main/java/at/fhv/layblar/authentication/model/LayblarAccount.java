@@ -2,7 +2,6 @@ package at.fhv.layblar.authentication.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import java.util.LinkedList;
@@ -52,14 +51,4 @@ public class LayblarAccount extends PanacheEntityBase   {
         this.roles.add("Researcher");
         return this;
     }
-
-    // public static LayblarAccount createUser(String userId, String email, String password, String householdId, List<String> roles){
-    //     LayblarAccount user = new LayblarAccount();
-    //     user.userId = userId;
-    //     user.email = email;
-    //     user.password = BcryptUtil.bcryptHash(password);
-    //     user.householdId = householdId;
-    //     user.roles.add("User");
-    //     return user;
-    // }
 }

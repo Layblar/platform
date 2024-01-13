@@ -2,17 +2,20 @@ package at.fhv.layblar.application;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import at.fhv.layblar.application.dto.ProjectDataDTO;
 import at.fhv.layblar.application.dto.ProjectInfoDTO;
+import at.fhv.layblar.application.dto.ProjectMetaDataDTO;
 import at.fhv.layblar.application.dto.ResearcherDTO;
 import at.fhv.layblar.commands.CreateProjectCommand;
 import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.commands.RegisterResearcherCommand;
 import at.fhv.layblar.commands.UpdateProjectCommand;
 import at.fhv.layblar.domain.Project;
+import at.fhv.layblar.domain.ProjectParticipant;
 import at.fhv.layblar.domain.Researcher;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
@@ -21,6 +24,7 @@ import at.fhv.layblar.events.ProjectUpdatedEvent;
 import at.fhv.layblar.utils.EntityBuilder;
 import at.fhv.layblar.utils.exceptions.ProjectNotFoundException;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
+import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
 import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
@@ -45,7 +49,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public ProjectInfoDTO createProject(CreateProjectCommand command) throws NotAuthorizedException {
+    public ProjectInfoDTO createProject(CreateProjectCommand command) throws NotAuthorizedException, ProjectValidityTimeframeException, LabelCategoryConflictException {
         Optional<Researcher> optResearcher = Researcher.findByIdOptional(jsonWebToken.getClaim("researcherId"));
         if(optResearcher.isEmpty()){
             throw new NotAuthorizedException("");
@@ -59,7 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public ProjectInfoDTO updateProject(String projectId, UpdateProjectCommand command) throws ProjectNotFoundException, NotAuthorizedException, VersionNotMatchingException, ProjectValidityTimeframeException {
+    public ProjectInfoDTO updateProject(String projectId, UpdateProjectCommand command) throws ProjectNotFoundException, NotAuthorizedException, VersionNotMatchingException, ProjectValidityTimeframeException, LabelCategoryConflictException {
         List<ProjectEvent> events = getEventsByEntityId(projectId);
         if(events.size() == 0){
             throw new ProjectNotFoundException("The project was not found");
@@ -113,6 +117,21 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectInfoDTO> getProjects() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProjects'");
+    }
+
+    @Override
+    public List<ProjectMetaDataDTO> getProjectDagetProjectHouseholdMetadatata(String projectId, String householdId) throws NotAuthorizedException, ProjectNotFoundException {
+        validateHouseholdId(householdId);
+        List<ProjectEvent> events = getEventsByEntityId(projectId);
+        if(events.size() == 0){
+            throw new ProjectNotFoundException("The project was not found");
+        }
+        Project project = EntityBuilder.buildEntity(events);
+        Optional<ProjectParticipant> optParticipant = project.participants.stream().filter(particitpant -> particitpant.householdId.equals(householdId)).findAny();
+        if(optParticipant.isPresent()){
+            return optParticipant.get().householdMetaData.stream().map(data -> ProjectMetaDataDTO.createProjectMetaDataDTO(data)).collect(Collectors.toList());
+        }
+        throw new NotAuthorizedException("Household is not part of project");
     }
 
 

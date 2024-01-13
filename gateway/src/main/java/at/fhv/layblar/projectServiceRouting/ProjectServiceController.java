@@ -12,8 +12,10 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.projectServiceRouting.model.CreateProjectDTO;
 import at.fhv.layblar.projectServiceRouting.model.JoinProjectDTO;
+import at.fhv.layblar.projectServiceRouting.model.MetaDataTemplateDTO;
 import at.fhv.layblar.projectServiceRouting.model.ProjectDataDTO;
 import at.fhv.layblar.projectServiceRouting.model.ProjectInfoDTO;
+import at.fhv.layblar.projectServiceRouting.model.ProjectMetaDataDTO;
 import at.fhv.layblar.projectServiceRouting.model.UpdateProjectDTO;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
@@ -106,5 +108,26 @@ public class ProjectServiceController {
             @Parameter(description = "Household meta data and a list of devices", required = true) JoinProjectDTO joinProjectDTO){
 
         return restClient.joinProject(projectId, householdId, joinProjectDTO);
+    }
+
+    @GET
+    @Path("/project/{projectId}/household/{householdId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectMetaDataDTO.class)), description = "Household metadata for a project by id", responseCode = "200")
+    @Operation(summary = "Get household metadata from a Project", description = "Get household metadata from a Project")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response>  getProjectHouseholdMetadata(@Parameter(description = "The ID of the project", required = true) @PathParam("projectId") String projectId,
+    @Parameter(description = "The ID of the household ", required = true) @PathParam("householdId") String householdId){
+        return restClient.getProjectHouseholdMetadata(projectId, householdId);
+    }
+
+    @GET
+    @Path("/metadata")
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = MetaDataTemplateDTO.class)), description = "List of Metadata Templates", responseCode = "200")
+    @Operation(summary = "Metadata template list", description = "Get the list of all available Metadata templates")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response>  listMetaData(){
+        return restClient.listMetaData();
     }
 }

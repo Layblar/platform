@@ -2,6 +2,7 @@ package at.fhv.layblar.events;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,12 +38,14 @@ public class ProjectUpdatedEvent extends ProjectEvent {
 
     private ObjectNode createEventPayload(UpdateProjectCommand command, Project project) {
         ObjectNode root = mapper.createObjectNode();
+        root.put(PROJECT_NAME, command.projectName);
+        root.put(PROJECT_DESCRIPTION, command.projectName);
+        root.put(PROJECT_DATA_USE_DECLARATION, command.projectName);
+        root.put(START_DATE, command.startDate.toString());
+        root.put(END_DATE, command.endDate.toString());
+        root.putPOJO(META_DATA_INFO, command.metaData);
+        root.putPOJO(LABELS, command.labels);
         return root;
-    }
-
-    @JsonIgnore
-    public String getProjectId() {
-        return this.payload.get(PROJECT_ID).asText();
     }
 
     @JsonIgnore
@@ -62,16 +65,12 @@ public class ProjectUpdatedEvent extends ProjectEvent {
 
     @JsonIgnore
     public LocalDateTime getStartDate() {
-        return mapper.convertValue(payload.get(START_DATE),
-        new TypeReference<LocalDateTime>() {
-        });
+        return LocalDateTime.parse(this.payload.get(START_DATE).asText());
     }
 
     @JsonIgnore
     public LocalDateTime getEndDate() {
-        return mapper.convertValue(payload.get(END_DATE),
-        new TypeReference<LocalDateTime>() {
-        });
+        return LocalDateTime.parse(this.payload.get(END_DATE).asText());
     }
 
     @JsonIgnore

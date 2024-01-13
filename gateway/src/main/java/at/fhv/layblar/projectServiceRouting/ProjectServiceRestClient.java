@@ -43,6 +43,10 @@ public interface ProjectServiceRestClient {
     Uni<Response> getProjectData(@PathParam("projectId") String projectId);
 
     @GET
+    @Path("/project/{projectId}/household/{householdId}")
+    Uni<Response> getProjectHouseholdMetadata(@PathParam("projectId") String projectId, @PathParam("houesholdId") String householdId);
+
+    @GET
     @Path("/project")
     Uni<Response> listProjects();
 
@@ -50,4 +54,7 @@ public interface ProjectServiceRestClient {
     @Path("/project/{projectId}/household/{householdId}")
     Uni<Response> joinProject(@PathParam("projectId") String projectId, @PathParam("householdId") String householdId, JoinProjectDTO joinProjectDTO);
 
+    @GET
+    @Path("/metadata")
+    Uni<Response> listMetaData();
 }

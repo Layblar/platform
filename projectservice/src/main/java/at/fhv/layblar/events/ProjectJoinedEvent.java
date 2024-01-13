@@ -5,8 +5,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import at.fhv.layblar.application.dto.ProjectMetaDataDTO;
 import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.domain.Project;
 import at.fhv.layblar.domain.ProjectMetaData;
@@ -43,6 +45,14 @@ public class ProjectJoinedEvent extends ProjectEvent {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
         root.put("householdId", command.householdId);
+        ArrayNode metaData = root.putArray("householdMetaData");
+        for (ProjectMetaDataDTO metaDataDTO : command.metaData) {
+            metaData.addObject()
+                .put("metaDataId", metaDataDTO.metaDataId)
+                .put("metaDataName", metaDataDTO.metaDataName)
+                .put("type", metaDataDTO.type)
+                .put("value", metaDataDTO.value);
+        }
         return root;
     }
 
@@ -52,8 +62,7 @@ public class ProjectJoinedEvent extends ProjectEvent {
     }
 
     public static ProjectJoinedEvent create(JoinProjectCommand command, Project project) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+        return new ProjectJoinedEvent(command, project);
     }
 
 }
