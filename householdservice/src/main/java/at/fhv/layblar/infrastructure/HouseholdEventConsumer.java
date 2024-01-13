@@ -2,7 +2,6 @@ package at.fhv.layblar.infrastructure;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;

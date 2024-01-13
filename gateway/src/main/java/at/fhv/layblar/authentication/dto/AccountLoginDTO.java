@@ -1,6 +1,6 @@
 package at.fhv.layblar.authentication.dto;
 
-public class LoginUserDTO {
+public class AccountLoginDTO {
 
     public String email;
     public String password;

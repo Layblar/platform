@@ -18,6 +18,7 @@ import at.fhv.layblar.householdServiceRouting.model.JoinHouseholdDTO;
 import at.fhv.layblar.householdServiceRouting.model.LeaveHouseholdDTO;
 import at.fhv.layblar.householdServiceRouting.model.SmartMeterDTO;
 import at.fhv.layblar.householdServiceRouting.model.UpdateDeviceDTO;
+import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;
@@ -30,7 +31,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-//@Authenticated
+@Authenticated
 @Path("household")
 @Tag(name = "Household", description = "Household Operations")
 @APIResponse(responseCode = "401", description = "Unauthorized")

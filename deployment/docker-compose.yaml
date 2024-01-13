@@ -3,6 +3,7 @@ version: '3'
 include:
   - gateway.yaml
   - household-service.yaml
+  - project-service.yaml
   - smart-meter-service.yaml
   - device-service.yaml
   - simulator.yaml

@@ -1,6 +1,6 @@
 package at.fhv.layblar.infrastructure;
 
-import at.fhv.layblar.domain.Researcher;
+import at.fhv.layblar.domain.model.Researcher;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

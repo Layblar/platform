@@ -10,21 +10,17 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
-import at.fhv.layblar.authentication.dto.LoginUserDTO;
-import at.fhv.layblar.authentication.dto.RegisterUserDTO;
-import at.fhv.layblar.authentication.dto.TokenDTO;
-import at.fhv.layblar.authentication.dto.UserDTO;
+import at.fhv.layblar.authentication.dto.AccountLoginDTO;
+import at.fhv.layblar.authentication.dto.AccountTokenDTO;
+import at.fhv.layblar.authentication.dto.RegisterHouseholdUserDTO;
+import at.fhv.layblar.authentication.dto.RegisterResearcherDTO;
+import at.fhv.layblar.authentication.dto.AccountDTO;
 import at.fhv.layblar.authentication.model.LayblarAccount;
+import at.fhv.layblar.authentication.service.RegistrationService;
 import at.fhv.layblar.authentication.service.TokenGenerator;
-import at.fhv.layblar.householdServiceRouting.HouseholdServiceRestClient;
-import at.fhv.layblar.householdServiceRouting.model.CreateHouseholdDTO;
-import at.fhv.layblar.householdServiceRouting.model.HouseholdDTO;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -42,45 +38,42 @@ import jakarta.ws.rs.core.Response;
 public class UserRestController {
 
     @Inject
-    @RestClient
-    HouseholdServiceRestClient restClient;
-
-    @Inject
     TokenGenerator tokenGenerator;
 
+    @Inject
+    RegistrationService registrationService;
+
     @POST
-    @Path("/register")
+    @Path("/register/householduser")
     @Consumes(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = UserDTO.class)), description = "The registered user", responseCode = "201")
-    @Operation(summary = "Register a new UserAccount", description = "Creates a new user and assigns them to a new Household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = AccountDTO.class)), description = "The registered user", responseCode = "201")
+    @Operation(summary = "Register a new Household user", description = "Creates a new user and assigns them to a new Household")
     @SecurityRequirement(name = "none")
-    @Transactional
     public Response createUser(
-            @Parameter(description = "The user object based on the RegisterUserDTO that should be registered", required = true) RegisterUserDTO registerUserDTO) {
+            @Parameter(description = "The user object based on the RegisterUserDTO that should be registered", required = true) RegisterHouseholdUserDTO registerHouseholdUserDTO) {
                 
-        List<LayblarAccount> layblarAccount = LayblarAccount.find("email", registerUserDTO.email).list();
-        if(layblarAccount.size() != 0){
-            return Response.status(403).entity("You cannot create an Account with this Email-Address").build();
-        }
-        CreateHouseholdDTO createHouseholdDTO = CreateHouseholdDTO.createHouseholdDTO(registerUserDTO);
-        HouseholdDTO household = restClient.createHousehold(createHouseholdDTO, tokenGenerator.generateRegistrationToken()).await().indefinitely().readEntity(HouseholdDTO.class);
-        LayblarAccount user = LayblarAccount.createUser(household.users.get(0).userId, household.users.get(0).email, registerUserDTO.password, household.householdId, registerUserDTO.roles);
-        user.persist();
-        UserDTO userDTO = new UserDTO();
-        userDTO.email = user.email;
-        userDTO.householdId = user.householdId;
-        userDTO.userId = user.userId;
-        return Response.status(201).entity(userDTO).build();
+        return registrationService.registerHouseholdUser(registerHouseholdUserDTO);
+    }
+
+    @POST
+    @Path("/register/researcher")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = AccountDTO.class)), description = "The registered researcher", responseCode = "201")
+    @Operation(summary = "Register a new researcher", description = "Creates a new researcher")
+    @SecurityRequirement(name = "none")
+    public Response createResearcher(
+            @Parameter(description = "The researcher object based on the ResearcherDTO that should be created", required = true) RegisterResearcherDTO registerResearcherDTO) {
+        return registrationService.registerResearcher(registerResearcherDTO);
     }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = TokenDTO.class)), description = "The logged in user", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = AccountTokenDTO.class)), description = "The logged in user", responseCode = "200")
     @Operation(summary = "Login", description = "Login with given credentials")
     @SecurityRequirement(name = "none")
     public Response loginUser(
-            @Parameter(description = "The user object based on the LoginUserDTO that should be logged in", required = true) LoginUserDTO loginUserDTO) {
+            @Parameter(description = "The user object based on the LoginUserDTO that should be logged in", required = true) AccountLoginDTO loginUserDTO) {
         List<LayblarAccount> layblarUser = LayblarAccount.find("email", loginUserDTO.email).list();
         if(layblarUser.size() != 1 || !BcryptUtil.matches(loginUserDTO.password, layblarUser.get(0).password)){
             return Response.status(401).entity("Email or password was wrong").build();

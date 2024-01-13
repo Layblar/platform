@@ -29,7 +29,7 @@ public interface HouseholdService {
 
     public HouseholdDTO leaveHousehold(String householdId, LeaveHouseholdCommand command) throws NotAuthorizedException, VersionNotMatchingException, HouseholdNotFoundException;
 
-    public HouseholdDTO getHouseholdInformation(String houesholdId) throws NotAuthorizedException;
+    public HouseholdDTO getHouseholdInformation(String houesholdId) throws NotAuthorizedException, HouseholdNotFoundException;
 
     public HouseholdJoinCodeDTO getHouseholdJoinCodeInformation(String householdId) throws NotAuthorizedException;
 
