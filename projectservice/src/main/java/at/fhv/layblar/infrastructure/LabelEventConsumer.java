@@ -3,6 +3,7 @@ package at.fhv.layblar.infrastructure;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
@@ -12,7 +13,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import at.fhv.layblar.events.ProjectEvent;
+import at.fhv.layblar.domain.model.LabeledData;
+import at.fhv.layblar.events.LabeledDataAddedEvent;
+import at.fhv.layblar.events.LabeledDataEvent;
+import at.fhv.layblar.events.LabeledDataEventVisitor;
+import at.fhv.layblar.events.LabeledDataRemovedEvent;
+import at.fhv.layblar.events.LabeledDataUpdatedEvent;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -29,10 +35,44 @@ public class LabelEventConsumer {
     @Blocking
     @Transactional
     public void process(Record<String,JsonNode> record) {
-
+        try {
+            LabeledDataEvent event = deserializeEvent(record.value());
+            Optional<LabeledData> optLabeledData = LabeledData.findByIdOptional(event.entityId);
+            LabeledData labeledData = new LabeledData();
+            if(optLabeledData.isPresent()){
+                labeledData = optLabeledData.get();
+            }
+            labeledData.labeledDataId = event.entityId;
+            labeledData = handleLabeledDataEvent(labeledData, event);
+            labeledData.persist();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
-    private ProjectEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
+    private LabeledData handleLabeledDataEvent(LabeledData labeledData, LabeledDataEvent event) {
+        event.accept(new LabeledDataEventVisitor() {
+
+            @Override
+            public void visit(LabeledDataAddedEvent event) {
+                labeledData.apply(event);
+            }
+
+            @Override
+            public void visit(LabeledDataUpdatedEvent event) {
+                labeledData.apply(event);
+            }
+
+            @Override
+            public void visit(LabeledDataRemovedEvent event) {
+                labeledData.apply(event);
+            }
+            
+        });
+        return labeledData;
+    }
+
+    private LabeledDataEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
         ObjectNode root = mapper.createObjectNode();
         root.put("entityId",value.get("after").get("entityid").asText());
         root.put("entityType",value.get("after").get("entitytype").asText());
@@ -44,7 +84,7 @@ public class LabelEventConsumer {
         root.put("timestamp", timestamp.toString());
         JsonNode payload = mapper.readTree(value.get("after").get("payload").asText());
         root.set("payload", payload);
-        return mapper.treeToValue(root, ProjectEvent.class);
+        return mapper.treeToValue(root, LabeledDataEvent.class);
     }
     
 }

@@ -144,4 +144,14 @@ public class Project {
         }
     }
 
+
+    public boolean isProjectParticipant(String householdId) {
+        return participants.stream().anyMatch(participant -> participant.householdId.equals(householdId));
+    }
+
+
+    public boolean isActive() {
+        return (LocalDateTime.now().isAfter(startDate) && LocalDateTime.now().isBefore(endDate));
+    }
+
 }

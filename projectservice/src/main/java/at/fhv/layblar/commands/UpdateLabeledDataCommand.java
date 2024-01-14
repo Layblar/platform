@@ -1,16 +1,15 @@
-package at.fhv.layblar.labelServiceRouting.model;
+package at.fhv.layblar.commands;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-public class LabeledDataDTO {
+import at.fhv.layblar.application.dto.SmartMeterDataDTO;
 
+public class UpdateLabeledDataCommand {
+    
     public String labeledDataId;
-    public String labelId;
     public String householdId;
     public String projectId;
+    public String labelId;
     public String deviceId;
     public List<SmartMeterDataDTO> smartMeterData;
-    public LocalDateTime createdAt;
-    
 }

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import at.fhv.layblar.application.LabelSerivce;
-import at.fhv.layblar.application.dto.CreateLabelDTO;
+import at.fhv.layblar.application.dto.AddLabeledDataCommand;
 import at.fhv.layblar.application.dto.LabeledDataDTO;
 import at.fhv.layblar.application.dto.SmartMeterDataDTO;
 import at.fhv.layblar.domain.LabeledData;
@@ -34,7 +34,7 @@ public class LabelServiceImpl implements LabelSerivce {
 
     @Override
     @Transactional
-    public List<LabeledDataDTO> createLabel(CreateLabelDTO createLabelDTO) {
+    public List<LabeledDataDTO> createLabel(AddLabeledDataCommand createLabelDTO) {
         List<LabeledData> labeledData = new LinkedList<>();
         for (SmartMeterDataDTO smartMeterDataDTO : createLabelDTO.labelData) {
             labeledData.add(LabeledData.create(jsonWebToken.getClaim("householdId"),

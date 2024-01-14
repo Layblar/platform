@@ -69,7 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(events.size() == 0){
             throw new ProjectNotFoundException("The project was not found");
         }
-        Project project = EntityBuilder.buildEntity(events);
+        Project project = EntityBuilder.buildProjectEntity(events);
         validateProjectResearcher(project);
         ProjectUpdatedEvent event = project.process(command);
         checkForVersionMismatch(events, project);
@@ -88,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(events.size() == 0){
             throw new ProjectNotFoundException("The project was not found");
         }
-        Project project = EntityBuilder.buildEntity(events);
+        Project project = EntityBuilder.buildProjectEntity(events);
         validateProjectResearcher(project);
         ProjectJoinedEvent event = project.process(command);
         checkForVersionMismatch(events, project);
