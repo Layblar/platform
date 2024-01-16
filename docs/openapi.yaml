@@ -898,14 +898,10 @@ paths:
                 properties:
                   labeledDataId:
                     type: string
-                  labelId:
-                    type: string
                   householdId:
                     type: string
-                  projectId:
-                    type: string
-                  deviceId:
-                    type: string
+                  device:
+                    $ref: '#/components/schemas/DeviceDTO'
                   smartMeterData:
                     type: array
                     items:
@@ -1218,8 +1214,8 @@ paths:
                     type: string
                   type:
                     type: string
-                  isRequired:
-                    type: boolean
+                  value:
+                    type: string
       security:
       - jwt: []
     post:
@@ -1557,14 +1553,10 @@ components:
       properties:
         labeledDataId:
           type: string
-        labelId:
-          type: string
         householdId:
           type: string
-        projectId:
-          type: string
-        deviceId:
-          type: string
+        device:
+          $ref: '#/components/schemas/DeviceDTO'
         smartMeterData:
           type: array
           items:
@@ -1616,8 +1608,8 @@ components:
           type: string
         type:
           type: string
-        isRequired:
-          type: boolean
+        value:
+          type: string
     RegisterHouseholdUserDTO:
       type: object
       properties:
