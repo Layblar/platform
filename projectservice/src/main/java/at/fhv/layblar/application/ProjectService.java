@@ -15,6 +15,7 @@ import at.fhv.layblar.utils.exceptions.VersionNotMatchingException;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
 import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
 import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
+import at.fhv.layblar.utils.exceptions.ProjectAlreadyJoinedException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
 
@@ -26,7 +27,7 @@ public interface ProjectService {
 
     public ProjectInfoDTO createProject(CreateProjectCommand command) throws NotAuthorizedException, ProjectValidityTimeframeException, LabelCategoryConflictException;
 
-    public ProjectInfoDTO joinProject(String projectId, String householdId, JoinProjectCommand command) throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing;
+    public ProjectInfoDTO joinProject(String projectId, String householdId, JoinProjectCommand command) throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing, ProjectAlreadyJoinedException;
 
     public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException;
 

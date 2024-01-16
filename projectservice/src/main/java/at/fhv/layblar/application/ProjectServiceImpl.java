@@ -26,6 +26,7 @@ import at.fhv.layblar.utils.exceptions.ProjectNotFoundException;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
 import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
 import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
+import at.fhv.layblar.utils.exceptions.ProjectAlreadyJoinedException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
 import at.fhv.layblar.utils.exceptions.VersionNotMatchingException;
@@ -80,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectInfoDTO joinProject(String projectId, String householdId, JoinProjectCommand command)
-            throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing {
+            throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing, ProjectAlreadyJoinedException {
         validateHouseholdId(householdId);
         command.householdId = householdId;
         List<ProjectEvent> events = getEventsByEntityId(projectId);

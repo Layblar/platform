@@ -12,11 +12,12 @@ import at.fhv.layblar.domain.model.Label;
 import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.domain.model.ProjectMetaData;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
 @Entity
 public class ProjectUpdatedEvent extends ProjectEvent {
 
-    @JsonIgnore
+    @Transient
     ObjectMapper mapper = new ObjectMapper();
 
     public ProjectUpdatedEvent() {

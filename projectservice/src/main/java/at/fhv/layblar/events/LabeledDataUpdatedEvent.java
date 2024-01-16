@@ -12,11 +12,12 @@ import at.fhv.layblar.domain.model.Device;
 import at.fhv.layblar.domain.model.LabeledData;
 import at.fhv.layblar.domain.model.SmartMeterData;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
 @Entity
 public class LabeledDataUpdatedEvent extends LabeledDataEvent {
 
-    @JsonIgnore
+    @Transient
     private ObjectMapper mapper = new ObjectMapper();
 
     public LabeledDataUpdatedEvent() {

@@ -13,11 +13,12 @@ import at.fhv.layblar.commands.JoinProjectCommand;
 import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.domain.model.ProjectMetaData;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
 @Entity
 public class ProjectJoinedEvent extends ProjectEvent {
 
-    @JsonIgnore
+    @Transient
     private ObjectMapper mapper = new ObjectMapper();
 
     public ProjectJoinedEvent() {

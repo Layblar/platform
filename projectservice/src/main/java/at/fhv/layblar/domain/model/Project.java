@@ -19,6 +19,7 @@ import at.fhv.layblar.events.ProjectJoinedEvent;
 import at.fhv.layblar.events.ProjectUpdatedEvent;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
 import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
+import at.fhv.layblar.utils.exceptions.ProjectAlreadyJoinedException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -122,9 +123,13 @@ public class Project extends PanacheEntityBase {
         return ProjectUpdatedEvent.create(command, this);
     }
 
-    public ProjectJoinedEvent process(JoinProjectCommand command) throws ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing {
+    public ProjectJoinedEvent process(JoinProjectCommand command) throws ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing, ProjectAlreadyJoinedException {
         if(LocalDateTime.now().isAfter(endDate) || LocalDateTime.now().isBefore(startDate)){
             throw new ProjectValidityTimeframeException("Project has not started or has already ended");
+        }
+
+        if(isProjectParticipant(command.householdId)){
+            throw new ProjectAlreadyJoinedException();
         }
 
         List<String> metaDataIds = metaDataInfo.stream().map(metadata -> metadata.metaDataId).collect(Collectors.toList());

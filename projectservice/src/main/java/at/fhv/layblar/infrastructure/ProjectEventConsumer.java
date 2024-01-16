@@ -6,7 +6,6 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,10 +42,9 @@ public class ProjectEventConsumer {
             if(optProject.isPresent()){
                 project = optProject.get();
             }
-            // project.projectId = event.entityId;
             project = handleProjectEvent(project, event);
             project.persistAndFlush();
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

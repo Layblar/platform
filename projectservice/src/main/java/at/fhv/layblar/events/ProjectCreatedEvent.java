@@ -15,11 +15,12 @@ import at.fhv.layblar.domain.model.ProjectMetaData;
 import at.fhv.layblar.domain.model.ProjectParticipant;
 import at.fhv.layblar.domain.model.Researcher;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
 @Entity
 public class ProjectCreatedEvent extends ProjectEvent {
 
-    @JsonIgnore
+    @Transient
     private ObjectMapper mapper = new ObjectMapper();
 
     public ProjectCreatedEvent() {

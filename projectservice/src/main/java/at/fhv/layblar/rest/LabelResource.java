@@ -34,7 +34,7 @@ public class LabelResource {
 
     @GET
     public List<Project> test(){
-        return Project.list("participants.householdId", "labeledData.householdId");
+        return Project.findByParticipant("7acd5633-2d83-48ce-821f-41fccbbb2377");
     }
 
     @GET
