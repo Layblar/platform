@@ -1304,17 +1304,11 @@
                     "labeledDataId" : {
                       "type" : "string"
                     },
-                    "labelId" : {
-                      "type" : "string"
-                    },
                     "householdId" : {
                       "type" : "string"
                     },
-                    "projectId" : {
-                      "type" : "string"
-                    },
-                    "deviceId" : {
-                      "type" : "string"
+                    "device" : {
+                      "$ref" : "#/components/schemas/DeviceDTO"
                     },
                     "smartMeterData" : {
                       "type" : "array",
@@ -1770,8 +1764,8 @@
                     "type" : {
                       "type" : "string"
                     },
-                    "isRequired" : {
-                      "type" : "boolean"
+                    "value" : {
+                      "type" : "string"
                     }
                   }
                 }
@@ -2270,17 +2264,11 @@
           "labeledDataId" : {
             "type" : "string"
           },
-          "labelId" : {
-            "type" : "string"
-          },
           "householdId" : {
             "type" : "string"
           },
-          "projectId" : {
-            "type" : "string"
-          },
-          "deviceId" : {
-            "type" : "string"
+          "device" : {
+            "$ref" : "#/components/schemas/DeviceDTO"
           },
           "smartMeterData" : {
             "type" : "array",
@@ -2359,8 +2347,8 @@
           "type" : {
             "type" : "string"
           },
-          "isRequired" : {
-            "type" : "boolean"
+          "value" : {
+            "type" : "string"
           }
         }
       },
