@@ -1171,7 +1171,7 @@
         } ]
       }
     },
-    "/label/labelevent" : {
+    "/label/event" : {
       "post" : {
         "tags" : [ "Label" ],
         "summary" : "Send a label event",

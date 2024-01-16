@@ -801,7 +801,7 @@ paths:
           description: Label by Household
       security:
       - jwt: []
-  /label/labelevent:
+  /label/event:
     post:
       tags:
       - Label
