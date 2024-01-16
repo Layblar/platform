@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import at.fhv.layblar.domain.readmodel.ProjectReadModel;
+import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
 import at.fhv.layblar.events.ProjectEventVisitor;
@@ -35,28 +35,29 @@ public class ProjectEventConsumer {
     @Blocking
     @Transactional
     public void process(Record<String,JsonNode> record) {
+
         try {
             ProjectEvent event = deserializeEvent(record.value());
-            Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(event.entityId);
-            ProjectReadModel project = new ProjectReadModel();
+            Optional<Project> optProject = Project.findByIdOptional(event.entityId);
+            Project project = new Project();
             if(optProject.isPresent()){
                 project = optProject.get();
             }
-            project.projectId = event.entityId;
+            // project.projectId = event.entityId;
             project = handleProjectEvent(project, event);
-            project.persist();
+            project.persistAndFlush();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
     }
 
-    private ProjectReadModel handleProjectEvent(ProjectReadModel project, ProjectEvent event) {
+    private Project handleProjectEvent(Project project, ProjectEvent event) {
         event.accept(new ProjectEventVisitor() {
 
             @Override
             public void visit(ProjectCreatedEvent event) {
-                project.apply(event);
+                project.apply(event);             
             }
 
             @Override
@@ -73,7 +74,7 @@ public class ProjectEventConsumer {
         return project;
     }
 
-    private ProjectEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
+    private ProjectEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException {
         ObjectNode root = mapper.createObjectNode();
         root.put("entityId",value.get("after").get("entityid").asText());
         root.put("entityType",value.get("after").get("entitytype").asText());

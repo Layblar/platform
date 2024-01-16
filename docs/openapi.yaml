@@ -782,14 +782,14 @@ paths:
     post:
       tags:
       - Label
-      summary: Create a Label
-      description: Create a Label
-      operationId: createLabel
+      summary: Add labeled data
+      description: Adds new labeled data to the database
+      operationId: addLabeledData
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateLabelDTO'
+              $ref: '#/components/schemas/AddLabeledDataDTO'
       responses:
         "401":
           description: Unauthorized
@@ -797,29 +797,133 @@ paths:
           description: Invalid User
         "500":
           description: Server Error
-        "400":
-          description: Missing Query Parameters
+        "201":
+          description: Label by Household
+      security:
+      - jwt: []
+  /label/labelevent:
+    post:
+      tags:
+      - Label
+      summary: Send a label event
+      description: Sends a label event to match with smart meter data
+      operationId: addLabelEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelEventDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
         "200":
-          description: The created label
+          description: Label event recived
           content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CreateLabelDTO'
+            application/json: {}
       security:
       - jwt: []
   /label/{householdId}:
     get:
       tags:
       - Label
-      summary: Returns a list of labels
-      description: Returns a list of labels for the specific household
-      operationId: getLabelsByHousehold
+      summary: Returns a list of labeled data
+      description: Returns a list of labeled data for the specific household
+      operationId: getLabeledDatasByHousehold
       parameters:
       - name: householdId
         in: path
-        description: The id of the household for which the data should be fetched
+        description: The householdId
+        required: true
+        schema:
+          type: string
+      - name: projectId
+        in: query
+        description: Optional projectId filter
+        required: false
+        schema:
+          type: string
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: Labeled data by Household
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LabeledDataDTO'
+      security:
+      - jwt: []
+  /label/{labeledDataId}:
+    put:
+      tags:
+      - Label
+      summary: Update labeled data
+      description: Update the data of a labeled dataset
+      operationId: updateLabeledData
+      parameters:
+      - name: labeledDataId
+        in: path
+        description: The id of the labeled dataset to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLabeledDataDTO'
+      responses:
+        "401":
+          description: Unauthorized
+        "403":
+          description: Invalid User
+        "500":
+          description: Server Error
+        "200":
+          description: Labeleld data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  labeledDataId:
+                    type: string
+                  labelId:
+                    type: string
+                  householdId:
+                    type: string
+                  projectId:
+                    type: string
+                  deviceId:
+                    type: string
+                  smartMeterData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SmartMeterDataDTO1'
+                  createdAt:
+                    $ref: '#/components/schemas/LocalDateTime'
+      security:
+      - jwt: []
+    delete:
+      tags:
+      - Label
+      summary: Delete labeled data
+      description: Delete a labeled dataset
+      operationId: deleteLabeledData
+      parameters:
+      - name: labeledDataId
+        in: path
+        description: The id of the labeled dataset to delete
         required: true
         schema:
           type: string
@@ -831,22 +935,8 @@ paths:
         "500":
           description: Server Error
         "200":
-          description: Label by Household
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  labelId:
-                    type: string
-                  householdId:
-                    type: string
-                  smartMeterData:
-                    $ref: '#/components/schemas/SmartMeterDataDTO1'
-                  label:
-                    type: string
-                  createdAt:
-                    $ref: '#/components/schemas/LocalDateTime'
+          description: Labeleld data
+          content: {}
       security:
       - jwt: []
   /project/metadata:
@@ -1299,17 +1389,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceCategoryDTO'
-    CreateLabelDTO:
+    AddLabeledDataDTO:
       type: object
       properties:
-        label:
+        householdId:
           type: string
-        labelData:
+        device:
+          $ref: '#/components/schemas/DeviceDTO'
+        smartMeterData:
           type: array
           items:
             $ref: '#/components/schemas/SmartMeterDataDTO1'
-        labelMetaData:
-          $ref: '#/components/schemas/LabelMetaDataDTO'
     CreateProjectDTO:
       type: object
       properties:
@@ -1444,13 +1534,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceCategoryDTO'
-    LabelMetaDataDTO:
+    LabelEventDTO:
       type: object
       properties:
-        householdMetaData:
+        labelEventId:
           type: string
-        deviceMetaData:
+        householdId:
           type: string
+        device:
+          $ref: '#/components/schemas/DeviceDTO'
+        timestamp:
+          $ref: '#/components/schemas/LocalDateTime'
+        labelEventType:
+          $ref: '#/components/schemas/LabelEventType'
+    LabelEventType:
+      enum:
+      - BEGIN
+      - END
+      type: string
+    LabeledDataDTO:
+      type: object
+      properties:
+        labeledDataId:
+          type: string
+        labelId:
+          type: string
+        householdId:
+          type: string
+        projectId:
+          type: string
+        deviceId:
+          type: string
+        smartMeterData:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmartMeterDataDTO1'
+        createdAt:
+          $ref: '#/components/schemas/LocalDateTime'
     LeaveHouseholdDTO:
       type: object
       properties:
@@ -1671,6 +1791,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceCategoryDTO'
+    UpdateLabeledDataDTO:
+      type: object
+      properties:
+        labeledDataId:
+          type: string
+        deviceDTO:
+          $ref: '#/components/schemas/DeviceDTO'
+        smartMeterData:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmartMeterDataDTO1'
     UpdateProjectDTO:
       type: object
       properties:

@@ -1,30 +1,11 @@
-package at.fhv.layblar.domain;
+package at.fhv.layblar.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+public class SmartMeterData {
 
-@Entity
-@Table(name = "smart_meter_data")
-@JsonIgnoreProperties({ "timestamp", "uptime" })
-@IdClass(MeterDataReadingKey.class)
-public class MeterDataReading extends PanacheEntityBase  {
-
-    @Id
-    public LocalDateTime time;
-    @Id
+    public String time;
     public String sensorId;
-    @Id
-    public String householdId;
     @JsonProperty("1.7.0")
     public Float v1_7_0;
     @JsonProperty("1.8.0")
@@ -51,7 +32,5 @@ public class MeterDataReading extends PanacheEntityBase  {
     public Float v71_7_0;
     @JsonProperty("72.7.0")
     public Float v72_7_0;
-
-    public MeterDataReading() {}
 
 }

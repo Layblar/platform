@@ -17,6 +17,9 @@ import jakarta.persistence.Entity;
 @Entity
 public class ProjectJoinedEvent extends ProjectEvent {
 
+    @JsonIgnore
+    private ObjectMapper mapper = new ObjectMapper();
+
     public ProjectJoinedEvent() {
         super();
         this.eventType = "ProjectJoinedEvent";
@@ -36,13 +39,12 @@ public class ProjectJoinedEvent extends ProjectEvent {
 
     @JsonIgnore
     public List<ProjectMetaData> getHouseholdMetaData() {
-        return new ObjectMapper().convertValue(payload.get("householdMetaData"),
+        return mapper.convertValue(payload.get("householdMetaData"),
         new TypeReference<List<ProjectMetaData>>() {
         });
     }
 
     private ObjectNode createEventPayload(JoinProjectCommand command, Project project) {
-        ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
         root.put("householdId", command.householdId);
         ArrayNode metaData = root.putArray("householdMetaData");

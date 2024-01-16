@@ -10,16 +10,22 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import at.fhv.layblar.labelServiceRouting.model.CreateLabelDTO;
+import at.fhv.layblar.labelServiceRouting.model.AddLabeledDataDTO;
+import at.fhv.layblar.labelServiceRouting.model.LabelEventDTO;
 import at.fhv.layblar.labelServiceRouting.model.LabeledDataDTO;
+import at.fhv.layblar.labelServiceRouting.model.UpdateLabeledDataDTO;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -38,37 +44,56 @@ public class LabelServiceController {
     @GET
     @Path("/{householdId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = LabeledDataDTO.class)), description = "Label by Household", responseCode = "200")
-    @Operation(summary = "Returns a list of labels", description = "Returns a list of labels for the specific household")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = LabeledDataDTO.class)), description = "Labeled data by Household", responseCode = "200")
+    @Operation(summary = "Returns a list of labeled data", description = "Returns a list of labeled data for the specific household")
     @SecurityRequirement(name = "jwt")
-    public Uni<Response> getLabelsByHousehold(
-            @Parameter(description = "The id of the household for which the data should be fetched", required = true) @PathParam("householdId") String householdId) {
-        return restClient.getLabelsByHousehold(householdId);
+    public Uni<Response> getLabeledDatasByHousehold(
+        @Parameter(description = "The householdId", required = true) @PathParam("householdId") String householdId,
+        @Parameter(description = "Optional projectId filter", required = false) @QueryParam("projectId") String projectId) {
+        return restClient.getLabeledDatasByHousehold(householdId, projectId);
     }
 
-    // @GET
-    // @Path("/project/{projectId}")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // @APIResponse(responseCode = "400", description = "Missing Query Parameters")
-    // @APIResponse(responseCode = "422", description = "Wrong Date Format")
-    // @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = LabelDTO.class)), description = "Labels for the specified time period", responseCode = "200")
-    // @Operation(summary = "Get Labels", description = "Get a List of Labels from the specified time frame")
-    // @SecurityRequirement(name = "jwt")
-    // public Uni<Response> getProjectLabels(
-    //         @Parameter(description = "The id of the project for which the data should be fetched", required = true) @PathParam("projectId") String projectId,
-    //         @Parameter(description = "The begin of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = false) @QueryParam("from") String from,
-    //         @Parameter(description = "The end of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = false) @QueryParam("to") String to) {
-    //     return restClient.getProjectLabels(projectId, from, to);
-    // }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(description = "Label by Household", responseCode = "201")
+    @Operation(summary = "Add labeled data", description = "Adds new labeled data to the database")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response> addLabeledData(@Parameter(description = "Labeled Data", required = true) AddLabeledDataDTO command){
+        return restClient.addLabeledData(command);
+    }
 
     @POST
+    @Path("/event")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(responseCode = "400", description = "Missing Query Parameters")
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = CreateLabelDTO.class)), description = "The created label", responseCode = "200")
-    @Operation(summary = "Create a Label", description = "Create a Label")
+    @APIResponse(description = "Label event recived", responseCode = "200")
+    @Operation(summary = "Send a label event", description = "Sends a label event to match with smart meter data")
     @SecurityRequirement(name = "jwt")
-    public Uni<Response> createLabel(
-            @Parameter(description = "The label object based on the LabelDTO that should be created", required = true) CreateLabelDTO createLabelDTO) {
-        return restClient.createLabel(createLabelDTO);
+    public Uni<Response> addLabelEvent(@Parameter(description = "Label event", required = true) LabelEventDTO eventDTO){
+        return restClient.addLabelEvent(eventDTO);
+    }
+
+    @PUT
+    @Path("/{labeledDataId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = LabeledDataDTO.class)), description = "Labeleld data", responseCode = "200")
+    @Operation(summary = "Update labeled data", description = "Update the data of a labeled dataset")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response> updateLabeledData(
+        @Parameter(description = "The id of the labeled dataset to update", required = true) @PathParam("labeledDataId") String labeledDataId,
+        @Parameter(description = "Labeled Data", required = true) UpdateLabeledDataDTO command){
+        return restClient.updateLabeledData(labeledDataId, command);
+    }
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{labeledDataId}")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = LabeledDataDTO.class)), description = "Labeleld data", responseCode = "200")
+    @Operation(summary = "Delete labeled data", description = "Delete a labeled dataset")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response> deleteLabeledData(
+        @Parameter(description = "The id of the labeled dataset to delete", required = true) @PathParam("labeledDataId") String labeledDataId){
+        return restClient.deleteLabeledData(labeledDataId);
     }
 }

@@ -1,7 +1,7 @@
 package at.fhv.layblar.rest;
 
 import at.fhv.layblar.application.LabelSerivce;
-import at.fhv.layblar.application.dto.CreateLabelDTO;
+import at.fhv.layblar.application.dto.AddLabeledDataCommand;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -28,7 +28,7 @@ public class LabelResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/label")
-    public Response createLabel(CreateLabelDTO createLabelDTO){
+    public Response createLabel(AddLabeledDataCommand createLabelDTO){
         return Response.ok().entity(labelService.createLabel(createLabelDTO)).build();
     }
 }

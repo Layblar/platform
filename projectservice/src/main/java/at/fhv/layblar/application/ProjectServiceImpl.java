@@ -17,7 +17,6 @@ import at.fhv.layblar.commands.UpdateProjectCommand;
 import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.domain.model.ProjectParticipant;
 import at.fhv.layblar.domain.model.Researcher;
-import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
 import at.fhv.layblar.events.ProjectJoinedEvent;
@@ -69,7 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(events.size() == 0){
             throw new ProjectNotFoundException("The project was not found");
         }
-        Project project = EntityBuilder.buildEntity(events);
+        Project project = EntityBuilder.buildProjectEntity(events);
         validateProjectResearcher(project);
         ProjectUpdatedEvent event = project.process(command);
         checkForVersionMismatch(events, project);
@@ -80,16 +79,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public ProjectInfoDTO joinProject(String projectId, String houeholdId, JoinProjectCommand command)
+    public ProjectInfoDTO joinProject(String projectId, String householdId, JoinProjectCommand command)
             throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing {
-        validateHouseholdId(houeholdId);
-        command.householdId = houeholdId;
+        validateHouseholdId(householdId);
+        command.householdId = householdId;
         List<ProjectEvent> events = getEventsByEntityId(projectId);
         if(events.size() == 0){
             throw new ProjectNotFoundException("The project was not found");
         }
-        Project project = EntityBuilder.buildEntity(events);
-        validateProjectResearcher(project);
+        Project project = EntityBuilder.buildProjectEntity(events);
         ProjectJoinedEvent event = project.process(command);
         checkForVersionMismatch(events, project);
         event.persist();
@@ -99,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException {
-        Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
+        Optional<Project> optProject = Project.findByIdOptional(projectId);
         if(optProject.isEmpty()){
             throw new ProjectNotFoundException("The project was not found");
         }
@@ -115,7 +113,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectInfoDTO> getProjects() {
-        List<ProjectReadModel> projects = ProjectReadModel.listAll();
+        List<Project> projects = Project.listAll();
         return projects.stream().map(
             project -> ProjectInfoDTO.createProjectInfoDTO(project)
         ).collect(Collectors.toList());
@@ -124,7 +122,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectMetaDataDTO> getProjectDagetProjectHouseholdMetadatata(String projectId, String householdId) throws NotAuthorizedException, ProjectNotFoundException {
         validateHouseholdId(householdId);
-        Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
+        Optional<Project> optProject = Project.findByIdOptional(projectId);
         if(optProject.isEmpty()){
             throw new ProjectNotFoundException("The project was not found");
         }
@@ -142,11 +140,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateProjectResearcher(ProjectReadModel project) throws NotAuthorizedException {
-        if(!jsonWebToken.getClaim("researcherId").equals(project.researcherId)) {
-            throw new NotAuthorizedException("Not Authorized to do this action");
-        }
-    }
+    // private void validateProjectResearcher(Project project) throws NotAuthorizedException {
+    //     if(!jsonWebToken.getClaim("researcherId").equals(project.researcherId)) {
+    //         throw new NotAuthorizedException("Not Authorized to do this action");
+    //     }
+    // }
 
     private void validateHouseholdId(String householdId) throws NotAuthorizedException {
         if(!jsonWebToken.getClaim("householdId").equals(householdId)){
