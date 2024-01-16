@@ -28,8 +28,13 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Project.byParticipant", query = "FROM Project p JOIN p.participants participant WHERE participant.householdId = ?1")
+})
 public class Project extends PanacheEntityBase {
 
     @Id
@@ -183,6 +188,10 @@ public class Project extends PanacheEntityBase {
 
     public boolean hasLabel(String labelId) {
         return labels.stream().anyMatch(label -> label.labelId.equals(labelId));
+    }
+
+    public static List<Project> findByParticipant(String householdId) {
+        return find("#Project.byParticipant", householdId).list();
     }
 
 }
