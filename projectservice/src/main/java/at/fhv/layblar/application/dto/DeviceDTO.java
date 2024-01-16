@@ -1,6 +1,9 @@
 package at.fhv.layblar.application.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import at.fhv.layblar.domain.model.Device;
 
 public class DeviceDTO {
 
@@ -13,5 +16,26 @@ public class DeviceDTO {
     public String energyEfficiencyRating;
     public Float weight;
     public List<DeviceCategoryDTO> categories;
+
+    public DeviceDTO(){}
+
+    private DeviceDTO(String deviceId, String deviceName, String deviceDescription, String manufacturer,
+            String modelNumber, Integer powerDraw, String energyEfficiencyRating, Float weight, List<DeviceCategoryDTO> categoryDTOs) {
+        this.deviceId = deviceId;
+        this.deviceName = deviceName;
+        this.deviceDescription = deviceDescription;
+        this.manufacturer = manufacturer;
+        this.modelNumber = modelNumber;
+        this.powerDraw = powerDraw;
+        this.energyEfficiencyRating = energyEfficiencyRating;
+        this.weight = weight;
+        this.categories = categoryDTOs;
+    }
+
+    public static DeviceDTO createDTO(Device device) {
+        return new DeviceDTO(device.deviceId, device.deviceName, device.deviceDescription, device.manufacturer,
+        device.modelNumber, device.powerDraw, device.energyEfficiencyRating, device.weight,
+        device.deviceCategory.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category)).collect(Collectors.toList()));
+    }
     
 }

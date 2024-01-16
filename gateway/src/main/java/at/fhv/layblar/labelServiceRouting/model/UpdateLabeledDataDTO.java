@@ -2,13 +2,12 @@ package at.fhv.layblar.labelServiceRouting.model;
 
 import java.util.List;
 
+import at.fhv.layblar.deviceLibraryServiceRouting.model.DeviceDTO;
+
 public class UpdateLabeledDataDTO {
 
     public String labeledDataId;
-    public String householdId;
-    public String projectId;
-    public String labelId;
-    public String deviceId;
+    public DeviceDTO deviceDTO;
     public List<SmartMeterDataDTO> smartMeterData;
 
 }

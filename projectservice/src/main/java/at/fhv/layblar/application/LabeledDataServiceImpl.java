@@ -5,21 +5,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
 
+import at.fhv.layblar.application.dto.LabelEventDTO;
 import at.fhv.layblar.application.dto.LabeledDataDTO;
 import at.fhv.layblar.commands.AddLabeledDataCommand;
+import at.fhv.layblar.commands.RemoveLabeledDataCommand;
 import at.fhv.layblar.commands.UpdateLabeledDataCommand;
 import at.fhv.layblar.domain.model.LabeledData;
-import at.fhv.layblar.domain.model.Project;
-import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.LabeledDataAddedEvent;
 import at.fhv.layblar.events.LabeledDataEvent;
-import at.fhv.layblar.events.ProjectEvent;
+import at.fhv.layblar.events.LabeledDataRemovedEvent;
+import at.fhv.layblar.events.LabeledDataUpdatedEvent;
 import at.fhv.layblar.utils.EntityBuilder;
+import at.fhv.layblar.utils.exceptions.LabelNotFoundException;
+import at.fhv.layblar.utils.exceptions.LabeledDataAlreadyRemovedException;
+import at.fhv.layblar.utils.exceptions.LabeledDataNotFoundException;
 import at.fhv.layblar.utils.exceptions.NotAuthorizedException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
 import at.fhv.layblar.utils.exceptions.VersionNotMatchingException;
+import io.smallrye.reactive.messaging.annotations.Broadcast;
+import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 public class LabeledDataServiceImpl implements LabeledDataService {
 
@@ -39,15 +49,9 @@ public class LabeledDataServiceImpl implements LabeledDataService {
     }
 
     @Override
-    public LabeledDataDTO addLabeledData(AddLabeledDataCommand command) throws NotAuthorizedException, ProjectValidityTimeframeException {
+    @Transactional
+    public LabeledDataDTO addLabeledData(AddLabeledDataCommand command) throws NotAuthorizedException, ProjectValidityTimeframeException, LabelNotFoundException {
         validateHouseholdId(command.householdId);
-        Project project = EntityBuilder.buildProjectEntity(ProjectEvent.find("entityId", command.projectId).list());
-        if(!project.isProjectParticipant(command.householdId)){
-            throw new NotAuthorizedException("Not part of the project");
-        }
-        if(!project.isActive()){
-            throw new ProjectValidityTimeframeException("Project is not active");
-        }
         LabeledData labeledData = new LabeledData();
         LabeledDataAddedEvent event = labeledData.process(command);
         event.persist();
@@ -56,21 +60,48 @@ public class LabeledDataServiceImpl implements LabeledDataService {
     }
 
     @Override
-    public List<LabeledDataDTO> updateLabeledData(UpdateLabeledDataCommand command) throws NotAuthorizedException {
-        validateHouseholdId(command.householdId);
-        throw new UnsupportedOperationException("Unimplemented method 'updateLabeledData'");
+    @Transactional
+    public LabeledDataDTO updateLabeledData(UpdateLabeledDataCommand command) throws NotAuthorizedException, LabeledDataNotFoundException, LabeledDataAlreadyRemovedException, ProjectValidityTimeframeException, VersionNotMatchingException, LabelNotFoundException {
+        List<LabeledDataEvent> data = getEventsByEntityId(command.labeledDataId);
+        if(data.size() == 0){
+            throw new LabeledDataNotFoundException();
+        }
+        LabeledData labeledData = EntityBuilder.buildLabeledDataEntity(data);
+        validateHouseholdId(labeledData.householdId);
+        LabeledDataUpdatedEvent event = labeledData.process(command);
+        checkForVersionMismatch(data, labeledData);
+        event.persist();
+        labeledData.apply(event);
+        return LabeledDataDTO.createLabeledDataDTO(labeledData);
     }
 
     @Override
-    public Object deleteLabeledData(String labeledDataId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteLabeledData'");
+    @Transactional
+    public LabeledDataDTO deleteLabeledData(String labeledDataId) throws NotAuthorizedException, LabeledDataNotFoundException, VersionNotMatchingException {
+        List<LabeledDataEvent> data = getEventsByEntityId(labeledDataId);
+        if(data.size() == 0){
+            throw new LabeledDataNotFoundException();
+        }
+        LabeledData labeledData = EntityBuilder.buildLabeledDataEntity(data);
+        validateHouseholdId(labeledData.householdId);
+        LabeledDataRemovedEvent event = labeledData.process(RemoveLabeledDataCommand.create(labeledDataId));
+        checkForVersionMismatch(data, labeledData);
+        event.persist();
+        labeledData.apply(event);
+        return LabeledDataDTO.createLabeledDataDTO(labeledData);
     }
 
-    private void validateProjectId(ProjectReadModel project) throws NotAuthorizedException {
-        if(!jsonWebToken.getClaim("researcherId").equals(project.researcherId)) {
-            throw new NotAuthorizedException("Not Authorized to do this action");
-        }
+    @Inject
+    @Channel("label-event")
+    @Broadcast
+    Emitter<LabelEventDTO> emitter;
+
+    @Override
+    public void sendLabelEvent(LabelEventDTO eventDTO) throws NotAuthorizedException, ProjectValidityTimeframeException {
+        validateHouseholdId(eventDTO.householdId);
+        OutgoingKafkaRecordMetadata<?> metaData = OutgoingKafkaRecordMetadata.builder()
+            .withTopic("label-event-" + eventDTO.projectId).build();
+        emitter.send(Message.of(eventDTO).addMetadata(metaData));
     }
 
     private void validateHouseholdId(String householdId) throws NotAuthorizedException {

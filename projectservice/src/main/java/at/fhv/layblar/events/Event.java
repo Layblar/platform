@@ -22,6 +22,7 @@ import jakarta.persistence.Table;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ProjectCreatedEvent.class, name = "ProjectCreatedEvent"),
         @JsonSubTypes.Type(value = ProjectUpdatedEvent.class, name = "ProjectUpdatedEvent"),
+        @JsonSubTypes.Type(value = ProjectJoinedEvent.class, name = "ProjectJoinedEvent"),
         @JsonSubTypes.Type(value = LabeledDataAddedEvent.class, name = "LabeledDataAddedEvent"),
         @JsonSubTypes.Type(value = LabeledDataUpdatedEvent.class, name = "LabeledDataUpdatedEvent"),
         @JsonSubTypes.Type(value = LabeledDataRemovedEvent.class, name = "LabeledDataRemovedEvent"),

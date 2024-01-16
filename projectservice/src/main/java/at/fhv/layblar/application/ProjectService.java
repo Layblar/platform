@@ -26,7 +26,7 @@ public interface ProjectService {
 
     public ProjectInfoDTO createProject(CreateProjectCommand command) throws NotAuthorizedException, ProjectValidityTimeframeException, LabelCategoryConflictException;
 
-    public ProjectInfoDTO joinProject(String projectId, String houeholdId, JoinProjectCommand command) throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing;
+    public ProjectInfoDTO joinProject(String projectId, String householdId, JoinProjectCommand command) throws NotAuthorizedException, ProjectNotFoundException, VersionNotMatchingException, ProjectValidityTimeframeException, ProjectMetaDataMissingException, DeviceCategoryMissing;
 
     public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException;
 

@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Researcher extends PanacheEntityBase{
+public class Researcher extends PanacheEntityBase {
 
     @Id
     public String researcherId;

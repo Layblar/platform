@@ -19,6 +19,7 @@ import jakarta.persistence.Entity;
 @Entity
 public class ProjectCreatedEvent extends ProjectEvent {
 
+    @JsonIgnore
     private ObjectMapper mapper = new ObjectMapper();
 
     public ProjectCreatedEvent() {

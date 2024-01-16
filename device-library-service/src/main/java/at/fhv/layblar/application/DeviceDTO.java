@@ -17,6 +17,8 @@ public class DeviceDTO {
     public Float weight;
     public List<DeviceCategoryDTO> categories;
 
+    public DeviceDTO(){}
+
     private DeviceDTO(String deviceId, String deviceName, String deviceDescription, String manufacturer,
             String modelNumber, Integer powerDraw, String energyEfficiencyRating, Float weight, List<DeviceCategoryDTO> categoryDTOs) {
         this.deviceId = deviceId;

@@ -3,7 +3,9 @@ package at.fhv.layblar.infrastructure;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
@@ -13,7 +15,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import at.fhv.layblar.domain.model.Label;
 import at.fhv.layblar.domain.model.LabeledData;
+import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.domain.model.ProjectParticipant;
+import at.fhv.layblar.domain.readmodel.ProjectLabeledData;
 import at.fhv.layblar.events.LabeledDataAddedEvent;
 import at.fhv.layblar.events.LabeledDataEvent;
 import at.fhv.layblar.events.LabeledDataEventVisitor;
@@ -44,7 +50,6 @@ public class LabelEventConsumer {
             }
             labeledData.labeledDataId = event.entityId;
             labeledData = handleLabeledDataEvent(labeledData, event);
-            labeledData.persist();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -56,20 +61,45 @@ public class LabelEventConsumer {
             @Override
             public void visit(LabeledDataAddedEvent event) {
                 labeledData.apply(event);
+                labeledData.persist();
+                addLabeledDataToProjects(labeledData);
             }
 
             @Override
             public void visit(LabeledDataUpdatedEvent event) {
                 labeledData.apply(event);
+                labeledData.persist();
             }
 
             @Override
             public void visit(LabeledDataRemovedEvent event) {
                 labeledData.apply(event);
+                labeledData.delete();
             }
             
         });
         return labeledData;
+    }
+
+    private void addLabeledDataToProjects(LabeledData labeledData) {
+        List<Project> projects = Project.list("participants.householdId", labeledData.householdId);
+        for (Project project : projects) {
+            if(project.isActive()){
+                List<String> deviceCategoryIds = labeledData.device.deviceCategory.stream()
+                    .map(category -> category.deviceCategoryId)
+                    .collect(Collectors.toList());
+                Label label = project.labels.stream()
+                    .filter(l -> l.categories.stream().anyMatch(category -> deviceCategoryIds.contains(category.deviceCategoryId)))
+                    .findFirst()
+                    .orElse(null);
+                Optional<ProjectParticipant> optPart = project.participants.stream().filter(par -> par.householdId.equals(labeledData.householdId)).findFirst();
+                if(label != null && optPart.isPresent()) {
+                    ProjectLabeledData projectLabeledData = ProjectLabeledData.create(labeledData, optPart.get().householdMetaData, label.labelId, project);
+                    projectLabeledData.persist();
+                }
+
+            }
+        }
     }
 
     private LabeledDataEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{

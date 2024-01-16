@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import at.fhv.layblar.labelServiceRouting.model.AddLabeledDataDTO;
+import at.fhv.layblar.labelServiceRouting.model.LabelEventDTO;
 import at.fhv.layblar.labelServiceRouting.model.LabeledDataDTO;
 import at.fhv.layblar.labelServiceRouting.model.UpdateLabeledDataDTO;
 import io.quarkus.security.Authenticated;
@@ -62,6 +63,17 @@ public class LabelServiceController {
         return restClient.addLabeledData(command);
     }
 
+    @POST
+    @Path("/labelevent")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(description = "Label event recived", responseCode = "200")
+    @Operation(summary = "Send a label event", description = "Sends a label event to match with smart meter data")
+    @SecurityRequirement(name = "jwt")
+    public Uni<Response> addLabelEvent(@Parameter(description = "Label event", required = true) LabelEventDTO eventDTO){
+        return restClient.addLabelEvent(eventDTO);
+    }
+
     @PUT
     @Path("/{labeledDataId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -76,7 +88,7 @@ public class LabelServiceController {
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{labelId}")
+    @Path("/{labeledDataId}")
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = LabeledDataDTO.class)), description = "Labeleld data", responseCode = "200")
     @Operation(summary = "Delete labeled data", description = "Delete a labeled dataset")
     @SecurityRequirement(name = "jwt")

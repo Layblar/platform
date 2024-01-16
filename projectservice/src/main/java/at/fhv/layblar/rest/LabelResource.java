@@ -1,8 +1,13 @@
 package at.fhv.layblar.rest;
 
+import java.util.List;
+
 import at.fhv.layblar.application.LabeledDataService;
+import at.fhv.layblar.application.dto.LabelEventDTO;
 import at.fhv.layblar.commands.AddLabeledDataCommand;
 import at.fhv.layblar.commands.UpdateLabeledDataCommand;
+import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.events.LabeledDataEvent;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;
@@ -28,6 +33,11 @@ public class LabelResource {
     LabeledDataService labledDataService;
 
     @GET
+    public List<Project> test(){
+        return Project.list("participants.householdId", "labeledData.householdId");
+    }
+
+    @GET
     @Path("/{householdId}")
     public Response getLabeledDatasByHousehold(@PathParam("householdId") String householdId, @QueryParam("projectId") String projectId) {
         try {
@@ -41,7 +51,19 @@ public class LabelResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addLabeledData(AddLabeledDataCommand command){
         try {
-            return Response.ok().entity(labledDataService.addLabeledData(command)).build();
+            return Response.status(201).entity(labledDataService.addLabeledData(command)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
+        }
+    }
+
+    @POST
+    @Path("/labelevent")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addLabelEvent(LabelEventDTO eventDTO){
+        try {
+            labledDataService.sendLabelEvent(eventDTO);
+            return Response.ok().build();
         } catch (ResponseException e) {
             return ResponseExceptionBuilder.buildResponse(e);
         }
@@ -49,7 +71,7 @@ public class LabelResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{labelId}")
+    @Path("/{labeledDataId}")
     public Response updateLabeledData(@PathParam("labeledDataId") String labeledDataId, UpdateLabeledDataCommand command){
         try {
             return Response.ok().entity(labledDataService.updateLabeledData(command)).build();
@@ -60,8 +82,12 @@ public class LabelResource {
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{labelId}")
+    @Path("/{labeledDataId}")
     public Response deleteLabeledData(@PathParam("labeledDataId") String labeledDataId){
-        return Response.ok().entity(labledDataService.deleteLabeledData(labeledDataId)).build();
+        try {
+            return Response.ok().entity(labledDataService.deleteLabeledData(labeledDataId)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
+        }
     }
 }

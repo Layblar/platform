@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import at.fhv.layblar.application.dto.DeviceCategoryDTO;
 import at.fhv.layblar.application.dto.LabelDTO;
 import at.fhv.layblar.commands.CreateProjectCommand;
@@ -18,19 +21,32 @@ import at.fhv.layblar.utils.exceptions.DeviceCategoryMissing;
 import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 
-public class Project {
+@Entity
+public class Project extends PanacheEntityBase {
 
+    @Id
     public String projectId;
     public String projectName;
     public String projectDescription;
     public String projectDataUseDeclartion;
+    @OneToOne
+    public Researcher researcher;
     public LocalDateTime startDate;
     public LocalDateTime endDate;
+    @JdbcTypeCode(SqlTypes.JSON)
     public List<ProjectMetaData> metaDataInfo;
+    @JdbcTypeCode(SqlTypes.JSON)
     public List<Label> labels;
     public LocalDateTime createdAt;
-    public Researcher researcher;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<ProjectParticipant> participants;
 
     
@@ -86,6 +102,16 @@ public class Project {
     public ProjectUpdatedEvent process(UpdateProjectCommand command) throws ProjectValidityTimeframeException, LabelCategoryConflictException {
         if(LocalDateTime.now().isAfter(startDate)){
             throw new ProjectValidityTimeframeException("Project has already started");
+        }
+        for (LabelDTO label : command.labels) {
+            if(label.labelId == null || !this.labels.stream().anyMatch(l -> l.labelId.equals(label.labelId))){
+                label.labelId = UUID.randomUUID().toString();
+            }            
+            for(DeviceCategoryDTO category : label.categories){
+                if(category.deviceCategoryId == null){
+                    category.deviceCategoryId = UUID.randomUUID().toString();
+                }
+            }
         }
         checkForConflictingLabelCategories(command.labels);
         return ProjectUpdatedEvent.create(command, this);
@@ -152,6 +178,11 @@ public class Project {
 
     public boolean isActive() {
         return (LocalDateTime.now().isAfter(startDate) && LocalDateTime.now().isBefore(endDate));
+    }
+
+
+    public boolean hasLabel(String labelId) {
+        return labels.stream().anyMatch(label -> label.labelId.equals(labelId));
     }
 
 }

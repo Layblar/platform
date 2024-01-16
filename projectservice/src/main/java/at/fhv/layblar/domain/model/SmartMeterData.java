@@ -1,12 +1,10 @@
 package at.fhv.layblar.domain.model;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SmartMeterData {
 
-    public LocalDateTime time;
+    public String time;
     public String sensorId;
     @JsonProperty("1.7.0")
     public Float v1_7_0;

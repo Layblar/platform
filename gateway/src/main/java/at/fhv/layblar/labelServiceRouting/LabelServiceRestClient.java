@@ -4,6 +4,7 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import at.fhv.layblar.labelServiceRouting.model.AddLabeledDataDTO;
+import at.fhv.layblar.labelServiceRouting.model.LabelEventDTO;
 import at.fhv.layblar.labelServiceRouting.model.UpdateLabeledDataDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.Consumes;
@@ -29,6 +30,11 @@ public interface LabelServiceRestClient {
     @Consumes(MediaType.APPLICATION_JSON)
     public Uni<Response> addLabeledData(AddLabeledDataDTO command);
 
+    @POST
+    @Path("/event")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Uni<Response> addLabelEvent(LabelEventDTO eventDTO);
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{labeledDataId}")
@@ -36,6 +42,6 @@ public interface LabelServiceRestClient {
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{labelId}")
+    @Path("/{labeledDataId}")
     public Uni<Response> deleteLabeledData(@PathParam("labeledDataId") String labeledDataId);
 }

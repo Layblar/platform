@@ -2,12 +2,22 @@ package at.fhv.layblar.domain.model;
 
 import java.util.List;
 
-public class Label {
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
+@Entity
+public class Label extends PanacheEntityBase {
+
+    @Id
     public String labelId;
     public String labelName;
     public String labelDescription;
     public String labelMethod;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<DeviceCategory> categories;
     
     @Override

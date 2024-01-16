@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import at.fhv.layblar.domain.Device;
 import at.fhv.layblar.domain.DeviceCategory;
+import at.fhv.layblar.domain.Device;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryNotFoundException;
 import at.fhv.layblar.utils.exceptions.DeviceNotFoundException;
 import jakarta.enterprise.context.ApplicationScoped;
