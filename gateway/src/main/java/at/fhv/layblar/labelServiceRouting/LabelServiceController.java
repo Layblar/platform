@@ -64,7 +64,7 @@ public class LabelServiceController {
     }
 
     @POST
-    @Path("/labelevent")
+    @Path("/event")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(description = "Label event recived", responseCode = "200")

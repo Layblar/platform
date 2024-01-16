@@ -58,7 +58,7 @@ public class LabelResource {
     }
 
     @POST
-    @Path("/labelevent")
+    @Path("/event")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addLabelEvent(LabelEventDTO eventDTO){
         try {
