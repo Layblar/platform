@@ -7,7 +7,6 @@ import at.fhv.layblar.application.dto.LabelEventDTO;
 import at.fhv.layblar.commands.AddLabeledDataCommand;
 import at.fhv.layblar.commands.UpdateLabeledDataCommand;
 import at.fhv.layblar.domain.model.Project;
-import at.fhv.layblar.events.LabeledDataEvent;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;

@@ -62,27 +62,31 @@ public class LabelEventConsumer {
             public void visit(LabeledDataAddedEvent event) {
                 labeledData.apply(event);
                 labeledData.persist();
-                addLabeledDataToProjects(labeledData);
+                updateValidToDates(labeledData, event);
+                updateValidFromDates(labeledData, event);
             }
 
             @Override
             public void visit(LabeledDataUpdatedEvent event) {
                 labeledData.apply(event);
                 labeledData.persist();
+                updateValidToDates(labeledData, event);
+                updateValidFromDates(labeledData, event);
             }
 
             @Override
             public void visit(LabeledDataRemovedEvent event) {
                 labeledData.apply(event);
                 labeledData.delete();
+                updateValidToDates(labeledData, event);
             }
             
         });
         return labeledData;
     }
 
-    private void addLabeledDataToProjects(LabeledData labeledData) {
-        List<Project> projects = Project.list("participants.householdId", labeledData.householdId);
+    private void updateValidFromDates(LabeledData labeledData, LabeledDataEvent event) {
+        List<Project> projects = Project.findByParticipant(labeledData.householdId);
         for (Project project : projects) {
             if(project.isActive()){
                 List<String> deviceCategoryIds = labeledData.device.deviceCategory.stream()
@@ -94,12 +98,20 @@ public class LabelEventConsumer {
                     .orElse(null);
                 Optional<ProjectParticipant> optPart = project.participants.stream().filter(par -> par.householdId.equals(labeledData.householdId)).findFirst();
                 if(label != null && optPart.isPresent()) {
-                    ProjectLabeledData projectLabeledData = ProjectLabeledData.create(labeledData, optPart.get().householdMetaData, label.labelId, project);
+                    ProjectLabeledData projectLabeledData = ProjectLabeledData.create(labeledData, optPart.get().householdMetaData, label.labelId, project.projectId, event.timestamp, project.endDate);
                     projectLabeledData.persist();
                 }
 
             }
         }
+    }
+
+    private void updateValidToDates(LabeledData labeledData, LabeledDataEvent event){
+        List<ProjectLabeledData> data = LabeledData.list("labeledDataId", labeledData.labeledDataId);
+        for (ProjectLabeledData lData : data) {
+            lData.validTo = event.timestamp;
+        }
+        ProjectLabeledData.persist(data);
     }
 
     private LabeledDataEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
