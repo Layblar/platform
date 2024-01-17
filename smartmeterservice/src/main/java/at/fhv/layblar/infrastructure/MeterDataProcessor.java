@@ -83,7 +83,7 @@ public class MeterDataProcessor {
 
     }
 
-    @Incoming("data")
+    @Incoming("smart-meter-reading")
     @Blocking
     @Transactional
     public void saveToDatabase(Record<String,MeterDataReading> record){
