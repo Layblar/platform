@@ -1761,8 +1761,8 @@
                     "metaDataName" : {
                       "type" : "string"
                     },
-                    "type" : {
-                      "type" : "string"
+                    "isRequired" : {
+                      "type" : "boolean"
                     },
                     "value" : {
                       "type" : "string"
@@ -2344,8 +2344,8 @@
           "metaDataName" : {
             "type" : "string"
           },
-          "type" : {
-            "type" : "string"
+          "isRequired" : {
+            "type" : "boolean"
           },
           "value" : {
             "type" : "string"

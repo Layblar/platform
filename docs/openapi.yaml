@@ -1212,8 +1212,8 @@ paths:
                     type: string
                   metaDataName:
                     type: string
-                  type:
-                    type: string
+                  isRequired:
+                    type: boolean
                   value:
                     type: string
       security:
@@ -1606,8 +1606,8 @@ components:
           type: string
         metaDataName:
           type: string
-        type:
-          type: string
+        isRequired:
+          type: boolean
         value:
           type: string
     RegisterHouseholdUserDTO:
