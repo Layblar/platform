@@ -26,6 +26,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -92,8 +93,9 @@ public class ProjectServiceController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectInfoDTO.class)), description = "List of all projects", responseCode = "200")
     @Operation(summary = "List all Projects", description = "List all Projects")
     @SecurityRequirement(name = "jwt")
-    public Uni<Response> listProjects() {
-        return restClient.listProjects();
+    public Uni<Response> listProjects(
+        @Parameter(description = "Filter projects by researcherId. This can only be done by the Researcher role", required = false) @QueryParam("researcherId") String researcherId) {
+        return restClient.listProjects(researcherId);
     }
 
     @POST

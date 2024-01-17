@@ -113,8 +113,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectInfoDTO> getProjects() {
+    public List<ProjectInfoDTO> getProjects(String researcherId) throws NotAuthorizedException {
         List<Project> projects = Project.listAll();
+        if(researcherId != null){
+            if(!jsonWebToken.containsClaim("researcherId") || !jsonWebToken.getClaim("researcherId").equals(researcherId)){
+                throw new NotAuthorizedException("Not authorized");
+            }
+            return Project.findByResearcherId(researcherId).stream().map(
+                project -> ProjectInfoDTO.createProjectInfoDTO(project)
+            ).collect(Collectors.toList());
+        }
         return projects.stream().map(
             project -> ProjectInfoDTO.createProjectInfoDTO(project)
         ).collect(Collectors.toList());

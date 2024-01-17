@@ -16,6 +16,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 @Authenticated
@@ -82,8 +83,12 @@ public class ProjectResource {
 
     @GET
     @Path("/project")
-    public Response listProjects(){
-        return Response.ok().entity(projectService.getProjects()).build();
+    public Response listProjects(@QueryParam("researcherId") String reasearcherId){
+        try {
+            return Response.ok().entity(projectService.getProjects(reasearcherId)).build();
+        } catch (ResponseException e) {
+            return ResponseExceptionBuilder.buildResponse(e);
+        }
     }
 
     @POST

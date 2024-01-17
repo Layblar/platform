@@ -34,7 +34,8 @@ import jakarta.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Project.byParticipant", query = "FROM Project p JOIN p.participants participant WHERE participant.householdId = ?1")
+    @NamedQuery(name = "Project.byParticipant", query = "FROM Project p JOIN p.participants participant WHERE participant.householdId = ?1"),
+    @NamedQuery(name = "Project.byResearcher", query = "FROM Project p JOIN p.researcher researcher WHERE researcher.researcherId = ?1")
 })
 public class Project extends PanacheEntityBase {
 
@@ -197,6 +198,10 @@ public class Project extends PanacheEntityBase {
 
     public static List<Project> findByParticipant(String householdId) {
         return find("#Project.byParticipant", householdId).list();
+    }
+
+    public static List<Project> findByResearcherId(String researcherId) {
+        return find("#Project.byResearcher", researcherId).list();
     }
 
 }
