@@ -51,7 +51,6 @@ public class MeterDataProcessor {
                 createChannelAsync(household.householdId, smartMeterId);
             }
         }
-        createChannel("Test", "meter-data");
     }
 
     public CompletableFuture<Void> createChannelAsync(String householdId, String smartMeterId) {
@@ -88,7 +87,6 @@ public class MeterDataProcessor {
     @Blocking
     @Transactional
     public void saveToDatabase(Record<String,MeterDataReading> record){
-        System.err.println(record.key());
         record.value().persist();
     }   
 
@@ -100,13 +98,13 @@ public class MeterDataProcessor {
         return mdr;
     }
 
-    @Transactional
-    public void saveToDatabase(String householdId, String smartMeterId, JsonObject data) throws JsonMappingException, JsonProcessingException {
-        MeterDataReading mdr = mapper.readValue(data.encode(), MeterDataReading.class);
-        mdr.time = LocalDateTime.parse(data.getString("timestamp"));
-        mdr.sensorId = smartMeterId;
-        mdr.householdId = householdId;
-        MeterDataReading.persist(mdr);
-    }
+    // @Transactional
+    // public void saveToDatabase(String householdId, String smartMeterId, JsonObject data) throws JsonMappingException, JsonProcessingException {
+    //     MeterDataReading mdr = mapper.readValue(data.encode(), MeterDataReading.class);
+    //     mdr.time = LocalDateTime.parse(data.getString("timestamp"));
+    //     mdr.sensorId = smartMeterId;
+    //     mdr.householdId = householdId;
+    //     MeterDataReading.persist(mdr);
+    // }
 
 }
