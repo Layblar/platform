@@ -104,7 +104,7 @@ public class ProjectServiceController {
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectInfoDTO.class)), description = "The joined Project Information", responseCode = "200")
     @Operation(summary = "Join a Project", description = "Join a Project")
     @SecurityRequirement(name = "jwt")
-        Uni<Response> joinProject(
+    public Uni<Response> joinProject(
             @Parameter(description = "The ID of the project to join", required = true) @PathParam("projectId") String projectId,
             @Parameter(description = "The ID of the household that wants to join the project", required = true) @PathParam("householdId") String householdId,
             @Parameter(description = "Household meta data and a list of devices", required = true) JoinProjectDTO joinProjectDTO){
