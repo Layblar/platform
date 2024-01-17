@@ -10,6 +10,5 @@ public class MetaDataTemplate extends PanacheEntityBase {
     @Id
     public String metaDataId;
     public String metaDataName;
-    public String type;
 
 }

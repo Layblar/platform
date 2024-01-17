@@ -6,22 +6,22 @@ public class ProjectMetaDataDTO {
 
     public String metaDataId;
     public String metaDataName;
-    public String type;
+    public Boolean isRequired;
     public String value;
 
     public ProjectMetaDataDTO(){}
 
-    private ProjectMetaDataDTO(String metaDataId, String metaDataName, String type, String value) {
+    private ProjectMetaDataDTO(String metaDataId, String metaDataName, Boolean isRequired, String value) {
         this.metaDataId = metaDataId;
         this.metaDataName = metaDataName;
-        this.type = type;
+        this.isRequired = isRequired;
         this.value = value;
     }
 
 
 
     public static ProjectMetaDataDTO createProjectMetaDataDTO(ProjectMetaData metaData) {
-        return new ProjectMetaDataDTO(metaData.metaDataId, metaData.metaDataName, metaData.type, metaData.value);
+        return new ProjectMetaDataDTO(metaData.metaDataId, metaData.metaDataName, metaData.isRequired, metaData.value);
     }
 
 }

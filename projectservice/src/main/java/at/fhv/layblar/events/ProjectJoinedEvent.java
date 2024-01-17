@@ -53,7 +53,7 @@ public class ProjectJoinedEvent extends ProjectEvent {
             metaData.addObject()
                 .put("metaDataId", metaDataDTO.metaDataId)
                 .put("metaDataName", metaDataDTO.metaDataName)
-                .put("type", metaDataDTO.type)
+                .put("isRequired", metaDataDTO.isRequired)
                 .put("value", metaDataDTO.value);
         }
         return root;
