@@ -971,6 +971,14 @@ paths:
       summary: List all Projects
       description: List all Projects
       operationId: listProjects
+      parameters:
+      - name: researcherId
+        in: query
+        description: Filter projects by researcherId. This can only be done by the
+          Researcher role
+        required: false
+        schema:
+          type: string
       responses:
         "401":
           description: Unauthorized
