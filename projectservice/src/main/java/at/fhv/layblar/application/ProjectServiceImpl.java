@@ -109,7 +109,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDataDTO getProjectData(String projectId) {
-        // TODO Auto-generated method stub
+        // TODO Return proper ProjectData
         throw new UnsupportedOperationException("Unimplemented method 'getProjectData'");
     }
 

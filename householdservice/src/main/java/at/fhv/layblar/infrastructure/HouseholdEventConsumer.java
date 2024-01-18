@@ -29,7 +29,7 @@ public class HouseholdEventConsumer {
             Event event = deserializeEvent(record.value());
             System.out.println(event.timestamp);
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
+            // TODO CQRS: Query side implementaion starts here
             e.printStackTrace();
         }
     }
