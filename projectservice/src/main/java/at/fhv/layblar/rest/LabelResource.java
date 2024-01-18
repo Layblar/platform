@@ -1,12 +1,9 @@
 package at.fhv.layblar.rest;
 
-import java.util.List;
-
 import at.fhv.layblar.application.LabeledDataService;
 import at.fhv.layblar.application.dto.LabelEventDTO;
 import at.fhv.layblar.commands.AddLabeledDataCommand;
 import at.fhv.layblar.commands.UpdateLabeledDataCommand;
-import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;
@@ -30,11 +27,6 @@ public class LabelResource {
 
     @Inject
     LabeledDataService labledDataService;
-
-    @GET
-    public List<Project> test(){
-        return Project.findByParticipant("7acd5633-2d83-48ce-821f-41fccbbb2377");
-    }
 
     @GET
     @Path("/{householdId}")

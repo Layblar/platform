@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
 import at.fhv.layblar.events.ProjectEventVisitor;
@@ -37,8 +37,8 @@ public class ProjectEventConsumer {
 
         try {
             ProjectEvent event = deserializeEvent(record.value());
-            Optional<Project> optProject = Project.findByIdOptional(event.entityId);
-            Project project = new Project();
+            Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(event.entityId);
+            ProjectReadModel project = new ProjectReadModel();
             if(optProject.isPresent()){
                 project = optProject.get();
             }
@@ -50,12 +50,12 @@ public class ProjectEventConsumer {
 
     }
 
-    private Project handleProjectEvent(Project project, ProjectEvent event) {
+    private ProjectReadModel handleProjectEvent(ProjectReadModel project, ProjectEvent event) {
         event.accept(new ProjectEventVisitor() {
 
             @Override
             public void visit(ProjectCreatedEvent event) {
-                project.apply(event);             
+                project.apply(event);    
             }
 
             @Override

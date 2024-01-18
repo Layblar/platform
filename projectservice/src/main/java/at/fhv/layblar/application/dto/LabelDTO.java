@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import at.fhv.layblar.domain.model.Label;
+import at.fhv.layblar.domain.readmodel.LabelReadModel;
 
 public class LabelDTO {
 
@@ -26,6 +27,12 @@ public class LabelDTO {
     }
 
     public static LabelDTO createLabelDTO(Label label) {
+        return new LabelDTO(label.labelId, label.labelName, label.labelDescription, label.labelMethod,
+                label.categories.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category))
+                        .collect(Collectors.toList()));
+    }
+
+    public static LabelDTO createLabelDTO(LabelReadModel label) {
         return new LabelDTO(label.labelId, label.labelName, label.labelDescription, label.labelMethod,
                 label.categories.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category))
                         .collect(Collectors.toList()));

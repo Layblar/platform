@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import at.fhv.layblar.application.dto.DeviceCategoryDTO;
 import at.fhv.layblar.application.dto.LabelDTO;
 import at.fhv.layblar.commands.CreateProjectCommand;
@@ -22,38 +19,20 @@ import at.fhv.layblar.utils.exceptions.LabelCategoryConflictException;
 import at.fhv.layblar.utils.exceptions.ProjectAlreadyJoinedException;
 import at.fhv.layblar.utils.exceptions.ProjectMetaDataMissingException;
 import at.fhv.layblar.utils.exceptions.ProjectValidityTimeframeException;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
 
-@Entity
-@NamedQueries({
-    @NamedQuery(name = "Project.byParticipant", query = "FROM Project p JOIN p.participants participant WHERE participant.householdId = ?1"),
-    @NamedQuery(name = "Project.byResearcher", query = "FROM Project p JOIN p.researcher researcher WHERE researcher.researcherId = ?1")
-})
-public class Project extends PanacheEntityBase {
 
-    @Id
+public class Project {
+
     public String projectId;
     public String projectName;
     public String projectDescription;
     public String projectDataUseDeclartion;
-    @OneToOne
     public Researcher researcher;
     public LocalDateTime startDate;
     public LocalDateTime endDate;
-    @JdbcTypeCode(SqlTypes.JSON)
     public List<ProjectMetaData> metaDataInfo;
-    @JdbcTypeCode(SqlTypes.JSON)
     public List<Label> labels;
     public LocalDateTime createdAt;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<ProjectParticipant> participants;
 
     
@@ -167,7 +146,7 @@ public class Project extends PanacheEntityBase {
         }
     }
 
-    private void updateLabels(List<Label> labels){
+    private void updateLabels(List<Label> labels) {
         for (Label label : labels) {
             this.labels.remove(label);
             this.labels.add(label);
@@ -195,13 +174,5 @@ public class Project extends PanacheEntityBase {
     public boolean hasLabel(String labelId) {
         return labels.stream().anyMatch(label -> label.labelId.equals(labelId));
     }
-
-    public static List<Project> findByParticipant(String householdId) {
-        return find("#Project.byParticipant", householdId).list();
-    }
-
-    public static List<Project> findByResearcherId(String researcherId) {
-        return find("#Project.byResearcher", researcherId).list();
-    }
-
+    
 }

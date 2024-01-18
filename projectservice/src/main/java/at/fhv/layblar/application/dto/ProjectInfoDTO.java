@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import at.fhv.layblar.domain.model.Project;
+import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 
 public class ProjectInfoDTO {
 
@@ -44,12 +45,12 @@ public class ProjectInfoDTO {
 
     }
 
-//     public static ProjectInfoDTO createProjectInfoDTO(ProjectReadModel project) {
-//         return new ProjectInfoDTO(project.projectId, project.projectName, project.projectDescription,
-//                 project.projectDataUseDeclartion, project.startDate, project.endDate, project.createdAt,
-//                 project.metaDataInfo.stream().map(metaData -> ProjectMetaDataDTO.createProjectMetaDataDTO(metaData))
-//                         .collect(Collectors.toList()),
-//                 project.labels.stream().map(label -> LabelDTO.createLabelDTO(label)).collect(Collectors.toList()));
+    public static ProjectInfoDTO createProjectInfoDTO(ProjectReadModel project) {
+        return new ProjectInfoDTO(project.projectId, project.projectName, project.projectDescription,
+                project.projectDataUseDeclartion, project.startDate, project.endDate, project.createdAt,
+                project.metaDataInfo.stream().map(metaData -> ProjectMetaDataDTO.createProjectMetaDataDTO(metaData))
+                        .collect(Collectors.toList()),
+                project.labels.stream().map(label -> LabelDTO.createLabelDTO(label)).collect(Collectors.toList()));
 
-//     }
+    }
 }

@@ -1,6 +1,7 @@
 package at.fhv.layblar.application.dto;
 
 import at.fhv.layblar.domain.model.DeviceCategory;
+import at.fhv.layblar.domain.readmodel.DeviceCategoryReadModel;
 
 public class DeviceCategoryDTO {
 
@@ -17,6 +18,10 @@ public class DeviceCategoryDTO {
     }
 
     public static DeviceCategoryDTO createDeviceCategoryDTO(DeviceCategory category){
+        return new DeviceCategoryDTO(category.deviceCategoryId, category.deviceCategoryName, category.deviceCategoryDescription);
+    }
+
+    public static DeviceCategoryDTO createDeviceCategoryDTO(DeviceCategoryReadModel category){
         return new DeviceCategoryDTO(category.deviceCategoryId, category.deviceCategoryName, category.deviceCategoryDescription);
     }
 
