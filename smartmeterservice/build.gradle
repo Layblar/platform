@@ -14,6 +14,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
     implementation 'io.quarkiverse.rabbitmqclient:quarkus-rabbitmq-client:3.0.0'
     implementation 'io.quarkus:quarkus-resteasy-reactive'
+    implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'io.quarkus:quarkus-arc'
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
