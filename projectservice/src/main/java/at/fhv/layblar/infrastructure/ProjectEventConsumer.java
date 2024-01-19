@@ -3,7 +3,10 @@ package at.fhv.layblar.infrastructure;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +15,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import at.fhv.layblar.domain.readmodel.DeviceCategoryReadModel;
+import at.fhv.layblar.domain.readmodel.LabelReadModel;
 import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
@@ -43,7 +48,7 @@ public class ProjectEventConsumer {
                 project = optProject.get();
             }
             project = handleProjectEvent(project, event);
-            project.persistAndFlush();
+            saveToDatabase(project);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,6 +75,20 @@ public class ProjectEventConsumer {
             
         });
         return project;
+    }
+
+    private void saveToDatabase(ProjectReadModel project){
+//https://stackoverflow.com/questions/39067243/hibernate-duplicate-key-value-violates-unique-constraint-on-collection
+        for (LabelReadModel label : project.labels) {
+            List<DeviceCategoryReadModel> categories = label.categories.stream().map(
+                cat -> DeviceCategoryReadModel.getEntityManager().merge(cat)
+            ).collect(Collectors.toList());
+            label.categories = categories;
+        }
+        List<LabelReadModel> labels = project.labels.stream().map(
+            lab -> LabelReadModel.getEntityManager().merge(lab)).collect(Collectors.toList());
+        project.addLabels(labels);
+        project.persist();
     }
 
     private ProjectEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException {

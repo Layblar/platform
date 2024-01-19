@@ -60,8 +60,8 @@ public class Project {
         this.projectDataUseDeclartion = event.getProjectDataUseDeclaration();
         this.startDate = event.getStartDate();
         this.endDate = event.getEndDate();
-        updateLabels(event.getLabels());
-        updateMetaData(event.getMetaDataInfo());
+        this.metaDataInfo = event.getMetaDataInfo();
+        this.labels = event.getLabels();
     }
 
     public void apply(ProjectJoinedEvent event) {
@@ -81,7 +81,7 @@ public class Project {
                 }
             }
         }
-        checkForConflictingLabelCategories(command.labels);
+        //checkForConflictingLabelCategories(command.labels);
         return ProjectCreatedEvent.create(command, researcher);
     }
 
@@ -99,7 +99,7 @@ public class Project {
                 }
             }
         }
-        checkForConflictingLabelCategories(command.labels);
+        //checkForConflictingLabelCategories(command.labels);
         return ProjectUpdatedEvent.create(command, this);
     }
 
@@ -145,21 +145,6 @@ public class Project {
             throw new LabelCategoryConflictException();
         }
     }
-
-    private void updateLabels(List<Label> labels) {
-        for (Label label : labels) {
-            this.labels.remove(label);
-            this.labels.add(label);
-        }
-    }
-
-    private void updateMetaData(List<ProjectMetaData> metaData){
-        for (ProjectMetaData data : metaData) {
-            this.metaDataInfo.remove(data);
-            this.metaDataInfo.add(data);
-        }
-    }
-
 
     public boolean isProjectParticipant(String householdId) {
         return participants.stream().anyMatch(participant -> participant.householdId.equals(householdId));

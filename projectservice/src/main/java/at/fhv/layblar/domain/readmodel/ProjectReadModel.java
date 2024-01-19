@@ -3,8 +3,6 @@ package at.fhv.layblar.domain.readmodel;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -53,7 +51,8 @@ public class ProjectReadModel extends PanacheEntityBase {
     public LocalDateTime endDate;
     @JdbcTypeCode(SqlTypes.JSON)
     public List<ProjectMetaData> metaDataInfo;
-    @OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval=true, cascade = CascadeType.ALL)
+    @JoinColumn(name="projectId")
     public List<LabelReadModel> labels;
     public LocalDateTime createdAt;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -83,9 +82,8 @@ public class ProjectReadModel extends PanacheEntityBase {
         this.projectDataUseDeclartion = event.getProjectDataUseDeclaration();
         this.startDate = event.getStartDate();
         this.endDate = event.getEndDate();
-        updateLabels(event.getLabels().stream().map(label -> LabelReadModel.createFromLabel(label))
-                .collect(Collectors.toList()));
-        updateMetaData(event.getMetaDataInfo());
+        event.getLabels().stream().forEach(label -> updateLabel(LabelReadModel.createFromLabel(label)));
+        this.metaDataInfo = event.getMetaDataInfo();
     }
 
     public void apply(ProjectJoinedEvent event) {
@@ -94,22 +92,8 @@ public class ProjectReadModel extends PanacheEntityBase {
     }
 
     private void addLabelToProject(LabelReadModel label) {
-        label.project = this;
+        //label.project = this;
         this.labels.add(label);
-    }
-
-    private void updateLabels(List<LabelReadModel> labels) {
-        for (LabelReadModel label : labels) {
-            this.labels.remove(label);
-            addLabelToProject(label);
-        }
-    }
-
-    private void updateMetaData(List<ProjectMetaData> metaData) {
-        for (ProjectMetaData data : metaData) {
-            this.metaDataInfo.remove(data);
-            this.metaDataInfo.add(data);
-        }
     }
 
     public boolean isProjectParticipant(String householdId) {
@@ -136,6 +120,17 @@ public class ProjectReadModel extends PanacheEntityBase {
             List<String> deviceCategoryIds) {
         return find("#Project.byLabeledDataDeviceCategories",
                 Parameters.with("householdId", householdId).and("categoryIds", deviceCategoryIds)).project(ViableProject.class).list();
+    }
+
+    public void updateLabel(LabelReadModel label) {
+        this.labels.remove(label);
+        this.labels.add(label);
+    }
+
+    public void addLabels(List<LabelReadModel> labels2) {
+        for (LabelReadModel labelReadModel : labels2) {
+            updateLabel(labelReadModel);
+        }
     }
 
 }

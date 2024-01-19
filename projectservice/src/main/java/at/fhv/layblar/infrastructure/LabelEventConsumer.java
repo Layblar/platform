@@ -36,7 +36,7 @@ public class LabelEventConsumer {
     @Inject
     ObjectMapper mapper;
 
-    @Incoming("label")
+    @Incoming("project")
     @Blocking
     @Transactional
     public void process(Record<String,JsonNode> record) {
@@ -50,7 +50,7 @@ public class LabelEventConsumer {
             labeledData.labeledDataId = event.entityId;
             labeledData = handleLabeledDataEvent(labeledData, event);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -85,7 +85,7 @@ public class LabelEventConsumer {
     }
 
     private void updateValidFromDates(LabeledData labeledData, LabeledDataEvent event) {
-        List<String> deviceCategoryIds = labeledData.device.deviceCategory.stream()
+        List<String> deviceCategoryIds = labeledData.device.categories.stream()
         .map(category -> category.deviceCategoryId)
         .collect(Collectors.toList());
         List<ViableProject> viableProjects = ProjectReadModel.findProjectWithMatchingLabels(labeledData.householdId, deviceCategoryIds);

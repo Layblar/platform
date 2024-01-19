@@ -20,6 +20,7 @@ import jakarta.ws.rs.core.Response;
 
 @RegisterRestClient(configKey = "label-service-api")
 @RegisterClientHeaders
+@Path("/label")
 public interface LabelServiceRestClient {
 
     @GET
