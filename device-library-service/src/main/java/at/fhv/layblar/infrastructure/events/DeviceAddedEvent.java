@@ -1,4 +1,4 @@
-package at.fhv.layblar.events;
+package at.fhv.layblar.infrastructure.events;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,19 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import at.fhv.layblar.domain.DeviceCategory;
 
 public class DeviceAddedEvent extends DeviceEvent {
-
-    private static final String DEVICE_ID = "deviceId";
-    private static final String DEVICE_NAME = "deviceName";
-    private static final String DEVICE_DESCRIPTION = "deviceDescription";
-    private static final String MANUFACTURER = "manufacturer";
-    private static final String MODEL_NUMBER = "modelNumber";
-    private static final String POWER_DRAW = "powerDraw";
-    private static final String ENERGY_EFFICIENCY_RATING = "energyEfficiencyRating";
-    private static final String WEIGHT = "weight";
-    private static final String CATEGORIES = "categories";
-    private static final String DEVICE_CATEGORY_ID = "deviceCategoryId";
-    private static final String DEVICE_CATEGORY_NAME = "deviceCategoryName";
-    private static final String DEVICE_CATEGORY_DESCRIPTION = "deviceCategoryDescription";
 
     public DeviceAddedEvent() {
         super();
@@ -75,7 +62,7 @@ public class DeviceAddedEvent extends DeviceEvent {
     }
 
     @Override
-    public void accept(EventVisitor visitor) {
+    public void accept(DeviceEventVisitor visitor) {
         visitor.visit(this);
     }
 

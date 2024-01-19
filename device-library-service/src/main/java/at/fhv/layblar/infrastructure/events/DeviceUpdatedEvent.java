@@ -1,4 +1,4 @@
-package at.fhv.layblar.events;
+package at.fhv.layblar.infrastructure.events;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,9 +17,6 @@ public class DeviceUpdatedEvent extends DeviceEvent {
     private static final String ENERGY_EFFICIENCY_RATING = "energyEfficiencyRating";
     private static final String WEIGHT = "weight";
     private static final String CATEGORIES = "categories";
-    private static final String DEVICE_CATEGORY_ID = "deviceCategoryId";
-    private static final String DEVICE_CATEGORY_NAME = "deviceCategoryName";
-    private static final String DEVICE_CATEGORY_DESCRIPTION = "deviceCategoryDescription";
 
     public DeviceUpdatedEvent() {
         super();
@@ -74,7 +71,7 @@ public class DeviceUpdatedEvent extends DeviceEvent {
     }
 
     @Override
-    public void accept(EventVisitor visitor) {
+    public void accept(DeviceEventVisitor visitor) {
         visitor.visit(this);
     }
 

@@ -7,8 +7,8 @@ import java.util.Set;
 
 import org.bson.codecs.pojo.annotations.BsonId;
 
-import at.fhv.layblar.events.DeviceAddedEvent;
-import at.fhv.layblar.events.DeviceUpdatedEvent;
+import at.fhv.layblar.infrastructure.events.DeviceAddedEvent;
+import at.fhv.layblar.infrastructure.events.DeviceUpdatedEvent;
 import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 
@@ -46,6 +46,9 @@ public class Device extends PanacheMongoEntityBase {
         }        
         if(deviceName != null && !this.deviceName.equals(deviceName)){
             this.alternativeNames.add(deviceName);
+        }
+        if(deviceDescription != null) {
+            this.deviceDescription = deviceDescription;
         }
         if(manufacturer != null) {
             this.manufacturer = manufacturer;

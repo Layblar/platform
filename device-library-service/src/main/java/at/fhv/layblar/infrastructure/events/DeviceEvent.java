@@ -1,4 +1,4 @@
-package at.fhv.layblar.events;
+package at.fhv.layblar.infrastructure.events;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +12,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
         @JsonSubTypes.Type(value = DeviceUpdatedEvent.class, name = "DeviceUpdatedEvent")
 })
 public abstract class DeviceEvent implements Comparable<DeviceEvent> {
+
+    static final String DEVICE_ID = "deviceId";
+    static final String DEVICE_NAME = "deviceName";
+    static final String DEVICE_DESCRIPTION = "deviceDescription";
+    static final String MANUFACTURER = "manufacturer";
+    static final String MODEL_NUMBER = "modelNumber";
+    static final String POWER_DRAW = "powerDraw";
+    static final String ENERGY_EFFICIENCY_RATING = "energyEfficiencyRating";
+    static final String WEIGHT = "weight";
+    static final String CATEGORIES = "categories";
+    static final String DEVICE_CATEGORY_ID = "deviceCategoryId";
+    static final String DEVICE_CATEGORY_NAME = "deviceCategoryName";
+    static final String DEVICE_CATEGORY_DESCRIPTION = "deviceCategoryDescription";
 
     public String eventId;
     public String eventType;
@@ -27,7 +40,7 @@ public abstract class DeviceEvent implements Comparable<DeviceEvent> {
 
     public abstract String getDeviceId();
 
-    public abstract void accept(EventVisitor visitor);
+    public abstract void accept(DeviceEventVisitor visitor);
 
     @Override
     public int compareTo(DeviceEvent event) {

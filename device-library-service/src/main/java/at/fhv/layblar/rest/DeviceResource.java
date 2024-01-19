@@ -4,6 +4,7 @@ import at.fhv.layblar.application.DeviceService;
 import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.DeviceCategoryNotFoundException;
 import at.fhv.layblar.utils.exceptions.DeviceNotFoundException;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+@Authenticated
 @Path("/api/device")
 @Produces(MediaType.APPLICATION_JSON)
 public class DeviceResource {

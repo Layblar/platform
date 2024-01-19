@@ -1,6 +1,6 @@
-package at.fhv.layblar.events;
+package at.fhv.layblar.infrastructure.events;
 
-public interface EventVisitor {
+public interface DeviceEventVisitor {
 
     void visit(DeviceAddedEvent event);
 

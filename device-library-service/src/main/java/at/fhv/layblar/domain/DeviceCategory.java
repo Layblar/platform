@@ -1,7 +1,14 @@
 package at.fhv.layblar.domain;
 
-public class DeviceCategory {
+import org.bson.codecs.pojo.annotations.BsonId;
 
+import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
+import io.quarkus.mongodb.panache.common.MongoEntity;
+
+@MongoEntity
+public class DeviceCategory extends PanacheMongoEntityBase {
+
+    @BsonId
     public String deviceCategoryId;
     public String deviceCategoryName;
     public String deviceCategoryDescription;

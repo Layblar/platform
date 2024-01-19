@@ -26,14 +26,10 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public DeviceCategoryDTO getCategoryById(String categoryId) throws DeviceCategoryNotFoundException {
 
-        List<Device> devices = Device.listAll();
+        Optional<DeviceCategory> optDeviceCategory = DeviceCategory.findByIdOptional(categoryId);
 
-        for (Device device : devices) {
-            for (DeviceCategory category : device.deviceCategory) {
-                if (category.deviceCategoryId.equals(categoryId)) {
-                    return DeviceCategoryDTO.createDeviceCategoryDTO(category);
-                }
-            }
+        if(optDeviceCategory.isPresent()){
+            return DeviceCategoryDTO.createDeviceCategoryDTO(optDeviceCategory.get());
         }
 
         throw new DeviceCategoryNotFoundException();
@@ -53,24 +49,13 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<DeviceCategoryDTO> listCategories(String name) {
-        List<Device> devices = Device.listAll();
 
         List<DeviceCategory> categories = new LinkedList<>();
-
-        for (Device device : devices) {
-            for (DeviceCategory category : device.deviceCategory) {
-                if (name != null) {
-                    if (category.deviceCategoryName.equals(name)) {
-                        categories.add(category);
-                    }
-                } else {
-                    categories.add(category);
-                }
-            }
+        if(name != null){
+            categories = DeviceCategory.find("{'$or': [{'deviceCategoryName': ?1}, {'alternativeNames': {'$in': [?1]}}]}", name).list();
+        } else {
+            categories = DeviceCategory.listAll();
         }
-
-        categories = categories.stream().distinct().collect(Collectors.toList());
-
         return categories.stream().map(category -> DeviceCategoryDTO.createDeviceCategoryDTO(category)).collect(Collectors.toList());
 
     }
