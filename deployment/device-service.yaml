@@ -12,6 +12,7 @@ services:
         QUARKUS_MONGODB_CONNECTION_STRING: ${MONODB_DEVICE_CON}
         MP_JWT_VERIFY_PUBLICKEY_LOCATION: file:///key/publicKey.pem
         MP_JWT_VERIFY_ISSUER: ${JWT_ISSUER}
+        QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://jaeger-all-in-one:4317
       volumes:
         - ./publicKey.pem:/key/publicKey.pem
       ports:

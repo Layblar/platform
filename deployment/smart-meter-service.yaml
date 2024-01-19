@@ -18,6 +18,7 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: ${SMARTMETER_DB_PW}
       MP_JWT_VERIFY_PUBLICKEY_LOCATION: file:///key/publicKey.pem
       MP_JWT_VERIFY_ISSUER: ${JWT_ISSUER}
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://jaeger-all-in-one:4317
     volumes:
       - ./publicKey.pem:/key/publicKey.pem
     ports:
