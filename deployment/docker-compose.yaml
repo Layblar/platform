@@ -9,6 +9,7 @@ include:
   - simulator.yaml
   - kafka.yaml
   - rabbit.yaml
+  - monitoring.yaml
 
 networks:
   layblar-platform:
