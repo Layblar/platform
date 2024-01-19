@@ -96,11 +96,11 @@ public class DeviceUpdatedEvent extends DeviceEvent {
         root.put(DEVICE_ID, command.deviceId);
         root.put(DEVICE_NAME, command.deviceName);
         root.put(DEVICE_DESCRIPTION, command.deviceDescription);
-        root.put(MANUFACTURER, command.deviceDescription);
-        root.put(MODEL_NUMBER, command.deviceDescription);
-        root.put(POWER_DRAW, command.deviceDescription);
-        root.put(ENERGY_EFFICIENCY_RATING, command.deviceDescription);
-        root.put(WEIGHT, command.deviceDescription);
+        root.put(MANUFACTURER, command.manufacturer);
+        root.put(MODEL_NUMBER, command.modelNumber);
+        root.put(POWER_DRAW, command.powerDraw);
+        root.put(ENERGY_EFFICIENCY_RATING, command.energyEfficiencyRating);
+        root.put(WEIGHT, command.weight);
         ArrayNode categories = root.putArray(CATEGORIES);
         for (DeviceCategoryDTO categoryDTO : command.categories) {
             if (categoryDTO.deviceCategoryId == null) {
