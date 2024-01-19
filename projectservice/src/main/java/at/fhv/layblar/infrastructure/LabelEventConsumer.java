@@ -96,11 +96,13 @@ public class LabelEventConsumer {
     }
 
     private void updateValidToDates(LabeledData labeledData, LabeledDataEvent event){
-        List<ProjectLabeledData> data = LabeledData.list("labeledDataId", labeledData.labeledDataId);
-        for (ProjectLabeledData lData : data) {
+        // if the data was already invalidated in the past -> do not overwrite validTo date
+        List<ProjectLabeledData> data = ProjectLabeledData.list("labeledDataId = ?1 AND validTo >= ?2 order by validTo desc", labeledData.labeledDataId, event.timestamp);
+        if(!data.isEmpty()){
+            ProjectLabeledData lData = data.get(0);
             lData.validTo = event.timestamp;
+            ProjectLabeledData.persist(data);
         }
-        ProjectLabeledData.persist(data);
     }
 
     private LabeledDataEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{

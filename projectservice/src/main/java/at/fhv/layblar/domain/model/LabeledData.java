@@ -29,6 +29,7 @@ public class LabeledData extends PanacheEntityBase {
     public List<SmartMeterData> smartMeterData;
     public LocalDateTime createdAt;
     public Boolean isRemoved;
+    public Boolean isHumanLabeled;
 
     public LabeledDataAddedEvent process(AddLabeledDataCommand command) {
         return LabeledDataAddedEvent.create(command);
@@ -53,6 +54,7 @@ public class LabeledData extends PanacheEntityBase {
         this.smartMeterData = event.getSmartMeterData();
         this.createdAt = event.getCreatedAt();
         this.isRemoved = false;
+        this.isHumanLabeled = true;
     }
     public void apply(LabeledDataUpdatedEvent event) {
         this.device = event.getDevice();

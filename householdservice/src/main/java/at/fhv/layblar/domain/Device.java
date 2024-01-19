@@ -26,11 +26,11 @@ public class Device extends PanacheEntityBase {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<DeviceCategory> categories;
 
-    public Device(){}
+    public Device() {
+    }
 
-    
-
-    private Device(String deviceId, String deviceName, String deviceDescription, String manufacturer, String modelNumber,
+    private Device(String deviceId, String deviceName, String deviceDescription, String manufacturer,
+            String modelNumber,
             Integer powerDraw, String energyEfficiencyRating, Float weight, List<DeviceCategory> categories) {
         this.deviceId = deviceId;
         this.deviceName = deviceName;
@@ -43,13 +43,11 @@ public class Device extends PanacheEntityBase {
         this.categories = categories;
     }
 
-
-
     public static Device create(DeviceAddedEvent event) {
-        return new Device(event.getDeviceId(), event.getDeviceName(), event.getDeviceDescription(), event.getManufacturer(), event.getModelNumber(), event.getPowerDraw(), event.getEnergyEfficiencyRating(), event.getWeight(), event.getDeviceCategory());
+        return new Device(event.getDeviceId(), event.getDeviceName(), event.getDeviceDescription(),
+                event.getManufacturer(), event.getModelNumber(), event.getPowerDraw(),
+                event.getEnergyEfficiencyRating(), event.getWeight(), event.getDeviceCategory());
     }
-
-
 
     public void updateDeviceInformation(DeviceUpdatedEvent event) {
         this.deviceId = event.getDeviceId();
@@ -59,13 +57,33 @@ public class Device extends PanacheEntityBase {
         this.modelNumber = event.getModelNumber();
         this.powerDraw = event.getPowerDraw();
         this.energyEfficiencyRating = event.getEnergyEfficiencyRating();
-        this.weight = event.getWeight();        
-        for (DeviceCategory deviceCategory : event.getDeviceCategory()) {
-            this.categories.remove(deviceCategory);
-            this.categories.add(deviceCategory);
-        }
+        this.weight = event.getWeight();
+        this.categories = event.getDeviceCategory();
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((deviceId == null) ? 0 : deviceId.hashCode());
+        return result;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Device other = (Device) obj;
+        if (deviceId == null) {
+            if (other.deviceId != null)
+                return false;
+        } else if (!deviceId.equals(other.deviceId))
+            return false;
+        return true;
+    }
 
 }
