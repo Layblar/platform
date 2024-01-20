@@ -33,7 +33,7 @@ public interface ProjectService {
 
     public ProjectDataDTO getProjectData(String projectId);
 
-    public List<ProjectInfoDTO> getProjects(String reasearcherId) throws NotAuthorizedException;
+    public List<ProjectInfoDTO> getProjects(String reasearcherId, String householdId, Boolean joinable) throws NotAuthorizedException;
 
     public List<ProjectMetaDataDTO> getProjectDagetProjectHouseholdMetadatata(String projectId, String householdId) throws NotAuthorizedException, ProjectNotFoundException;
 }

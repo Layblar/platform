@@ -49,7 +49,7 @@ public interface ProjectServiceRestClient {
 
     @GET
     @Path("/project")
-    Uni<Response> listProjects(@QueryParam("researcherId") String researcherId);
+    Uni<Response> listProjects(@QueryParam("researcherId") String researcherId, @QueryParam("householdId") String householdId, @QueryParam("isJoinable") Boolean isJoinable);
 
     @POST
     @Path("/project/{projectId}/household/{householdId}")

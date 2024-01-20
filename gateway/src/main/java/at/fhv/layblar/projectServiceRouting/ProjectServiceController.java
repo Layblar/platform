@@ -91,11 +91,13 @@ public class ProjectServiceController {
     @Path("/project")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectInfoDTO.class)), description = "List of all projects", responseCode = "200")
-    @Operation(summary = "List all Projects", description = "List all Projects")
+    @Operation(summary = "List all Projects", description = "List all Projects. The query parameter are not combinable! Only one is in effect!")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> listProjects(
-        @Parameter(description = "Filter projects by researcherId. This can only be done by the Researcher role", required = false) @QueryParam("researcherId") String researcherId) {
-        return restClient.listProjects(researcherId);
+        @Parameter(description = "Filter projects by researcherId. This can only be done by the Researcher role", required = false) @QueryParam("researcherId") String researcherId, 
+        @Parameter(description = "Filter projects by householdId. List all projects where household is a participant", required = false)@QueryParam("householdId") String householdId, 
+        @Parameter(description = "Lists only projects that are joinable for the caller. This only checks if the project is active and the household not already a participant", required = false)@QueryParam("isJoinable") Boolean isJoinable) {
+        return restClient.listProjects(researcherId, householdId, isJoinable);
     }
 
     @POST

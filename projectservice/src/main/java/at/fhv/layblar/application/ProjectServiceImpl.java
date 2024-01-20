@@ -114,8 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectInfoDTO> getProjects(String researcherId) throws NotAuthorizedException {
-        List<ProjectReadModel> projects = ProjectReadModel.listAll();
+    public List<ProjectInfoDTO> getProjects(String researcherId, String householdId, Boolean joinable) throws NotAuthorizedException {
         if(researcherId != null){
             if(!jsonWebToken.containsClaim("researcherId") || !jsonWebToken.getClaim("researcherId").equals(researcherId)){
                 throw new NotAuthorizedException("Not authorized");
@@ -124,6 +123,25 @@ public class ProjectServiceImpl implements ProjectService {
                 project -> ProjectInfoDTO.createProjectInfoDTO(project)
             ).collect(Collectors.toList());
         }
+
+        if(householdId != null) {
+            validateHouseholdId(householdId);
+            return ProjectReadModel.findByParticipant(householdId).stream().map(
+                project -> ProjectInfoDTO.createProjectInfoDTO(project)
+            ).collect(Collectors.toList());
+        }
+
+        if(joinable) {
+            if(!jsonWebToken.containsClaim("householdId")){
+                throw new NotAuthorizedException("Missing HouseholdId");
+            }
+            return ProjectReadModel.findJoinableProjects(jsonWebToken.getClaim("householdId")).stream().map(
+                project -> ProjectInfoDTO.createProjectInfoDTO(project)
+            ).collect(Collectors.toList());
+        }
+
+
+        List<ProjectReadModel> projects = ProjectReadModel.listAll();
         return projects.stream().map(
             project -> ProjectInfoDTO.createProjectInfoDTO(project)
         ).collect(Collectors.toList());

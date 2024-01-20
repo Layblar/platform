@@ -83,9 +83,9 @@ public class ProjectResource {
 
     @GET
     @Path("/project")
-    public Response listProjects(@QueryParam("researcherId") String reasearcherId){
+    public Response listProjects(@QueryParam("researcherId") String reasearcherId, @QueryParam("householdId") String householdId, @QueryParam("isJoinable") Boolean isJoinable){
         try {
-            return Response.ok().entity(projectService.getProjects(reasearcherId)).build();
+            return Response.ok().entity(projectService.getProjects(reasearcherId, householdId, isJoinable)).build();
         } catch (ResponseException e) {
             return ResponseExceptionBuilder.buildResponse(e);
         }
