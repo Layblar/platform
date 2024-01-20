@@ -15,6 +15,8 @@ import at.fhv.layblar.commands.AddLabeledDataCommand;
 import at.fhv.layblar.commands.RemoveLabeledDataCommand;
 import at.fhv.layblar.commands.UpdateLabeledDataCommand;
 import at.fhv.layblar.domain.model.LabeledData;
+import at.fhv.layblar.domain.readmodel.LabeledDataReadModel;
+import at.fhv.layblar.events.Event;
 import at.fhv.layblar.events.LabeledDataAddedEvent;
 import at.fhv.layblar.events.LabeledDataEvent;
 import at.fhv.layblar.events.LabeledDataRemovedEvent;
@@ -39,12 +41,13 @@ public class LabeledDataServiceImpl implements LabeledDataService {
     @Override
     public List<LabeledDataDTO> getLabeledDataByHousehold(String householdId, String projectId) throws NotAuthorizedException {
         validateHouseholdId(householdId);
-        List<LabeledData> data = new LinkedList<>();
+        //TODO COMBINE EACH BATCHED LABELEDDATA SET TO ONE
+        List<LabeledDataReadModel> data = new LinkedList<>();
         if(projectId == null){
-            data = LabeledData.list("householdId", householdId);
+            data = LabeledDataReadModel.list("householdId", householdId);
             return data.stream().map(labeleData -> LabeledDataDTO.createLabeledDataDTO(labeleData)).collect(Collectors.toList());
         }
-        data = LabeledData.list("householdId = ?1 and projectId = ?2", householdId, projectId);
+        data = LabeledDataReadModel.list("householdId = ?1 and projectId = ?2", householdId, projectId);
         return data.stream().map(labeleData -> LabeledDataDTO.createLabeledDataDTO(labeleData)).collect(Collectors.toList());
     }
 
@@ -53,9 +56,10 @@ public class LabeledDataServiceImpl implements LabeledDataService {
     public LabeledDataDTO addLabeledData(AddLabeledDataCommand command) throws NotAuthorizedException, ProjectValidityTimeframeException, LabelNotFoundException {
         validateHouseholdId(command.householdId);
         LabeledData labeledData = new LabeledData();
-        LabeledDataAddedEvent event = labeledData.process(command);
-        event.persist();
-        labeledData.apply(event);
+        List<LabeledDataAddedEvent> events = labeledData.process(command);
+        System.out.println("NUMBER OF DATA POINTS " + events.size() + "--------------------------------");
+        Event.persist(events);
+        events.forEach(event -> labeledData.apply(event));
         return LabeledDataDTO.createLabeledDataDTO(labeledData);
     }
 
@@ -68,10 +72,10 @@ public class LabeledDataServiceImpl implements LabeledDataService {
         }
         LabeledData labeledData = EntityBuilder.buildLabeledDataEntity(data);
         validateHouseholdId(labeledData.householdId);
-        LabeledDataUpdatedEvent event = labeledData.process(command);
+        List<LabeledDataUpdatedEvent> events = labeledData.process(command);
         checkForVersionMismatch(data, labeledData);
-        event.persist();
-        labeledData.apply(event);
+        Event.persist(events);
+        events.forEach(event -> labeledData.apply(event));
         return LabeledDataDTO.createLabeledDataDTO(labeledData);
     }
 

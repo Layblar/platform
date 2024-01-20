@@ -27,15 +27,15 @@ public class LabeledDataAddedEvent extends LabeledDataEvent {
         this.eventType = "LabeledDataAddedEvent";
     };
 
-    private LabeledDataAddedEvent(AddLabeledDataCommand command) {
+    private LabeledDataAddedEvent(String labeledDataId, AddLabeledDataCommand command, List<SmartMeterDataDTO> smartMeterData, Integer batchNumber) {
         super();
         this.eventType = "LabeledDataAddedEvent";
-        this.entityId = UUID.randomUUID().toString();
-        this.payload = createEventPayload(command);
+        this.entityId = labeledDataId;
+        this.payload = createEventPayload(command, smartMeterData, batchNumber);
     }
 
-    public static LabeledDataAddedEvent create(AddLabeledDataCommand command) {
-        return new LabeledDataAddedEvent(command);
+    public static LabeledDataAddedEvent create(String labeledDataId, AddLabeledDataCommand command, List<SmartMeterDataDTO> smartMeterData, Integer batchNumber) {
+        return new LabeledDataAddedEvent(labeledDataId, command, smartMeterData, batchNumber);
     }
 
     @JsonIgnore
@@ -77,14 +77,15 @@ public class LabeledDataAddedEvent extends LabeledDataEvent {
         });
     }
 
-    private ObjectNode createEventPayload(AddLabeledDataCommand command) {
+    private ObjectNode createEventPayload(AddLabeledDataCommand command, List<SmartMeterDataDTO> smartMeterDataDTO, Integer batchNumber) {
         ObjectNode root = mapper.createObjectNode();
         root.put("labeledDataId", entityId);
+        root.put("batchNumber", batchNumber);
         root.put("householdId", command.householdId);
         root.putPOJO("device", command.device);
         root.put("createdAt", LocalDateTime.now().toString());
         ArrayNode smartMeterData = root.putArray("smartMeterData");
-        for (SmartMeterDataDTO dataDTO : command.smartMeterData) {
+        for (SmartMeterDataDTO dataDTO : smartMeterDataDTO) {
             smartMeterData.addObject()
                 .put("time", dataDTO.time.toString())
                 .put("sensorId", dataDTO.sensorId)
