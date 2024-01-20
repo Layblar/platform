@@ -14,8 +14,10 @@ import at.fhv.layblar.events.LabeledDataUpdatedEvent;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 
 @Entity
+@IdClass(LabeledDataReadModelKey.class)
 public class LabeledDataReadModel extends PanacheEntityBase {
 
     @Id
@@ -33,6 +35,7 @@ public class LabeledDataReadModel extends PanacheEntityBase {
 
     public void apply(LabeledDataAddedEvent event) {
         this.labeledDataId = event.getLabeledDataId();
+        this.batchNumber = event.getBatchNumber();
         this.device = event.getDevice();
         this.householdId = event.getHouseholdId();
         this.smartMeterData.removeAll(event.getSmartMeterData());

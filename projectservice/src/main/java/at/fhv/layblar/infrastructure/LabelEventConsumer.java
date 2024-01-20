@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import at.fhv.layblar.domain.readmodel.ViableProject;
 import at.fhv.layblar.domain.readmodel.LabeledDataReadModel;
+import at.fhv.layblar.domain.readmodel.LabeledDataReadModelKey;
 import at.fhv.layblar.domain.readmodel.ProjectLabeledData;
 import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.LabeledDataAddedEvent;
@@ -43,13 +44,13 @@ public class LabelEventConsumer {
     public void process(Record<String, JsonNode> record) {
         try {
             LabeledDataEvent event = deserializeEvent(record.value());
-            Optional<LabeledDataReadModel> optLabeledData = LabeledDataReadModel.findByIdOptional(event.entityId);
+            Optional<LabeledDataReadModel> optLabeledData = LabeledDataReadModel.findByIdOptional(new LabeledDataReadModelKey(event.entityId, event.getBatchNumber()));
             LabeledDataReadModel labeledData = new LabeledDataReadModel();
             if (optLabeledData.isPresent()) {
                 labeledData = optLabeledData.get();
             }
             labeledData = handleLabeledDataEvent(labeledData, event);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             // e.printStackTrace();
         }
     }
@@ -99,19 +100,15 @@ public class LabelEventConsumer {
 
     private void updateValidToDates(LabeledDataReadModel labeledData, LabeledDataEvent event) {
         // if the data was already invalidated in the past do not overwrite validTo date
+        // batchNumber >= currentBatchNumber -> if that is removed and a batchNumber does not exists
+        // anymore the old data must also be updated
         List<ProjectLabeledData> data = ProjectLabeledData.list(
-                "labeledDataId = ?1 AND batchNumber = ?2 AND validTo >= ?3 order by validTo desc", labeledData.labeledDataId,
+                "labeledDataId = ?1 AND batchNumber >= ?2 AND validTo >= ?3 order by validTo desc", labeledData.labeledDataId,
                 event.getBatchNumber(), event.timestamp);
-        System.out.println("DATA TO UPDATE " + data.size() + "---------------------------------------");
         ProjectLabeledData.persist(data.stream().map(pld -> {
             pld.validTo = event.timestamp;
             return pld;
         }).collect(Collectors.toList()));
-        // if(!data.isEmpty()){
-        // ProjectLabeledData lData = data.get(0);
-        // lData.validTo = event.timestamp;
-        // ProjectLabeledData.persist(data);
-        // }
     }
 
     private LabeledDataEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException {

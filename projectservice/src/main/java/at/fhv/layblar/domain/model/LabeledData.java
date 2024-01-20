@@ -29,10 +29,11 @@ public class LabeledData {
         String labeledDataId = UUID.randomUUID().toString();
         List<LabeledDataAddedEvent> events = new LinkedList<>();
         int totalSize = command.smartMeterData.size();
+        int batchNumber = 0;
         for (int start = 0; start < totalSize; start+=BATCH_SIZE) {
             int end = Math.min(start + BATCH_SIZE, totalSize);
-            System.out.println(start % BATCH_SIZE);
-            events.add(LabeledDataAddedEvent.create(labeledDataId, command, command.smartMeterData.subList(start, end), start % BATCH_SIZE));
+            batchNumber++;
+            events.add(LabeledDataAddedEvent.create(labeledDataId, command, command.smartMeterData.subList(start, end), batchNumber));
         }
         return events;
     }
@@ -43,9 +44,11 @@ public class LabeledData {
         }
         List<LabeledDataUpdatedEvent> events = new LinkedList<>();
         int totalSize = command.smartMeterData.size();
+        int batchNumber = 0;
         for (int start = 0; start < totalSize; start+=BATCH_SIZE) {
             int end = Math.min(start + BATCH_SIZE, totalSize);
-            events.add(LabeledDataUpdatedEvent.create(command, this, command.smartMeterData.subList(start, end), start % BATCH_SIZE));
+            batchNumber++;
+            events.add(LabeledDataUpdatedEvent.create(command, this, command.smartMeterData.subList(start, end), batchNumber));
         }
         return events;
     }
@@ -59,7 +62,6 @@ public class LabeledData {
         this.labeledDataId = event.getLabeledDataId();
         this.device = event.getDevice();
         this.householdId = event.getHouseholdId();
-        this.smartMeterData.removeAll(event.getSmartMeterData());
         this.smartMeterData.addAll(event.getSmartMeterData());
         this.createdAt = event.getCreatedAt();
         this.isRemoved = false;
@@ -72,6 +74,18 @@ public class LabeledData {
     }
     public void apply(LabeledDataRemovedEvent event) {
         this.isRemoved = true;
+    }
+
+    public void apply(List<LabeledDataAddedEvent> events) {
+        for (LabeledDataAddedEvent event : events) {
+            this.apply(event);
+        }
+    }
+
+    public void applyUpdatedList(List<LabeledDataUpdatedEvent> events) {
+        for (LabeledDataUpdatedEvent event : events) {
+            this.apply(event);
+        }
     }
 
     

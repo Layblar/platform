@@ -57,9 +57,8 @@ public class LabeledDataServiceImpl implements LabeledDataService {
         validateHouseholdId(command.householdId);
         LabeledData labeledData = new LabeledData();
         List<LabeledDataAddedEvent> events = labeledData.process(command);
-        System.out.println("NUMBER OF DATA POINTS " + events.size() + "--------------------------------");
         Event.persist(events);
-        events.forEach(event -> labeledData.apply(event));
+        labeledData.apply(events);
         return LabeledDataDTO.createLabeledDataDTO(labeledData);
     }
 
@@ -75,7 +74,7 @@ public class LabeledDataServiceImpl implements LabeledDataService {
         List<LabeledDataUpdatedEvent> events = labeledData.process(command);
         checkForVersionMismatch(data, labeledData);
         Event.persist(events);
-        events.forEach(event -> labeledData.apply(event));
+        labeledData.applyUpdatedList(events);
         return LabeledDataDTO.createLabeledDataDTO(labeledData);
     }
 

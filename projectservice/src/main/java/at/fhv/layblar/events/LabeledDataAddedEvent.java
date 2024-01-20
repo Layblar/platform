@@ -2,8 +2,6 @@ package at.fhv.layblar.events;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
