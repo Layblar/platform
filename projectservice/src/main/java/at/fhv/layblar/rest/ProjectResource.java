@@ -69,7 +69,7 @@ public class ProjectResource {
     @Path("/project/{projectId}/data")
     @RolesAllowed("Researcher")
     public Response getProjectData(@PathParam("projectId") String projectId,
-    @QueryParam("pageIndex") String labeledDataId, 
+    @QueryParam("labeledDataId") String labeledDataId, 
     @DefaultValue("0") @QueryParam("pageIndex") Integer pageIndex, 
     @DefaultValue("1000") @QueryParam("pageSize")  Integer pageSize){
         try {

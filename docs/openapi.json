@@ -1714,11 +1714,19 @@
             "type" : "string"
           }
         }, {
+          "name" : "labeledDataId",
+          "in" : "query",
+          "description" : "When given returns only a single labeled data set for the project",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "pageIndex",
           "in" : "query",
           "schema" : {
             "format" : "int32",
-            "default" : "1",
+            "default" : "0",
             "type" : "integer"
           }
         }, {
