@@ -74,7 +74,6 @@ public class MeterDataProcessor {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     emitter.send(Record.of(householdId, createMeterDataReading(householdId, smartMeterId, JsonObject.mapFrom(mapper.readTree(new String(body, StandardCharsets.UTF_8))))));
-                    //saveToDatabase(householdId, smartMeterId, JsonObject.mapFrom(mapper.readTree(new String(body, StandardCharsets.UTF_8))));
                 }
             });
         } catch (IOException e) {
@@ -97,14 +96,5 @@ public class MeterDataProcessor {
         mdr.householdId = householdId;
         return mdr;
     }
-
-    // @Transactional
-    // public void saveToDatabase(String householdId, String smartMeterId, JsonObject data) throws JsonMappingException, JsonProcessingException {
-    //     MeterDataReading mdr = mapper.readValue(data.encode(), MeterDataReading.class);
-    //     mdr.time = LocalDateTime.parse(data.getString("timestamp"));
-    //     mdr.sensorId = smartMeterId;
-    //     mdr.householdId = householdId;
-    //     MeterDataReading.persist(mdr);
-    // }
 
 }
