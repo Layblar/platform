@@ -173,7 +173,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/DeviceDTO'
       security:
-      - none: []
+      - jwt: []
   /deviceLibrary/category:
     get:
       tags:
@@ -202,7 +202,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/DeviceCategoryDTO'
       security:
-      - none: []
+      - jwt: []
   /deviceLibrary/category/{categoryId}:
     get:
       tags:
@@ -255,7 +255,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/DeviceCategoryDTO'
       security:
-      - none: []
+      - jwt: []
   /deviceLibrary/{deviceId}:
     get:
       tags:
@@ -308,7 +308,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/DeviceCategoryDTO'
       security:
-      - none: []
+      - jwt: []
   /household/{householdId}:
     get:
       tags:
@@ -969,9 +969,24 @@ paths:
       tags:
       - Project
       summary: List all Projects
-      description: List all Projects
+      description: List all Projects. The query parameter are not combinable! Only
+        one is in effect!
       operationId: listProjects
       parameters:
+      - name: householdId
+        in: query
+        description: Filter projects by householdId. List all projects where household
+          is a participant
+        required: false
+        schema:
+          type: string
+      - name: isJoinable
+        in: query
+        description: Lists only projects that are joinable for the caller. This only
+          checks if the project is active and the household not already a participant
+        required: false
+        schema:
+          type: boolean
       - name: researcherId
         in: query
         description: Filter projects by researcherId. This can only be done by the
