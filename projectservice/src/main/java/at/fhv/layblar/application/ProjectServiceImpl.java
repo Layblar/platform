@@ -17,6 +17,7 @@ import at.fhv.layblar.commands.UpdateProjectCommand;
 import at.fhv.layblar.domain.model.Project;
 import at.fhv.layblar.domain.model.ProjectParticipant;
 import at.fhv.layblar.domain.model.Researcher;
+import at.fhv.layblar.domain.readmodel.ProjectLabeledData;
 import at.fhv.layblar.domain.readmodel.ProjectReadModel;
 import at.fhv.layblar.events.ProjectCreatedEvent;
 import at.fhv.layblar.events.ProjectEvent;
@@ -108,9 +109,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDataDTO getProjectData(String projectId) {
-        // TODO Return proper ProjectData
-        throw new UnsupportedOperationException("Unimplemented method 'getProjectData'");
+    public List<ProjectDataDTO> getProjectData(String projectId, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException {
+        Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
+        if(optProject.isEmpty()){
+            throw new ProjectNotFoundException("The project was not found");
+        }
+        validateProjectResearcher(optProject.get());
+        List<ProjectLabeledData> labeledData = ProjectLabeledData.find("projectId", projectId).page(pageIndex, pageSize).list();
+        return labeledData.stream().map(
+            data -> ProjectDataDTO.createProjectDataDTO(data)
+        ).collect(Collectors.toList());
     }
 
     @Override

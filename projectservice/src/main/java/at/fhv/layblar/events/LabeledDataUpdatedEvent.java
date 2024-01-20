@@ -25,15 +25,15 @@ public class LabeledDataUpdatedEvent extends LabeledDataEvent {
         this.eventType = "LabeledDataUpdatedEvent";
     };
 
-    private LabeledDataUpdatedEvent(UpdateLabeledDataCommand command, LabeledData labeledData) {
+    private LabeledDataUpdatedEvent(UpdateLabeledDataCommand command, LabeledData labeledData, List<SmartMeterDataDTO> smartMeterDataDTOs, Integer batchNumber) {
         super();
         this.eventType = "LabeledDataUpdatedEvent";
         this.entityId = labeledData.labeledDataId;
-        this.payload = createEventPayload(command);
+        this.payload = createEventPayload(command, smartMeterDataDTOs, batchNumber);
     }
 
-    public static LabeledDataUpdatedEvent create(UpdateLabeledDataCommand command, LabeledData labeledData) {
-        return new LabeledDataUpdatedEvent(command, labeledData);
+    public static LabeledDataUpdatedEvent create(UpdateLabeledDataCommand command, LabeledData labeledData, List<SmartMeterDataDTO> smartMeterDataDTOs, Integer batchNumber) {
+        return new LabeledDataUpdatedEvent(command, labeledData, smartMeterDataDTOs, batchNumber);
     }
 
     @JsonIgnore
@@ -50,11 +50,12 @@ public class LabeledDataUpdatedEvent extends LabeledDataEvent {
         });
     }
 
-    private ObjectNode createEventPayload(UpdateLabeledDataCommand command) {
+    private ObjectNode createEventPayload(UpdateLabeledDataCommand command, List<SmartMeterDataDTO> smartMeterDataDTOs, Integer batchNumber) {
         ObjectNode root = mapper.createObjectNode();
         root.putPOJO("device", command.device);
+        root.put("batchNumber", batchNumber);
         ArrayNode smartMeterData = root.putArray("smartMeterData");
-        for (SmartMeterDataDTO dataDTO : command.smartMeterData) {
+        for (SmartMeterDataDTO dataDTO : smartMeterDataDTOs) {
             smartMeterData.addObject()
                 .put("time", dataDTO.time.toString())
                 .put("sensorId", dataDTO.sensorId)

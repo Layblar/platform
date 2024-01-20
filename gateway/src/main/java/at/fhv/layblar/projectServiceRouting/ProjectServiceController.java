@@ -20,6 +20,7 @@ import at.fhv.layblar.projectServiceRouting.model.UpdateProjectDTO;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -79,12 +80,14 @@ public class ProjectServiceController {
     @GET
     @Path("/project/{projectId}/data")
     @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = ProjectDataDTO.class)), description = "Project data by id", responseCode = "200")
+    @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = ProjectDataDTO.class)), description = "Project data by id", responseCode = "200")
     @Operation(summary = "Get data from a Project", description = "Get data from a Project")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> getProjectData(
-            @Parameter(description = "The ID of the project to get data from", required = true) @PathParam("projectId") String projectId) {
-        return restClient.getProjectData(projectId);
+            @Parameter(description = "The ID of the project to get data from", required = true) @PathParam("projectId") String projectId,
+            @DefaultValue("1") @QueryParam("pageIndex") Integer pageIndex, 
+            @DefaultValue("1000") @QueryParam("pageSize")  Integer pageSize) {
+        return restClient.getProjectData(projectId, pageIndex, pageSize);
     }
 
     @GET

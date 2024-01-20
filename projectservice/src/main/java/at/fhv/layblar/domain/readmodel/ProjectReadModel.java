@@ -31,7 +31,7 @@ import jakarta.persistence.OneToMany;
         @NamedQuery(name = "Project.byResearcher", query = "FROM ProjectReadModel p JOIN p.researcher researcher WHERE researcher.researcherId = ?1"),
         @NamedQuery(name = "Project.isJoinable", query = "FROM ProjectReadModel p LEFT OUTER JOIN p.participants participants WHERE (participants.householdId IS NULL OR participants.householdId != ?1) AND p.startDate <= ?2 AND p.endDate >= ?2"),
         @NamedQuery(name = "Project.byLabeledDataDeviceCategories", query = 
-                "SELECT p.projectId, p.endDate, label.labelId, participant.householdMetaData " +
+                "SELECT p.projectId, label.labelId, label.labelName, category.deviceCategoryId, category.deviceCategoryName, p.endDate, participant.householdMetaData " +
                 "FROM ProjectReadModel p " +
                 "JOIN p.participants participant " +
                 "JOIN p.labels label " +

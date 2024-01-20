@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -50,7 +49,7 @@ public class ProjectEventConsumer {
             project = handleProjectEvent(project, event);
             saveToDatabase(project);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
     }
