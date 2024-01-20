@@ -109,12 +109,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDataDTO> getProjectData(String projectId, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException {
+    public List<ProjectDataDTO> getProjectData(String projectId, String labeledDataId, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException {
         Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
         if(optProject.isEmpty()){
             throw new ProjectNotFoundException("The project was not found");
         }
         validateProjectResearcher(optProject.get());
+        if(labeledDataId != null){
+            List<ProjectLabeledData> labeledDataById = ProjectLabeledData.find("projectId = ?1 AND labeledDataId = ?2", projectId, labeledDataId).page(pageIndex, pageSize).list();
+            return labeledDataById.stream().map(
+                data -> ProjectDataDTO.createProjectDataDTO(data)
+            ).collect(Collectors.toList());
+        }
         List<ProjectLabeledData> labeledData = ProjectLabeledData.find("projectId", projectId).page(pageIndex, pageSize).list();
         return labeledData.stream().map(
             data -> ProjectDataDTO.createProjectDataDTO(data)

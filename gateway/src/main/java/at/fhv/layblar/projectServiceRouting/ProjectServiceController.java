@@ -85,9 +85,10 @@ public class ProjectServiceController {
     @SecurityRequirement(name = "jwt")
     public Uni<Response> getProjectData(
             @Parameter(description = "The ID of the project to get data from", required = true) @PathParam("projectId") String projectId,
-            @DefaultValue("1") @QueryParam("pageIndex") Integer pageIndex, 
+            @Parameter(description = "When given returns only a single labeled data set for the project", required = false) @QueryParam("labeledDataId") String labeledDataId,
+            @DefaultValue("0") @QueryParam("pageIndex") Integer pageIndex, 
             @DefaultValue("1000") @QueryParam("pageSize")  Integer pageSize) {
-        return restClient.getProjectData(projectId, pageIndex, pageSize);
+        return restClient.getProjectData(projectId, labeledDataId, pageIndex, pageSize);
     }
 
     @GET

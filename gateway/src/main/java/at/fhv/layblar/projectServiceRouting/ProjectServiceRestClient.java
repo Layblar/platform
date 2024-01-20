@@ -41,7 +41,7 @@ public interface ProjectServiceRestClient {
 
     @GET
     @Path("/project/{projectId}/data")
-    Uni<Response> getProjectData(@PathParam("projectId") String projectId, @QueryParam("pageIndex") Integer pageIndex, @QueryParam("pageSize")  Integer pageSize);
+    Uni<Response> getProjectData(@PathParam("projectId") String projectId, @QueryParam("labeledDataId") String labeledDataId, @QueryParam("pageIndex") Integer pageIndex, @QueryParam("pageSize")  Integer pageSize);
 
     @GET
     @Path("/project/{projectId}/household/{householdId}")

@@ -10,7 +10,6 @@ import at.fhv.layblar.utils.ResponseExceptionBuilder;
 import at.fhv.layblar.utils.exceptions.ResponseException;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -69,11 +68,12 @@ public class ProjectResource {
     @GET
     @Path("/project/{projectId}/data")
     @RolesAllowed("Researcher")
-    public Response getProjectData(@PathParam("projectId") String projectId, 
-    @DefaultValue("1") @QueryParam("pageIndex") Integer pageIndex, 
+    public Response getProjectData(@PathParam("projectId") String projectId,
+    @QueryParam("pageIndex") String labeledDataId, 
+    @DefaultValue("0") @QueryParam("pageIndex") Integer pageIndex, 
     @DefaultValue("1000") @QueryParam("pageSize")  Integer pageSize){
         try {
-            return Response.ok().entity(projectService.getProjectData(projectId, pageIndex, pageSize)).build();
+            return Response.ok().entity(projectService.getProjectData(projectId, labeledDataId, pageIndex, pageSize)).build();
         } catch (ResponseException e) {
             return ResponseExceptionBuilder.buildResponse(e);
         }
