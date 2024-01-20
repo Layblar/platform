@@ -27,8 +27,9 @@ import jakarta.persistence.OneToMany;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "ProjectReadModel.byParticipant", query = "FROM ProjectReadModel p JOIN p.participants participant WHERE participant.householdId = ?1"),
+        @NamedQuery(name = "Project.byParticipant", query = "FROM ProjectReadModel p JOIN p.participants participants WHERE participants.householdId = ?1"),
         @NamedQuery(name = "Project.byResearcher", query = "FROM ProjectReadModel p JOIN p.researcher researcher WHERE researcher.researcherId = ?1"),
+        @NamedQuery(name = "Project.isJoinable", query = "FROM ProjectReadModel p LEFT OUTER JOIN p.participants participants WHERE (participants.householdId IS NULL OR participants.householdId != ?1) AND p.startDate <= ?2 AND p.endDate >= ?2"),
         @NamedQuery(name = "Project.byLabeledDataDeviceCategories", query = 
                 "SELECT p.projectId, p.endDate, label.labelId, participant.householdMetaData " +
                 "FROM ProjectReadModel p " +
@@ -120,6 +121,10 @@ public class ProjectReadModel extends PanacheEntityBase {
             List<String> deviceCategoryIds) {
         return find("#Project.byLabeledDataDeviceCategories",
                 Parameters.with("householdId", householdId).and("categoryIds", deviceCategoryIds)).project(ViableProject.class).list();
+    }
+
+    public static List<ProjectReadModel> findJoinableProjects(String householdId) {
+        return find("#Project.isJoinable", householdId, LocalDateTime.now()).list();
     }
 
     public void updateLabel(LabelReadModel label) {

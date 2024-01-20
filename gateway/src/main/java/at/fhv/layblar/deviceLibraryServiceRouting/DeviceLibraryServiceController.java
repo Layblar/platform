@@ -35,7 +35,7 @@ public class DeviceLibraryServiceController {
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = DeviceDTO.class)), description = "List of devices", responseCode = "200")
     @Operation(summary = "List devices", description = "Get a list of devices from the device library")
-    @SecurityRequirement(name = "none")
+    @SecurityRequirement(name = "jwt")
     public Uni<Response> listDevices(@QueryParam("name") String name) {
         return restClient.listDevices(name);
     }
@@ -46,7 +46,7 @@ public class DeviceLibraryServiceController {
     @APIResponse(responseCode = "404", description = "Device not found")
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = DeviceDTO.class)), description = "Device", responseCode = "200")
     @Operation(summary = "Device by Id", description = "Get a device by a Id")
-    @SecurityRequirement(name = "none")
+    @SecurityRequirement(name = "jwt")
     public Uni<Response> getDeviceById(@PathParam("deviceId") String deviceId) {
         return restClient.getDeviceById(deviceId);
     }
@@ -56,7 +56,7 @@ public class DeviceLibraryServiceController {
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = DeviceCategoryDTO.class)), description = "List of device categories", responseCode = "200")
     @Operation(summary = "List all devices categories", description = "Get a list of device categories from the device library")
-    @SecurityRequirement(name = "none")
+    @SecurityRequirement(name = "jwt")
     public Uni<Response> listCategoires(@QueryParam("name") String name) {
         return restClient.listCategoires(name);
     }
@@ -67,7 +67,7 @@ public class DeviceLibraryServiceController {
     @APIResponse(responseCode = "404", description = "Device category not found")
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = DeviceDTO.class)), description = "Device category", responseCode = "200")
     @Operation(summary = "Device category by Id", description = "Get a Device category by a Id")
-    @SecurityRequirement(name = "none")   
+    @SecurityRequirement(name = "jwt")   
     public Uni<Response> getCategoryById(@PathParam("categoryId") String categoryId) {
         return restClient.getCategoryById(categoryId);
     }
