@@ -1,8 +1,7 @@
 package at.fhv.layblar.infrastructure;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public class MeterDataRepository implements PanacheRepositoryBase<MeterDataReadi
 
         return list.stream().map(object -> {
             MeterDataReading mdr = new MeterDataReading();
-            mdr.time = LocalDateTime.ofInstant((Instant) object[0], ZoneId.systemDefault());
+            mdr.time = ((Timestamp) object[0]).toLocalDateTime();
             mdr.householdId = (String) object[1];
             mdr.sensorId = (String) object[2];
             mdr.v1_7_0 = ((Double) object[3]).floatValue();
