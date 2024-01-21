@@ -10,6 +10,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import at.fhv.layblar.infrastructure.MeterDataRepository;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -34,7 +35,8 @@ public class MeterDataResource {
     public Response getSmartMeterData(
         @PathParam("householdId") String householdId, 
         @QueryParam("from") String from,
-        @QueryParam("to") String to) {
+        @QueryParam("to") String to,
+        @DefaultValue("5 seconds") @QueryParam("interval") String interval) {
 
         if(!jsonWebToken.containsClaim("householdId") || !householdId.equals(jsonWebToken.getClaim("householdId"))){
             return Response.status(403).entity("Not authorized").build();
@@ -43,7 +45,7 @@ public class MeterDataResource {
         LocalDateTime fromDate = Instant.ofEpochSecond(Long.parseLong(from)).atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime toDate = Instant.ofEpochSecond(Long.parseLong(to)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        return Response.ok().entity(meterDataRepository.find("time between ?1 and ?2 and householdId = ?3", fromDate, toDate, householdId).list()
+        return Response.ok().entity(meterDataRepository.findByHouseholdId(interval, fromDate, toDate, householdId)
         .stream().map(data -> SmartMeterDataDTO.createSmartMeterDataDTO(data)).collect(Collectors.toList())).build();
 
     }

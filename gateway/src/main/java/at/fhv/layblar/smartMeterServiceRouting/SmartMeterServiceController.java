@@ -42,8 +42,9 @@ public class SmartMeterServiceController {
     public Uni<Response> getSmartMeterData(
             @Parameter(description = "The id of the household for which the data should be fetched", required = true) @PathParam("householdId") String householdId,
             @Parameter(description = "The begin of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = true) @QueryParam("from") String from,
-            @Parameter(description = "The end of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = true) @QueryParam("to") String to) {
-        return restClient.getSmartMeterData(householdId, from, to);
+            @Parameter(description = "The end of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String", required = true) @QueryParam("to") String to,
+            @Parameter(description = "Interval over which data should be aggregated (e.g 5 min, 1 hour, 1 day). Default are 5 seconds", required = false) @DefaultValue("5 seconds") @QueryParam("interval") String interval) {
+        return restClient.getSmartMeterData(householdId, from, to, interval);
     }
 
 }
