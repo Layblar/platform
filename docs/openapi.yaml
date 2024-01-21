@@ -1344,6 +1344,14 @@ paths:
         required: true
         schema:
           type: string
+      - name: interval
+        in: query
+        description: "Interval over which data should be aggregated (e.g 5 min, 1\
+          \ hour, 1 day). Default are 5 seconds"
+        required: false
+        schema:
+          default: 5 seconds
+          type: string
       - name: to
         in: query
         description: The end of the time intervall for which the data should be fetched.
