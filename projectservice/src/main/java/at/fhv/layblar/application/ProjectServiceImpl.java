@@ -145,7 +145,7 @@ public class ProjectServiceImpl implements ProjectService {
             ).collect(Collectors.toList());
         }
 
-        if(joinable) {
+        if(joinable != null && joinable) {
             if(!jsonWebToken.containsClaim("householdId")){
                 throw new NotAuthorizedException("Missing HouseholdId");
             }
