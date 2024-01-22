@@ -41,14 +41,20 @@ public class LabeledDataServiceImpl implements LabeledDataService {
     @Override
     public List<LabeledDataDTO> getLabeledDataByHousehold(String householdId, String projectId) throws NotAuthorizedException {
         validateHouseholdId(householdId);
-        //TODO COMBINE EACH BATCHED LABELEDDATA SET TO ONE
         List<LabeledDataReadModel> data = new LinkedList<>();
         if(projectId == null){
             data = LabeledDataReadModel.list("householdId", householdId);
-            return data.stream().map(labeleData -> LabeledDataDTO.createLabeledDataDTO(labeleData)).collect(Collectors.toList());
+            return data.stream().collect(Collectors.toMap(labeleData -> labeleData.labeledDataId, dto -> LabeledDataDTO.createLabeledDataDTO(dto),
+            LabeledDataServiceImpl::combine)).values().stream().collect(Collectors.toList());
         }
         data = LabeledDataReadModel.list("householdId = ?1 and projectId = ?2", householdId, projectId);
-        return data.stream().map(labeleData -> LabeledDataDTO.createLabeledDataDTO(labeleData)).collect(Collectors.toList());
+        return data.stream().collect(Collectors.toMap(labeleData -> labeleData.labeledDataId, dto -> LabeledDataDTO.createLabeledDataDTO(dto),
+            LabeledDataServiceImpl::combine)).values().stream().collect(Collectors.toList());
+    }
+
+    private static LabeledDataDTO combine(LabeledDataDTO one, LabeledDataDTO two){
+        one.smartMeterData.addAll(two.smartMeterData);
+        return one;
     }
 
     @Override
