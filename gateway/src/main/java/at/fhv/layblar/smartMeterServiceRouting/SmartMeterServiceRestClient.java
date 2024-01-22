@@ -4,6 +4,7 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import io.smallrye.mutiny.Uni;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -17,6 +18,6 @@ public interface SmartMeterServiceRestClient {
     @GET
     @Path("data/household/{householdId}")
     Uni<Response> getSmartMeterData(@PathParam("householdId") String householdId, @QueryParam("from") String from,
-            @QueryParam("to") String to);
+            @QueryParam("to") String to, @DefaultValue("5 seconds") @QueryParam("interval") String interval);
 
 }

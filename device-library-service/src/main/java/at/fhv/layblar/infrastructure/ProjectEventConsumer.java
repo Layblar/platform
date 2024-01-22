@@ -30,7 +30,7 @@ public class ProjectEventConsumer {
         try {
             ProjectEvent event = deserializeEvent(record.value());
             DeviceCategory.persistOrUpdate(event.getDeviceCategories());
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

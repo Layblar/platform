@@ -1,10 +1,9 @@
 package at.fhv.layblar.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import java.util.UUID;
 
 import at.fhv.layblar.commands.AddLabeledDataCommand;
 import at.fhv.layblar.commands.RemoveLabeledDataCommand;
@@ -13,33 +12,45 @@ import at.fhv.layblar.events.LabeledDataAddedEvent;
 import at.fhv.layblar.events.LabeledDataRemovedEvent;
 import at.fhv.layblar.events.LabeledDataUpdatedEvent;
 import at.fhv.layblar.utils.exceptions.LabeledDataAlreadyRemovedException;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 
-@Entity
-public class LabeledData extends PanacheEntityBase {
+public class LabeledData {
 
-    @Id
+    private static final Integer BATCH_SIZE = 1000;
+
     public String labeledDataId;
     public String householdId;
-    @JdbcTypeCode(SqlTypes.JSON)
     public Device device;
-    @JdbcTypeCode(SqlTypes.JSON)
-    public List<SmartMeterData> smartMeterData;
+    public List<SmartMeterData> smartMeterData = new LinkedList<>();
     public LocalDateTime createdAt;
     public Boolean isRemoved;
     public Boolean isHumanLabeled;
 
-    public LabeledDataAddedEvent process(AddLabeledDataCommand command) {
-        return LabeledDataAddedEvent.create(command);
+    public List<LabeledDataAddedEvent> process(AddLabeledDataCommand command) {
+        String labeledDataId = UUID.randomUUID().toString();
+        List<LabeledDataAddedEvent> events = new LinkedList<>();
+        int totalSize = command.smartMeterData.size();
+        int batchNumber = 0;
+        for (int start = 0; start < totalSize; start+=BATCH_SIZE) {
+            int end = Math.min(start + BATCH_SIZE, totalSize);
+            batchNumber++;
+            events.add(LabeledDataAddedEvent.create(labeledDataId, command, command.smartMeterData.subList(start, end), batchNumber));
+        }
+        return events;
     }
 
-    public LabeledDataUpdatedEvent process(UpdateLabeledDataCommand command) throws LabeledDataAlreadyRemovedException {
+    public List<LabeledDataUpdatedEvent> process(UpdateLabeledDataCommand command) throws LabeledDataAlreadyRemovedException {
         if(isRemoved){
             throw new LabeledDataAlreadyRemovedException();
         }
-        return LabeledDataUpdatedEvent.create(command, this);
+        List<LabeledDataUpdatedEvent> events = new LinkedList<>();
+        int totalSize = command.smartMeterData.size();
+        int batchNumber = 0;
+        for (int start = 0; start < totalSize; start+=BATCH_SIZE) {
+            int end = Math.min(start + BATCH_SIZE, totalSize);
+            batchNumber++;
+            events.add(LabeledDataUpdatedEvent.create(command, this, command.smartMeterData.subList(start, end), batchNumber));
+        }
+        return events;
     }
 
     public LabeledDataRemovedEvent process(RemoveLabeledDataCommand command) {
@@ -51,17 +62,30 @@ public class LabeledData extends PanacheEntityBase {
         this.labeledDataId = event.getLabeledDataId();
         this.device = event.getDevice();
         this.householdId = event.getHouseholdId();
-        this.smartMeterData = event.getSmartMeterData();
+        this.smartMeterData.addAll(event.getSmartMeterData());
         this.createdAt = event.getCreatedAt();
         this.isRemoved = false;
         this.isHumanLabeled = true;
     }
     public void apply(LabeledDataUpdatedEvent event) {
         this.device = event.getDevice();
-        this.smartMeterData = event.getSmartMeterData();
+        this.smartMeterData.removeAll(event.getSmartMeterData());
+        this.smartMeterData.addAll(event.getSmartMeterData());
     }
     public void apply(LabeledDataRemovedEvent event) {
         this.isRemoved = true;
+    }
+
+    public void apply(List<LabeledDataAddedEvent> events) {
+        for (LabeledDataAddedEvent event : events) {
+            this.apply(event);
+        }
+    }
+
+    public void applyUpdatedList(List<LabeledDataUpdatedEvent> events) {
+        for (LabeledDataUpdatedEvent event : events) {
+            this.apply(event);
+        }
     }
 
     

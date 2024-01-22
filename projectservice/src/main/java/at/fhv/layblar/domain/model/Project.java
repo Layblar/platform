@@ -90,7 +90,7 @@ public class Project {
             throw new ProjectValidityTimeframeException("Project has already started");
         }
         for (LabelDTO label : command.labels) {
-            if(label.labelId == null || !this.labels.stream().anyMatch(l -> l.labelId.equals(label.labelId))){
+            if(label.labelId == null || !hasLabel(label.labelId)){
                 label.labelId = UUID.randomUUID().toString();
             }            
             for(DeviceCategoryDTO category : label.categories){

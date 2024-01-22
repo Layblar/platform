@@ -31,7 +31,7 @@ public interface ProjectService {
 
     public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException;
 
-    public ProjectDataDTO getProjectData(String projectId);
+    public List<ProjectDataDTO> getProjectData(String projectId, String labeledDataId, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException;
 
     public List<ProjectInfoDTO> getProjects(String reasearcherId, String householdId, Boolean joinable) throws NotAuthorizedException;
 

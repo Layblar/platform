@@ -38,58 +38,60 @@ public class HouseholdEventConsumer {
     @Incoming("household")
     @Blocking
     @Transactional
-    public void process(Record<String,JsonNode> record) {
+    public void process(Record<String, JsonNode> record) {
         try {
             HouseholdEvent event = deserializeEvent(record.value());
             Optional<Household> optHousehold = Household.findByIdOptional(event.entityId);
             Household household = new Household();
-            if(optHousehold.isPresent()){
+            if (optHousehold.isPresent()) {
                 household = optHousehold.get();
             }
             household.householdId = event.entityId;
             household = handleHouseholdEvent(household, event);
-            household.persist();
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-        private Household handleHouseholdEvent(Household household, HouseholdEvent event){
-            event.accept(new EventVisitor() {
+    private Household handleHouseholdEvent(Household household, HouseholdEvent event) {
+        event.accept(new EventVisitor() {
 
-                @Override
-                public void visit(SmartMeterRegisteredEvent event) {
-                    household.smartMeterId.add(event.getSmartMeterId());
-                    processor.createChannelAsync(household.householdId, event.getSmartMeterId());
+            @Override
+            public void visit(SmartMeterRegisteredEvent event) {
+                household.smartMeterId.add(event.getSmartMeterId());
+                processor.createChannelAsync(household.householdId, event.getSmartMeterId());
+                household.persist();
 
+            }
+
+            @Override
+            public void visit(SmartMeterRemovedEvent event) {
+                household.smartMeterId.remove(event.getSmartMeterId());
+                processor.deleteQueue(event.getSmartMeterId());
+                household.persist();
+            }
+
+            @Override
+            public void visit(HouseholdDeletedEvent event) {
+                for (String smartMeterId : household.smartMeterId) {
+                    processor.deleteQueue(smartMeterId);
                 }
+                MeterDataReading.delete("householdId", household.householdId);
+                Household.deleteById(household.householdId);
+            }
 
-                @Override
-                public void visit(SmartMeterRemovedEvent event) {
-                    household.smartMeterId.remove(event.getSmartMeterId());
-                    processor.deleteQueue(event.getSmartMeterId());
-                }
-
-                @Override
-                public void visit(HouseholdDeletedEvent event) {
-                    for (String smartMeterId : household.smartMeterId) {
-                        processor.deleteQueue(smartMeterId);
-                    }
-                    MeterDataReading.delete("householdId", household.householdId);
-                    Household.deleteById(household.householdId);
-                }
-                
-            });
+        });
         return household;
     }
 
-    private HouseholdEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException{
+    private HouseholdEvent deserializeEvent(JsonNode value) throws JsonMappingException, JsonProcessingException {
         ObjectNode root = mapper.createObjectNode();
-        root.put("entityId",value.get("after").get("entityid").asText());
-        root.put("entityType",value.get("after").get("entitytype").asText());
-        root.put("eventType",value.get("after").get("eventtype").asText());
-        root.put("eventId",value.get("after").get("eventid").asText());
-        // Timestamp is sent as microseconds so it must be divided by 1000 to get milliseconds
+        root.put("entityId", value.get("after").get("entityid").asText());
+        root.put("entityType", value.get("after").get("entitytype").asText());
+        root.put("eventType", value.get("after").get("eventtype").asText());
+        root.put("eventId", value.get("after").get("eventid").asText());
+        // Timestamp is sent as microseconds so it must be divided by 1000 to get
+        // milliseconds
         Instant instant = Instant.ofEpochMilli(value.get("after").get("timestamp").asLong() / 1000);
         LocalDateTime timestamp = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
         root.put("timestamp", timestamp.toString());
@@ -97,5 +99,5 @@ public class HouseholdEventConsumer {
         root.set("payload", payload);
         return mapper.treeToValue(root, HouseholdEvent.class);
     }
-    
+
 }

@@ -1713,6 +1713,30 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "name" : "labeledDataId",
+          "in" : "query",
+          "description" : "When given returns only a single labeled data set for the project",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "pageIndex",
+          "in" : "query",
+          "schema" : {
+            "format" : "int32",
+            "default" : "0",
+            "type" : "integer"
+          }
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "schema" : {
+            "format" : "int32",
+            "default" : "1000",
+            "type" : "integer"
+          }
         } ],
         "responses" : {
           "401" : {
@@ -1729,7 +1753,10 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ProjectDataDTO"
+                  }
                 }
               }
             }
@@ -1914,6 +1941,15 @@
           "description" : "The begin of the time intervall for which the data should be fetched. Needs to be a Unix Timestamp as String",
           "required" : true,
           "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "interval",
+          "in" : "query",
+          "description" : "Interval over which data should be aggregated (e.g 5 min, 1 hour, 1 day). Default are 5 seconds",
+          "required" : false,
+          "schema" : {
+            "default" : "5 seconds",
             "type" : "string"
           }
         }, {
@@ -2321,6 +2357,96 @@
         "format" : "date-time",
         "type" : "string",
         "example" : "2022-03-10T12:15:50"
+      },
+      "ProjectDataDTO" : {
+        "type" : "object",
+        "properties" : {
+          "labeledDataId" : {
+            "type" : "string"
+          },
+          "projectId" : {
+            "type" : "string"
+          },
+          "labelId" : {
+            "type" : "string"
+          },
+          "labelName" : {
+            "type" : "string"
+          },
+          "deviceCategoryId" : {
+            "type" : "string"
+          },
+          "deviceCategoryName" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "$ref" : "#/components/schemas/LocalDateTime"
+          },
+          "validTo" : {
+            "$ref" : "#/components/schemas/LocalDateTime"
+          },
+          "readingTime" : {
+            "$ref" : "#/components/schemas/LocalDateTime"
+          },
+          "v1_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v1_8_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v2_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v2_8_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v3_8_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v4_8_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v16_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v31_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v32_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v51_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v52_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v71_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "v72_7_0" : {
+            "format" : "float",
+            "type" : "number"
+          },
+          "metaData" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProjectMetaDataDTO"
+            }
+          }
+        }
       },
       "ProjectInfoDTO" : {
         "type" : "object",
