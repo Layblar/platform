@@ -163,5 +163,7 @@ curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json"
 
 This starts the Debezium connector for Transaction Log Tailing. Otherwise no events will be send to Kafka.
 
+> __NOTE__: In some occasions the layblar-smart-meter-service was not able to connect to the TimescaleDB. In that case simply restart the layblar-smart-meter-service.
+
 Now you can access the Layblar-Platform under [http//:HOST:80](http//:localhost:8080).
 Visit the [API-Documentation](https://layblar.github.io/platform/apidoc.html) to see which endpoints are availabe.
