@@ -43,7 +43,7 @@ public class HouseholdEventConsumer {
             device = handleDeviceEvent(device, event);
             Device.persistOrUpdate(device);
             DeviceCategory.persistOrUpdate(device.deviceCategory);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

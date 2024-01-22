@@ -48,7 +48,7 @@ public class HouseholdEventConsumer {
             }
             household.householdId = event.entityId;
             household = handleHouseholdEvent(household, event);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
