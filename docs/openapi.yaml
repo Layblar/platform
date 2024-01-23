@@ -1204,6 +1204,12 @@ paths:
           format: int32
           default: "1000"
           type: integer
+      - name: validAt
+        in: query
+        description: Collects only data that was valid at this date
+        required: false
+        schema:
+          $ref: '#/components/schemas/LocalDateTime'
       responses:
         "401":
           description: Unauthorized
