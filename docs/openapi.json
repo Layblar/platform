@@ -844,6 +844,7 @@
             }
           }
         },
+        "deprecated" : true,
         "security" : [ {
           "jwt" : [ ]
         } ]
@@ -915,6 +916,7 @@
             }
           }
         },
+        "deprecated" : true,
         "security" : [ {
           "jwt" : [ ]
         } ]
@@ -988,6 +990,7 @@
             }
           }
         },
+        "deprecated" : true,
         "security" : [ {
           "jwt" : [ ]
         } ]
@@ -1203,6 +1206,7 @@
             }
           }
         },
+        "deprecated" : true,
         "security" : [ {
           "jwt" : [ ]
         } ]

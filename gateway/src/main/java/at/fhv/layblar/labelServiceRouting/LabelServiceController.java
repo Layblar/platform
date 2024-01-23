@@ -68,7 +68,7 @@ public class LabelServiceController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(description = "Label event recived", responseCode = "200")
-    @Operation(summary = "Send a label event", description = "Sends a label event to match with smart meter data")
+    @Operation(summary = "Send a label event", description = "Sends a label event to match with smart meter data", deprecated = true)
     @SecurityRequirement(name = "jwt")
     public Uni<Response> addLabelEvent(@Parameter(description = "Label event", required = true) LabelEventDTO eventDTO){
         return restClient.addLabelEvent(eventDTO);

@@ -580,6 +580,7 @@ paths:
                     type: string
                   validTill:
                     $ref: '#/components/schemas/LocalDateTime'
+      deprecated: true
       security:
       - jwt: []
     post:
@@ -628,6 +629,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/SmartMeterDTO'
+      deprecated: true
       security:
       - jwt: []
   /household/{householdId}/leave:
@@ -677,6 +679,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/SmartMeterDTO'
+      deprecated: true
       security:
       - jwt: []
   /household/{householdId}/smartMeterReader:
@@ -824,6 +827,7 @@ paths:
           description: Label event recived
           content:
             application/json: {}
+      deprecated: true
       security:
       - jwt: []
   /label/{householdId}:

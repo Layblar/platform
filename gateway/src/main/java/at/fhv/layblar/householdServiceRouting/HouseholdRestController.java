@@ -43,11 +43,12 @@ public class HouseholdRestController {
     @RestClient
     HouseholdServiceRestClient restClient;
 
+    
     @POST
     @Path("/{householdId}/join")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "Your household", responseCode = "200")
-    @Operation(summary = "Join household", description = "Join given household")
+    @Operation(summary = "Join household", description = "Join given household", deprecated = true)
     @SecurityRequirement(name = "jwt")
     public Uni<Response> joinHousehold(
             @Parameter(description = "The id of the household that should be merged", required = true) @PathParam("householdId") String householdId,
@@ -58,7 +59,7 @@ public class HouseholdRestController {
     @GET
     @Path("/{householdId}/join")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get household join code", description = "Get the code for joining the given household")
+    @Operation(summary = "Get household join code", description = "Get the code for joining the given household", deprecated = true)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdJoinCodeDTO.class)), description = "JoinCode Information", responseCode = "200")
     @SecurityRequirement(name = "jwt")
     public Uni<Response> getHouseholdJoinCode(
@@ -70,7 +71,7 @@ public class HouseholdRestController {
     @Path("/{householdId}/leave")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(content = @Content(schema = @Schema(type = SchemaType.OBJECT, implementation = HouseholdDTO.class)), description = "Your household", responseCode = "200")
-    @Operation(summary = "Leave household", description = "Leave given household")
+    @Operation(summary = "Leave household", description = "Leave given household", deprecated = true)
     @SecurityRequirement(name = "jwt")
     public Uni<Response> leaveHousehold(
             @Parameter(description = "The id of the household that should be split", required = true) @PathParam("householdId") String householdId,
