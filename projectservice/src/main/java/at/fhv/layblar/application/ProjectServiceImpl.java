@@ -117,15 +117,15 @@ public class ProjectServiceImpl implements ProjectService {
         }
         validateProjectResearcher(optProject.get());
         if(validAt == null){
-            validAt = LocalDateTime.now();
+            validAt = optProject.get().endDate;
         }
         if(labeledDataId != null){
-            List<ProjectLabeledData> labeledDataById = ProjectLabeledData.find("projectId = ?1 AND labeledDataId = ?2 AND ?3 BETWEEN startDate AND endDate", projectId, labeledDataId, validAt).page(pageIndex, pageSize).list();
+            List<ProjectLabeledData> labeledDataById = ProjectLabeledData.find("projectId = ?1 AND labeledDataId = ?2 AND ?3 BETWEEN validFrom AND validTo", projectId, labeledDataId, validAt).page(pageIndex, pageSize).list();
             return labeledDataById.stream().map(
                 data -> ProjectDataDTO.createProjectDataDTO(data)
             ).collect(Collectors.toList());
         }
-        List<ProjectLabeledData> labeledData = ProjectLabeledData.find("projectId = ?1 AND ?2 BETWEEN startDate AND endDate", projectId, validAt).page(pageIndex, pageSize).list();
+        List<ProjectLabeledData> labeledData = ProjectLabeledData.find("projectId = ?1 AND ?2 BETWEEN validFrom AND validTo", projectId, validAt).page(pageIndex, pageSize).list();
         return labeledData.stream().map(
             data -> ProjectDataDTO.createProjectDataDTO(data)
         ).collect(Collectors.toList());
