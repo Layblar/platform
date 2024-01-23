@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 - [Marcel Nague](https://github.com/marcel-nague)
 - [Jakob Feistenauer](https://github.com/yescob)
 
+## 2024-01-23
+
+### Added/Updated
+
+- Final bug fixes
+- Filter project data by validAt date
+- Handle lables with large amounts of smart meter data
+
 ## 2024-01-19
 
 ### Added/Updated
