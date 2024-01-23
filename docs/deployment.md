@@ -167,3 +167,58 @@ This starts the Debezium connector for Transaction Log Tailing. Otherwise no eve
 
 Now you can access the Layblar-Platform under [http//:HOST:80](http//:localhost:8080).
 Visit the [API-Documentation](https://layblar.github.io/platform/apidoc.html) to see which endpoints are availabe.
+
+## Running in development mode
+
+Ensure you meet the following requirements:
+
+- JDK 11+
+- Gradle
+- Docker Desktop (optional)
+
+Before starting a service in development mode have a look into the `application.properties` file.
+
+```properties
+#kafka configuration
+%dev.kafka.bootstrap.servers=localhost:9093
+mp.messaging.incoming.household.connector=smallrye-kafka
+mp.messaging.incoming.household.topic=household.public.event
+mp.messaging.incoming.household.auto.offset.reset=earliest
+mp.messaging.incoming.household.group.id=project-service-household-consumer
+
+mp.messaging.incoming.project.connector=smallrye-kafka
+mp.messaging.incoming.project.topic=project.public.event
+mp.messaging.incoming.project.auto.offset.reset=earliest
+mp.messaging.incoming.project.group.id=project-service-project-consumer
+mp.messaging.incoming.project.failure-strategy=ignore
+mp.messaging.incoming.project.broadcast=true
+
+mp.messaging.outgoing.label-event.connector=smallrye-kafka
+mp.messaging.outgoing.label-event.topic=label-event
+
+quarkus.datasource.db-kind = postgresql
+%dev.quarkus.datasource.username = project
+%dev.quarkus.datasource.password = project
+%dev.quarkus.datasource.jdbc.url = jdbc:postgresql://localhost:5435/project
+quarkus.hibernate-orm.database.generation=update
+
+# jwt key locations
+%dev.mp.jwt.verify.publickey.location=publicKey.pem
+# jwt issuer
+%dev.mp.jwt.verify.issuer=layblar
+
+%dev.quarkus.http.port=8086
+
+# enable tracing
+quarkus.datasource.jdbc.telemetry=true
+```
+
+Properties with the suffix `%dev` are only in effect when running the application in development mode. For connections like database and kafka make sure that a service is running on the corresponding port or update the configuration property. If you have Docker Desktop installed you can comment out the connection configurations. Quarkus will automatically start docker containers for the services and connect your application to them.
+
+Start the application by running:
+
+```console
+./gradlew quarkusDev
+```
+
+> __NOTE__: Quarkus offers live-reloading.
