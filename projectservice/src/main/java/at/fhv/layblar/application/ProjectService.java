@@ -1,5 +1,6 @@
 package at.fhv.layblar.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import at.fhv.layblar.application.dto.ProjectDataDTO;
@@ -31,7 +32,7 @@ public interface ProjectService {
 
     public ProjectInfoDTO getProjectInfo(String projectId) throws NotAuthorizedException, ProjectNotFoundException;
 
-    public List<ProjectDataDTO> getProjectData(String projectId, String labeledDataId, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException;
+    public List<ProjectDataDTO> getProjectData(String projectId, String labeledDataId, LocalDateTime validAt, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException;
 
     public List<ProjectInfoDTO> getProjects(String reasearcherId, String householdId, Boolean joinable) throws NotAuthorizedException;
 

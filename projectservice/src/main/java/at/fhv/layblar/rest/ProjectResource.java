@@ -1,5 +1,7 @@
 package at.fhv.layblar.rest;
 
+import java.time.LocalDateTime;
+
 import at.fhv.layblar.application.ProjectService;
 import at.fhv.layblar.commands.CreateProjectCommand;
 import at.fhv.layblar.commands.JoinProjectCommand;
@@ -70,10 +72,11 @@ public class ProjectResource {
     @RolesAllowed("Researcher")
     public Response getProjectData(@PathParam("projectId") String projectId,
     @QueryParam("labeledDataId") String labeledDataId, 
+    @QueryParam("validAt") LocalDateTime validAt,
     @DefaultValue("0") @QueryParam("pageIndex") Integer pageIndex, 
     @DefaultValue("1000") @QueryParam("pageSize")  Integer pageSize){
         try {
-            return Response.ok().entity(projectService.getProjectData(projectId, labeledDataId, pageIndex, pageSize)).build();
+            return Response.ok().entity(projectService.getProjectData(projectId, labeledDataId, validAt, pageIndex, pageSize)).build();
         } catch (ResponseException e) {
             return ResponseExceptionBuilder.buildResponse(e);
         }

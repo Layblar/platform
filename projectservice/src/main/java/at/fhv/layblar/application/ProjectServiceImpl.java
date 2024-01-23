@@ -1,5 +1,6 @@
 package at.fhv.layblar.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,19 +110,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDataDTO> getProjectData(String projectId, String labeledDataId, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException {
+    public List<ProjectDataDTO> getProjectData(String projectId, String labeledDataId, LocalDateTime validAt, Integer pageIndex, Integer pageSize) throws NotAuthorizedException, ProjectNotFoundException {
         Optional<ProjectReadModel> optProject = ProjectReadModel.findByIdOptional(projectId);
         if(optProject.isEmpty()){
             throw new ProjectNotFoundException("The project was not found");
         }
         validateProjectResearcher(optProject.get());
+        if(validAt == null){
+            validAt = LocalDateTime.now();
+        }
         if(labeledDataId != null){
-            List<ProjectLabeledData> labeledDataById = ProjectLabeledData.find("projectId = ?1 AND labeledDataId = ?2", projectId, labeledDataId).page(pageIndex, pageSize).list();
+            List<ProjectLabeledData> labeledDataById = ProjectLabeledData.find("projectId = ?1 AND labeledDataId = ?2 AND ?3 BETWEEN startDate AND endDate", projectId, labeledDataId, validAt).page(pageIndex, pageSize).list();
             return labeledDataById.stream().map(
                 data -> ProjectDataDTO.createProjectDataDTO(data)
             ).collect(Collectors.toList());
         }
-        List<ProjectLabeledData> labeledData = ProjectLabeledData.find("projectId", projectId).page(pageIndex, pageSize).list();
+        List<ProjectLabeledData> labeledData = ProjectLabeledData.find("projectId = ?1 AND ?2 BETWEEN startDate AND endDate", projectId, validAt).page(pageIndex, pageSize).list();
         return labeledData.stream().map(
             data -> ProjectDataDTO.createProjectDataDTO(data)
         ).collect(Collectors.toList());

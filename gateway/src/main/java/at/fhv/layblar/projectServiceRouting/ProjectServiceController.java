@@ -1,5 +1,7 @@
 package at.fhv.layblar.projectServiceRouting;
 
+import java.time.LocalDateTime;
+
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -86,9 +88,10 @@ public class ProjectServiceController {
     public Uni<Response> getProjectData(
             @Parameter(description = "The ID of the project to get data from", required = true) @PathParam("projectId") String projectId,
             @Parameter(description = "When given returns only a single labeled data set for the project", required = false) @QueryParam("labeledDataId") String labeledDataId,
+            @Parameter(description = "Collects only data that was valid at this date", required = false) @QueryParam("validAt") LocalDateTime validAt,
             @DefaultValue("0") @QueryParam("pageIndex") Integer pageIndex, 
             @DefaultValue("1000") @QueryParam("pageSize")  Integer pageSize) {
-        return restClient.getProjectData(projectId, labeledDataId, pageIndex, pageSize);
+        return restClient.getProjectData(projectId, labeledDataId, validAt, pageIndex, pageSize);
     }
 
     @GET

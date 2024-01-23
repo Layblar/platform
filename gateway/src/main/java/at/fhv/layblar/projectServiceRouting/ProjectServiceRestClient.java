@@ -1,5 +1,7 @@
 package at.fhv.layblar.projectServiceRouting;
 
+import java.time.LocalDateTime;
+
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -41,7 +43,8 @@ public interface ProjectServiceRestClient {
 
     @GET
     @Path("/project/{projectId}/data")
-    Uni<Response> getProjectData(@PathParam("projectId") String projectId, @QueryParam("labeledDataId") String labeledDataId, @QueryParam("pageIndex") Integer pageIndex, @QueryParam("pageSize") Integer pageSize);
+    Uni<Response> getProjectData(@PathParam("projectId") String projectId, @QueryParam("labeledDataId") String labeledDataId,
+    @QueryParam("validAt") LocalDateTime validAt, @QueryParam("pageIndex") Integer pageIndex, @QueryParam("pageSize") Integer pageSize);
 
     @GET
     @Path("/project/{projectId}/household/{householdId}")
